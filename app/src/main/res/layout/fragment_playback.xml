@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
+
+    <RadioGroup
+        android:id="@+id/rg_groupDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_recordvideo"
+            style="@style/BottomTabStyle"
+            android:checked="true"
+            android:drawableBottom="@drawable/btn_videopreview_list_selector" />
+
+        <RadioButton
+            android:id="@+id/rb_lockvideo"
+            style="@style/BottomTabStyle"
+            android:drawableBottom="@drawable/btn_lockvideopreview_list_selector" />
+
+        <RadioButton
+            android:id="@+id/rb_capturephoto"
+            style="@style/BottomTabStyle"
+            android:drawableBottom="@drawable/btn_photopreview_list_selector" />
+    </RadioGroup>
+
+    <view.NoScrollViewPager
+        android:id="@+id/vp_itemPreview"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"
+        android:background="#332">
+    </view.NoScrollViewPager>
+
+    <GridView
+        android:id="@+id/gv_dataList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        app:layout_constraintTop_toBottomOf="@+id/vp_itemPreview"
+        >
+
+    </GridView>
+
+</android.support.constraint.ConstraintLayout>
