@@ -14,8 +14,8 @@ import java.util.List;
 import adapter.MyFragmentPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fragment.FragmentPlayback;
-import fragment.FragmentRTRecording;
+import fragment.FragmentPlaybackList;
+import fragment.FragmentRTVideo;
 import fragment.FragmentSetting;
 import view.NoScrollViewPager;
 
@@ -24,10 +24,10 @@ import view.NoScrollViewPager;
  */
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.rb_record)
-    RadioButton rbRecord;
-    @BindView(R.id.rb_playbacklist)
-    RadioButton rbPlaybacklist;
+    @BindView(R.id.rb_realTimeVideo)
+    RadioButton rbRealTimeVideo;
+    @BindView(R.id.rb_playbackList)
+    RadioButton rbPlaybackList;
     @BindView(R.id.rb_setting)
     RadioButton rbSetting;
     @BindView(R.id.rg_group)
@@ -46,22 +46,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         fragments = new ArrayList<>();
-        fragments.add(new FragmentRTRecording());
-        fragments.add(new FragmentPlayback());
+        fragments.add(new FragmentRTVideo());
+        fragments.add(new FragmentPlaybackList());
         fragments.add(new FragmentSetting());
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
 
         vpMain.setAdapter(myFragmentPagerAdapter);
-        rgGroup.check(R.id.rb_record);
+        rgGroup.check(R.id.rb_realTimeVideo);
 
         rgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
-                    case R.id.rb_record:
+                    case R.id.rb_realTimeVideo:
                         vpMain.setCurrentItem(0, false);
                         break;
-                    case R.id.rb_playbacklist:
+                    case R.id.rb_playbackList:
                         vpMain.setCurrentItem(1, false);
                         break;
                     case R.id.rb_setting:
