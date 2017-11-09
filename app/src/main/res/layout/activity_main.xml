@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg_all"
     tools:context="com.bydauto.myviewpager.MainActivity">
 
     <LinearLayout
@@ -16,34 +17,29 @@
             android:id="@+id/ll_mainMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/y70"
+            android:layout_marginBottom="@dimen/y68"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/x76"
-                android:clickable="true"
-                android:drawableTop="@mipmap/ic_back_nor"
-                android:focusable="true"
-                android:text="返回"
-                android:textColor="@color/blue"
-                android:textSize="@dimen/x34"
-                android:typeface="sans" />
+            <com.byd.lighttextview.LightButton
+                android:id="@+id/btn_back"
+                style="@style/ButtonTabStyle"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/btn_tab_back_selector"
+                android:text="返回" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/x80"
                 android:src="@mipmap/line_ver_toback" />
 
             <RadioGroup
                 android:id="@+id/rg_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/x40"
                 android:layout_marginEnd="@dimen/x180"
+                android:layout_marginStart="@dimen/x40"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -82,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/y70"
             app:layout_constraintTop_toBottomOf="@id/ll_mainMenu">
+
         </view.NoScrollViewPager>
     </LinearLayout>
 

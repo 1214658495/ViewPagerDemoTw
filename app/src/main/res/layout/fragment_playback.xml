@@ -4,32 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
 
     <RadioGroup
         android:id="@+id/rg_groupDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x118"
+        android:layout_marginEnd="@dimen/x325"
+        android:padding="@dimen/y10"
         android:orientation="horizontal">
 
-        <RadioButton
+        <com.byd.lighttextview.LightRadioButton
             android:id="@+id/rb_recordvideo"
-            style="@style/BottomTabStyle"
-            android:checked="true"
-            android:drawableBottom="@drawable/btn_recordvideo_selector" />
+            style="@style/BottomTabStyle1"
+            android:text="记录视频" />
 
-        <RadioButton
+        <com.byd.lighttextview.LightRadioButton
             android:id="@+id/rb_lockvideo"
-            style="@style/BottomTabStyle"
-            android:drawableBottom="@drawable/btn_lockvideo_selector" />
+            style="@style/BottomTabStyle1"
+            android:text="锁定视频" />
 
-        <RadioButton
+        <com.byd.lighttextview.LightRadioButton
             android:id="@+id/rb_capturephoto"
-            style="@style/BottomTabStyle"
-            android:drawableBottom="@drawable/btn_capturephoto_selector" />
+            style="@style/BottomTabStyle1"
+            android:text="抓拍照片" />
     </RadioGroup>
 
     <!--<view.NoScrollViewPager-->

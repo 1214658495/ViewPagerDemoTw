@@ -1,12 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="setting"
-        android:gravity="center"/>
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/line_settingtext" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/bg_settingtext">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/x124"
+                android:text="@string/setting"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x32" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/line_settingtext" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x40"
+            android:layout_marginStart="@dimen/x40"
+            android:background="@mipmap/bg_settingdetail"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x60"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x84"
+                    android:text="@string/system"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x32" />
+
+                <com.byd.lighttextview.LightButton
+                    android:id="@+id/btn_memoryCard_format"
+                    style="@style/ButtonTabStyle"
+                    android:layout_marginStart="@dimen/x367"
+                    android:background="@android:color/transparent"
+                    android:text="@string/memoryCard_format" />
+
+                <com.byd.lighttextview.LightButton
+                    style="@style/ButtonTabStyle"
+                    android:layout_marginEnd="@dimen/x82"
+                    android:background="@android:color/transparent"
+                    android:text="系统升级" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x55"
+                android:src="@mipmap/line_settingpartdetail" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x55"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x84"
+                    android:text="版本"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x32" />
+
+                <com.byd.lighttextview.LightButton
+                    style="@style/ButtonTabStyle"
+                    android:layout_marginStart="@dimen/x360"
+                    android:background="@android:color/transparent"
+                    android:text="固件升级" />
+
+                <com.byd.lighttextview.LightButton
+                    style="@style/ButtonTabStyle"
+                    android:layout_marginEnd="@dimen/x82"
+                    android:background="@android:color/transparent"
+                    android:text="版本升级" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x55"
+                android:src="@mipmap/line_settingpartdetail" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

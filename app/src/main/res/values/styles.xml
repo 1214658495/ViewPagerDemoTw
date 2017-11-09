@@ -13,7 +13,7 @@
 
         <item name="android:gravity">center</item>
         <!--<item name="android:padding">5dp</item>-->
-        <item name="android:textSize">@dimen/x34</item>
+        <item name="android:textSize">@dimen/x32</item>
         <item name="android:typeface">sans</item>
         <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
         <item name="android:layout_width">0dp</item>
@@ -24,5 +24,40 @@
         <!--<item name="android:background">@android:color/transparent</item>-->
 
     </style>
+
+    <style name="BottomTabStyle1">
+        <!-- Customize your theme here. -->
+
+        <item name="android:gravity">center</item>
+        <!--<item name="android:padding">5dp</item>-->
+        <item name="android:textSize">@dimen/x28</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <!--<item name="android:layout_gravity">center_vertical</item>-->
+        <!--<item name="android:background">@android:color/transparent</item>-->
+
+    </style>
+
+
+    <style name="ButtonTabStyle">
+        <!-- Customize your theme here. -->
+
+        <item name="android:gravity">center</item>
+        <!--<item name="android:padding">5dp</item>-->
+        <item name="android:textSize">@dimen/x32</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <!--<item name="android:layout_weight">1</item>-->
+        <item name="android:layout_height">wrap_content</item>
+        <!--<item name="android:button">@null</item>-->
+        <!--<item name="android:layout_gravity">center_vertical</item>-->
+        <!--<item name="android:background">@android:color/transparent</item>-->
+    </style>
+
 
 </resources>
