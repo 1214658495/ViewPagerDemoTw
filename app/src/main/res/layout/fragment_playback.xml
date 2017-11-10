@@ -5,38 +5,106 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RadioGroup
-        android:id="@+id/rg_groupDetail"
+    <RelativeLayout
+        android:id="@+id/rl_menu_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:id="@+id/rg_groupDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/x325"
+            android:layout_marginStart="@dimen/x118"
+            android:orientation="horizontal"
+            android:padding="@dimen/y10"
+            android:visibility="visible">
+
+            <com.byd.lighttextview.LightRadioButton
+                android:id="@+id/rb_recordvideo"
+                style="@style/BottomTabStyle1"
+                android:text="记录视频" />
+
+            <com.byd.lighttextview.LightRadioButton
+                android:id="@+id/rb_lockvideo"
+                style="@style/BottomTabStyle1"
+                android:text="锁定视频" />
+
+            <com.byd.lighttextview.LightRadioButton
+                android:id="@+id/rb_capturephoto"
+                style="@style/BottomTabStyle1"
+                android:text="抓拍照片" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/ll_editItemBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <com.byd.lighttextview.LightTextView
+                android:id="@+id/tv_editNav"
+                style="@style/TextStyle"
+                android:layout_marginStart="@dimen/x72"
+                android:text="记录视频" />
+
+            <com.byd.lighttextview.LightCheckBox
+                android:id="@+id/btn_cancel"
+                style="@style/BottomTabStyle1"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/btn_edit_cancel_selector"
+                android:text="@string/cancel" />
+
+            <com.byd.lighttextview.LightCheckBox
+                android:id="@+id/btn_share"
+                style="@style/BottomTabStyle1"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/btn_edit_share_selector"
+                android:text="@string/share" />
+
+            <com.byd.lighttextview.LightCheckBox
+                android:id="@+id/btn_export"
+                style="@style/BottomTabStyle1"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/btn_edit_export_selector"
+                android:text="@string/export" />
+
+            <com.byd.lighttextview.LightCheckBox
+                android:id="@+id/btn_delete"
+                style="@style/BottomTabStyle1"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/btn_edit_delete_selector"
+                android:text="@string/delete" />
+
+            <com.byd.lighttextview.LightCheckBox
+                android:id="@+id/btn_selectall"
+                style="@style/BottomTabStyle1"
+                android:layout_marginEnd="@dimen/x120"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/btn_edit_selectall_selector"
+                android:text="@string/selectall" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    <!--<view.NoScrollViewPager-->
+    <!--android:id="@+id/vp_itemPreview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="180dp"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"-->
+    <!--android:background="#332">-->
+    <!--</view.NoScrollViewPager>-->
+    <ImageView
+        android:id="@+id/iv_line_blowMenuEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x118"
-        android:layout_marginEnd="@dimen/x325"
-        android:padding="@dimen/y10"
-        android:orientation="horizontal">
-
-        <com.byd.lighttextview.LightRadioButton
-            android:id="@+id/rb_recordvideo"
-            style="@style/BottomTabStyle1"
-            android:text="记录视频" />
-
-        <com.byd.lighttextview.LightRadioButton
-            android:id="@+id/rb_lockvideo"
-            style="@style/BottomTabStyle1"
-            android:text="锁定视频" />
-
-        <com.byd.lighttextview.LightRadioButton
-            android:id="@+id/rb_capturephoto"
-            style="@style/BottomTabStyle1"
-            android:text="抓拍照片" />
-    </RadioGroup>
-
-    <!--<view.NoScrollViewPager-->
-        <!--android:id="@+id/vp_itemPreview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="180dp"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"-->
-        <!--android:background="#332">-->
-    <!--</view.NoScrollViewPager>-->
+        android:src="@mipmap/line_hor_tomenu"
+        app:layout_constraintTop_toBottomOf="@+id/rl_menu_edit"
+        android:layout_marginTop="@dimen/x10"/>
 
     <GridView
         android:id="@+id/gv_dataList"
@@ -44,9 +112,8 @@
         android:layout_height="wrap_content"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"
-        >
-
+        app:layout_constraintTop_toBottomOf="@+id/iv_line_blowMenuEdit"
+        android:layout_marginTop="@dimen/x20">
     </GridView>
 
 </android.support.constraint.ConstraintLayout>

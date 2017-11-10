@@ -106,28 +106,25 @@ public class PhotoWallAdapter extends ArrayAdapter<String> {
         String url = getItem(position);
         Log.e(TAG, "getView: url" + url);
         Log.e(TAG, "getView: currentRadioButton" + currentRadioButton);
-        View view = null;
+        View view;
 //        ImageView imageView = null;
         if (convertView == null) {
             if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
                 view = LayoutInflater.from(getContext()).inflate(R.layout.layout_record_video_item, null);
-//                imageView = view.findViewById(R.id.iv_videoPhoto);
-            }
-            else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                 view = LayoutInflater.from(getContext()).inflate(R.layout.layout_lock_video_item, null);
-            }
- else {
+            } else {
                 view = LayoutInflater.from(getContext()).inflate(R.layout.layout_capture_photo_item, null);
             }
         } else {
             view = convertView;
         }
 //		final ImageView imageView ;= view.findViewById(R.id.photo);
-        ImageView imageView = null;
+        ImageView imageView;
 
 //  if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO ||
 //                currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-            imageView = view.findViewById(R.id.iv_videoPhoto);
+        imageView = view.findViewById(R.id.iv_videoPhoto);
 //        }
 //        else if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
 //            imageView = view.findViewById(R.id.photo);
@@ -136,7 +133,6 @@ public class PhotoWallAdapter extends ArrayAdapter<String> {
 //			imageView.getLayoutParams().height = mItemHeight;
 //		}
         // 给ImageView设置一个Tag，保证异步加载图片时不会乱序
-//        assert imageView != null;
         imageView.setTag(url);
         imageView.setImageResource(R.drawable.empty_photo);
         loadBitmaps(imageView, url);

@@ -3,4 +3,9 @@
     <string name="setting">设置</string>
     <string name="system">系统</string>
     <string name="memoryCard_format">存储卡格式化</string>
+    <string name="cancel">取消</string>
+    <string name="share">分享</string>
+    <string name="export">导出</string>
+    <string name="delete">删除</string>
+    <string name="selectall">全选</string>
 </resources>
