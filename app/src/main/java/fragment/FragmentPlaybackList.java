@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.byd.lighttextview.LightRadioButton;
 import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.R;
+import com.bydauto.myviewpager.ServerConfig;
 
 import java.util.List;
 
@@ -27,14 +30,22 @@ import butterknife.Unbinder;
 public class FragmentPlaybackList extends Fragment {
     @BindView(R.id.rg_groupDetail)
     RadioGroup rgGroupDetail;
-//    @BindView(R.id.vp_itemPreview)
+    //    @BindView(R.id.vp_itemPreview)
 //    NoScrollViewPager vpItemPreview;
+
+    Unbinder unbinder;
+    @BindView(R.id.rb_recordvideo)
+    LightRadioButton rbRecordvideo;
+    @BindView(R.id.rb_lockvideo)
+    LightRadioButton rbLockvideo;
+    @BindView(R.id.rb_capturephoto)
+    LightRadioButton rbCapturephoto;
     @BindView(R.id.gv_dataList)
     GridView gvDataList;
-    Unbinder unbinder;
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private PhotoWallAdapter mAdapter;
+
 
     @Nullable
     @Override
@@ -64,26 +75,50 @@ public class FragmentPlaybackList extends Fragment {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.rb_recordvideo:
+                        mAdapter.currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
+                        gvDataList.setNumColumns(1);
+//                        mAdapter.notifyDataSetChanged();
+//                        if (mAdapter != null) {
+//                            mAdapter.clear();
+//                            mAdapter.cancelAllTasks();
+//                        }
+                        Toast.makeText(getContext(),"recordvideo",Toast.LENGTH_SHORT).show();
 //                        vpItemPreview.setCurrentItem(0, false);
                         break;
                     case R.id.rb_lockvideo:
+                        mAdapter.currentRadioButton = ServerConfig.RB_LOCK_VIDEO;
+                        gvDataList.setNumColumns(1);
+//                        mAdapter.notifyDataSetChanged();
+//                        if (mAdapter != null) {
+//                            mAdapter.clear();
+//                            mAdapter.cancelAllTasks();
+//                        }
+                        Toast.makeText(getContext(),"lockvideo",Toast.LENGTH_SHORT).show();
 //                        vpItemPreview.setCurrentItem(1, false);
                         break;
                     case R.id.rb_capturephoto:
+                        mAdapter.currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
+                        gvDataList.setNumColumns(3);
+//                        if (mAdapter != null) {
+//                            mAdapter.clear();
+//                            mAdapter.cancelAllTasks();
+//                        }
+//                        mAdapter.notifyDataSetChanged();
 //                        vpItemPreview.setCurrentItem(2, false);
                         break;
                     default:
                         break;
                 }
+                mAdapter.notifyDataSetChanged();
+//                gvDataList.invalidateViews();
+                gvDataList.setAdapter(mAdapter);
+
             }
         });
 
-//        datalists = new ArrayList<>();
-//        for (int i = 0; i < 45; i++) {
-//            datalists.add("item" + i);
-//        }
         mAdapter = new PhotoWallAdapter(getContext(), 0, Images.imageThumbUrls, gvDataList);
         gvDataList.setAdapter(mAdapter);
+        gvDataList.setNumColumns(1);
     }
 
     @Override

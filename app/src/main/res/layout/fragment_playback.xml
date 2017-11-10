@@ -42,7 +42,7 @@
         android:id="@+id/gv_dataList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="2"
+        android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"
         >
