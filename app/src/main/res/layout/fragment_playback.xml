@@ -52,7 +52,7 @@
                 android:layout_marginStart="@dimen/x72"
                 android:text="记录视频" />
 
-            <com.byd.lighttextview.LightCheckBox
+            <com.byd.lighttextview.LightButton
                 android:id="@+id/btn_cancel"
                 style="@style/BottomTabStyle1"
                 android:background="@android:color/transparent"

@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.byd.lighttextview.LightButton;
 import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
@@ -80,7 +80,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     GridView mGridViewList;
 
     @BindView(R.id.btn_cancel)
-    LightCheckBox btnCancel;
+    LightButton btnCancel;
     @BindView(R.id.btn_share)
     LightCheckBox btnShare;
     @BindView(R.id.btn_export)
@@ -240,6 +240,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 rgGroupDetail.setVisibility(View.VISIBLE);
                 isMultiChoose = false;
                 mAdapter.isSelectedMap.clear();
+                btnSelectall.setChecked(false);
                 break;
             case R.id.btn_share:
                 break;
@@ -356,7 +357,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 view = convertView;
             }
 
-            CheckBox cbMuliChoose = view.findViewById(R.id.cb_cbx);
+            LightCheckBox cbMuliChoose = view.findViewById(R.id.cb_cbx);
             if (isMultiChoose) {
                 cbMuliChoose.setVisibility(View.VISIBLE);
                 cbMuliChoose.setChecked(getIsSelectedAt(position));

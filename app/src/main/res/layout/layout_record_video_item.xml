@@ -49,15 +49,15 @@
         android:textColor="#ffffff"
         android:textSize="@dimen/y25" />
 
-    <CheckBox
+    <com.byd.lighttextview.LightCheckBox
         android:id="@+id/cb_cbx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/CheckboxStyle"
         android:layout_marginStart="@dimen/x660"
         android:layout_toEndOf="@+id/iv_videoPhoto"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:visibility="invisible" />
+        android:button="@drawable/btn_edit_selected_item_selector"
+        android:visibility="visible" />
 
 </RelativeLayout>
