@@ -14,7 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="20170621-211520-01.jpg"/>
+        android:text="20170621-211520-01.jpg"
+        android:textSize="@dimen/x22"
+        android:background="@mipmap/bg_text_item"/>
 
     <com.byd.lighttextview.LightCheckBox
         android:id="@+id/cb_cbx"

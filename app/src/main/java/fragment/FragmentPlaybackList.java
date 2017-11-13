@@ -155,6 +155,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     case R.id.rb_capturephoto:
                         mAdapter.currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
                         mGridViewList.setNumColumns(3);
+//                        mGridViewList.setHorizontalSpacing();
 //                        if (mAdapter != null) {
 //                            mAdapter.clear();
 //                            mAdapter.cancelAllTasks();
@@ -260,7 +261,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         mAdapter.setItemIsSelectedMap(i, false);
                     }
                 }
-
                 break;
             default:
                 break;

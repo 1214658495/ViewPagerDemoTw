@@ -32,7 +32,7 @@
         android:layout_marginStart="@dimen/x28"
         android:layout_toEndOf="@+id/iv_videoPhoto"
         android:gravity="center"
-        android:text="title"
+        android:text="2017-09-10-12-13-24.MP4"
         android:textColor="#ffffff"
         android:textSize="@dimen/y25" />
 
@@ -45,7 +45,7 @@
         android:layout_marginStart="@dimen/x300"
         android:layout_toEndOf="@+id/tv_title"
         android:gravity="center"
-        android:text="time"
+        android:text="02:00"
         android:textColor="#ffffff"
         android:textSize="@dimen/y25" />
 
