@@ -58,13 +58,11 @@
                     android:id="@+id/btn_memoryCard_format"
                     style="@style/ButtonTabStyle"
                     android:layout_marginStart="@dimen/x367"
-                    android:background="@android:color/transparent"
                     android:text="@string/memoryCard_format" />
 
                 <com.byd.lighttextview.LightButton
                     style="@style/ButtonTabStyle"
                     android:layout_marginEnd="@dimen/x82"
-                    android:background="@android:color/transparent"
                     android:text="系统升级" />
             </LinearLayout>
 
@@ -91,13 +89,11 @@
                 <com.byd.lighttextview.LightButton
                     style="@style/ButtonTabStyle"
                     android:layout_marginStart="@dimen/x360"
-                    android:background="@android:color/transparent"
                     android:text="固件升级" />
 
                 <com.byd.lighttextview.LightButton
                     style="@style/ButtonTabStyle"
                     android:layout_marginEnd="@dimen/x82"
-                    android:background="@android:color/transparent"
                     android:text="版本升级" />
             </LinearLayout>
 

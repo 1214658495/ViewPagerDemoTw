@@ -2,11 +2,13 @@ package com.bydauto.myviewpager;
 
 //import android.app.Fragment;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import com.byd.lighttextview.LightButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 import adapter.MyFragmentPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import fragment.FragmentPlaybackList;
 import fragment.FragmentRTVideo;
 import fragment.FragmentSetting;
+import view.MyDialog;
 import view.NoScrollViewPager;
 
 /**
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup rgGroup;
     @BindView(R.id.vp_main)
     NoScrollViewPager vpMain;
+    @BindView(R.id.btn_back)
+    LightButton btnBack;
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
@@ -76,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         vpMain.setOffscreenPageLimit(2);
 //        initData();
 //        vp.setAdapter(new MyPagerAdapter());
+    }
+
+    @OnClick(R.id.btn_back)
+    public void onViewClicked() {
+        MyDialog myDialog = new MyDialog();
+        myDialog.show(getFragmentManager(),"tiui");
     }
 
 
