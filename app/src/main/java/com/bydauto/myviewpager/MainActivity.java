@@ -5,6 +5,7 @@ package com.bydauto.myviewpager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     NoScrollViewPager vpMain;
     @BindView(R.id.btn_back)
     LightButton btnBack;
+    @BindView(R.id.btn_test)
+    LightButton btnTest;
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
@@ -84,11 +87,23 @@ public class MainActivity extends AppCompatActivity {
 //        vp.setAdapter(new MyPagerAdapter());
     }
 
-    @OnClick(R.id.btn_back)
-    public void onViewClicked() {
-        MyDialog myDialog = new MyDialog();
-        myDialog.show(getFragmentManager(),"tiui");
+    @OnClick({R.id.btn_back, R.id.btn_test})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_back:
+                MyDialog myDialog = MyDialog.newInstance(0);
+                myDialog.show(getFragmentManager(), "back");
+                break;
+            case R.id.btn_test:
+                MyDialog myDialogTest = MyDialog.newInstance(1);
+                myDialogTest.show(getFragmentManager(), "test");
+                break;
+            default:
+                break;
+        }
     }
+
+
 
 
     /*private void initData() {

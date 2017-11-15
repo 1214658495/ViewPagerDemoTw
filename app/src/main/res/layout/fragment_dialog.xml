@@ -1,69 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    >
+    android:background="@mipmap/bg_dialog"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/x10"
+    android:paddingEnd="@dimen/x10">
+
+    <ImageButton
+        android:id="@+id/btn_closeDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/y20"
+        android:background="@drawable/btn_close_dialog_selector" />
+
+    <TextView
+        android:id="@+id/tv_dialogContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y100"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:text="@string/exit"
+        android:textColor="#fff"
+        android:textSize="@dimen/x48" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y150"
+        android:src="@mipmap/line_below_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/bg_dialog"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_closeDialog"
-            android:layout_marginTop="@dimen/y20"
-            android:layout_marginStart="@dimen/x13"
-            android:layout_width="wrap_content"
+        <com.byd.lighttextview.LightButton
+            android:id="@+id/btn_dialogSure"
+            style="@style/ButtonTextStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_close_dialog_selector" />
-
-        <TextView
-            android:id="@+id/tv_dialogContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y100"
-            android:gravity="center"
-            android:text="@string/exit"
-            android:textSize="@dimen/x48"
-            android:textColor="#fff"/>
+            android:layout_weight="1"
+            android:text="确认"
+            android:textSize="@dimen/x34" />
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y150"
-            android:src="@mipmap/line_below_content"/>
+            android:layout_gravity="center"
+            android:src="@mipmap/line_between_choose" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.byd.lighttextview.LightButton
+            android:id="@+id/btn_dialogCancel"
+            style="@style/ButtonTextStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.byd.lighttextview.LightButton
-                android:id="@+id/btn_dialogSure"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/ButtonTextStyle"
-                android:textSize="@dimen/x34"
-                android:text="确认"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@mipmap/line_between_choose"/>
-
-            <com.byd.lighttextview.LightButton
-                android:id="@+id/btn_dialogCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/ButtonTextStyle"
-                android:textSize="@dimen/x34"
-                android:text="取消"/>
-        </LinearLayout>
-
+            android:layout_weight="1"
+            android:text="取消"
+            android:textSize="@dimen/x34" />
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
