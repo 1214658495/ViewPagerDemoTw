@@ -5,82 +5,82 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bydauto.myviewpager.MainActivity">
-<!--android:background="@mipmap/bg_centercontent"-->
+    <!--android:background="@mipmap/bg_centercontent"-->
+    <com.byd.lighttextview.LightButton
+        android:id="@+id/btn_back"
+        style="@style/ButtonTabStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_60"
+        android:drawableTop="@drawable/btn_tab_back_selector"
+        android:text="返回"
+        android:textSize="@dimen/sp_11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/y180"
-        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/ll_mainMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/y68"
-            android:gravity="center"
-            android:orientation="horizontal">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/line_ver_toback"
+        app:layout_constraintLeft_toRightOf="@id/btn_back"
+        app:layout_constraintTop_toTopOf="@id/btn_back" />
 
-            <com.byd.lighttextview.LightButton
-                android:id="@+id/btn_back"
-                style="@style/ButtonTabStyle"
-                android:background="@android:color/transparent"
-                android:drawableTop="@drawable/btn_tab_back_selector"
-                android:text="返回" />
-            <com.byd.lighttextview.LightButton
-                android:id="@+id/btn_test"
-                style="@style/ButtonTabStyle"
-                android:background="@android:color/transparent"
-                android:drawableTop="@drawable/btn_tab_back_selector"
-                android:text="test" />
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_30"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toRightOf="@id/btn_back"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_back">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/line_ver_toback" />
+        <com.byd.lighttextview.LightRadioButton
+            android:id="@+id/rb_realTimeVideo"
+            style="@style/RadioButtonStyle"
+            android:drawableTop="@drawable/btn_tab_realtimevideo_selector"
+            android:text="实时影像"
+            android:textSize="@dimen/sp_11" />
 
-            <RadioGroup
-                android:id="@+id/rg_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/x180"
-                android:layout_marginStart="@dimen/x40"
-                android:orientation="horizontal">
+        <com.byd.lighttextview.LightRadioButton
+            android:id="@+id/rb_playbackList"
+            style="@style/RadioButtonStyle"
+            android:drawableTop="@drawable/btn_tab_playbacklist_selector"
+            android:text="回放列表"
+            android:textSize="@dimen/sp_11" />
 
-                <com.byd.lighttextview.LightRadioButton
-                    android:id="@+id/rb_realTimeVideo"
-                    style="@style/BottomTabStyle"
-                    android:drawableTop="@drawable/btn_tab_realtimevideo_selector"
-                    android:text="实时影像" />
+        <com.byd.lighttextview.LightRadioButton
+            android:id="@+id/rb_setting"
+            style="@style/RadioButtonStyle"
+            android:drawableTop="@drawable/btn_tab_setting_selector"
+            android:text="设置"
+            android:textSize="@dimen/sp_11" />
+    </RadioGroup>
 
-                <com.byd.lighttextview.LightRadioButton
-                    android:id="@+id/rb_playbackList"
-                    style="@style/BottomTabStyle"
-                    android:drawableTop="@drawable/btn_tab_playbacklist_selector"
-                    android:text="回放列表" />
+    <ImageView
+        android:id="@+id/iv_line_hor_tomenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_22"
+        android:src="@mipmap/line_hor_tomenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back" />
 
-                <com.byd.lighttextview.LightRadioButton
-                    android:id="@+id/rb_setting"
-                    style="@style/BottomTabStyle"
-                    android:drawableTop="@drawable/btn_tab_setting_selector"
-                    android:text="设置" />
-            </RadioGroup>
-        </LinearLayout>
+    <view.NoScrollViewPager
+        android:id="@+id/vp_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_line_hor_tomenu">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y65"
-            android:src="@mipmap/line_hor_tomenu"
-            app:layout_constraintBottom_toBottomOf="@+id/ll_mainMenu" />
-
-        <view.NoScrollViewPager
-            android:id="@+id/vp_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y70"
-            app:layout_constraintTop_toBottomOf="@id/ll_mainMenu">
-        </view.NoScrollViewPager>
-    </LinearLayout>
+    </view.NoScrollViewPager>
 
 </android.support.constraint.ConstraintLayout>

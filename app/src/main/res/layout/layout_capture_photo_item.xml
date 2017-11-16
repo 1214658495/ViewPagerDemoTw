@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="20170621-211520-01.jpg"
-        android:textSize="@dimen/x22"
+        android:textSize="@dimen/sp_7"
         android:background="@mipmap/bg_text_item"/>
 
     <com.byd.lighttextview.LightCheckBox

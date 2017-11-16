@@ -20,10 +20,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.byd.lighttextview.LightButton;
@@ -55,7 +55,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
 
 
 /**
@@ -93,10 +92,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     LinearLayout llEditItemBar;
     @BindView(R.id.tv_editNav)
     LightTextView tvEditNav;
-    @BindView(R.id.rl_menu_edit)
-    RelativeLayout rlMenuEdit;
+    //    @BindView(R.id.rl_menu_edit)
+//    RelativeLayout rlMenuEdit;
     @BindView(R.id.iv_line_blowMenuEdit)
     ImageView ivLineBlowMenuEdit;
+    @BindView(R.id.ib_search)
+    ImageButton ibSearch;
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private PhotoWallAdapter mAdapter;
@@ -203,7 +204,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             boolean isSelected = mAdapter.getIsSelectedAt(i);
             Log.e(TAG, "onItemClick: isSelected = " + isSelected + ";i = " + i);
 //            此处把指定位置变为true，并通知item更新。
-            mAdapter.setItemIsSelectedMap(i,!isSelected);
+            mAdapter.setItemIsSelectedMap(i, !isSelected);
         }
     }
 
@@ -267,6 +268,13 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
 //        更新checkbox，隐藏
         mAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.ib_search)
+    public void onViewClicked() {
+//        MyDialog myDialogTest = MyDialog.newInstance(1);
+//                myDialogTest.show(getActivity().getFragmentManager(), "test");
+        Toast.makeText(getActivity(),"search",Toast.LENGTH_SHORT).show();
     }
 
 

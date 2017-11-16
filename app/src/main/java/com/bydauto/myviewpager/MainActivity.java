@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     NoScrollViewPager vpMain;
     @BindView(R.id.btn_back)
     LightButton btnBack;
-    @BindView(R.id.btn_test)
-    LightButton btnTest;
+//    @BindView(R.id.btn_test)
+//    LightButton btnTest;
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
@@ -87,17 +87,17 @@ public class MainActivity extends AppCompatActivity {
 //        vp.setAdapter(new MyPagerAdapter());
     }
 
-    @OnClick({R.id.btn_back, R.id.btn_test})
+    @OnClick(R.id.btn_back)
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
                 MyDialog myDialog = MyDialog.newInstance(0);
                 myDialog.show(getFragmentManager(), "back");
                 break;
-            case R.id.btn_test:
-                MyDialog myDialogTest = MyDialog.newInstance(1);
-                myDialogTest.show(getFragmentManager(), "test");
-                break;
+//            case R.id.btn_test:
+//                MyDialog myDialogTest = MyDialog.newInstance(1);
+//                myDialogTest.show(getFragmentManager(), "test");
+//                break;
             default:
                 break;
         }

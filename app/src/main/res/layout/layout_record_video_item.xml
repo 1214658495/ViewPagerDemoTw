@@ -7,10 +7,10 @@
 
     <ImageView
         android:id="@+id/iv_videoPhoto"
-        android:layout_width="@dimen/x100"
-        android:layout_height="@dimen/y60"
+        android:layout_width="@dimen/dp_33"
+        android:layout_height="@dimen/dp_20"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/x55"
+        android:layout_marginStart="@dimen/dp_18"
         android:background="#ffffff"
         android:scaleType="centerCrop" />
 
@@ -19,8 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_title"
-        android:layout_marginStart="@dimen/x97"
-        android:src="@mipmap/ic_play" />
+        android:layout_marginStart="@dimen/dp_32"
+        android:src="@mipmap/ic_play"
+        android:visibility="visible"/>
 
 
     <TextView
@@ -29,12 +30,12 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/x28"
+        android:layout_marginStart="@dimen/dp_9"
         android:layout_toEndOf="@+id/iv_videoPhoto"
         android:gravity="center"
         android:text="2017-09-10-12-13-24.MP4"
         android:textColor="#ffffff"
-        android:textSize="@dimen/y25" />
+        android:textSize="@dimen/sp_8" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -42,17 +43,17 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/x300"
+        android:layout_marginStart="@dimen/dp_100"
         android:layout_toEndOf="@+id/tv_title"
         android:gravity="center"
         android:text="02:00"
         android:textColor="#ffffff"
-        android:textSize="@dimen/y25" />
+        android:textSize="@dimen/sp_8" />
 
     <com.byd.lighttextview.LightCheckBox
         android:id="@+id/cb_cbx"
         style="@style/CheckboxStyle"
-        android:layout_marginStart="@dimen/x660"
+        android:layout_marginStart="@dimen/dp_220"
         android:layout_toEndOf="@+id/iv_videoPhoto"
         android:clickable="false"
         android:focusable="false"

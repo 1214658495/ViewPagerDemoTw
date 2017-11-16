@@ -3,33 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_dialog"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/x10"
-    android:paddingEnd="@dimen/x10">
+    android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/btn_closeDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x5"
-        android:layout_marginTop="@dimen/y20"
+
         android:background="@drawable/btn_close_dialog_selector" />
 
     <TextView
         android:id="@+id/tv_dialogContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y100"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:text="@string/exit"
         android:textColor="#fff"
-        android:textSize="@dimen/x48" />
+        android:textSize="@dimen/sp_16" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y150"
+        android:layout_marginTop="@dimen/dp_50"
         android:src="@mipmap/line_below_content" />
 
     <LinearLayout
@@ -44,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="确认"
-            android:textSize="@dimen/x34" />
+            android:textSize="@dimen/sp_11" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -59,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="取消"
-            android:textSize="@dimen/x34" />
+            android:textSize="@dimen/sp_11" />
     </LinearLayout>
 
 </LinearLayout>
