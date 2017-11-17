@@ -14,9 +14,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseBooleanArray;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -103,6 +105,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private PhotoWallAdapter mAdapter;
     public boolean isMultiChoose = false;
 
+    private int screenHeight;
+    private int screenWidth;
+
 
     @Nullable
     @Override
@@ -124,6 +129,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //
 //        vpItemPreview.setOffscreenPageLimit(2);
 //        vpItemPreview.setAdapter(myFragmentPagerAdapter);
+
+        WindowManager manager = getActivity().getWindowManager();
+        Display display = manager.getDefaultDisplay();
+
+        //屏幕高度
+         screenHeight = display.getHeight();
+        //屏幕宽度
+         screenWidth = display.getWidth();
+//        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,8);
 
         rgGroupDetail.check(R.id.rb_recordvideo);
 
@@ -155,7 +169,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         break;
                     case R.id.rb_capturephoto:
                         mAdapter.currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
-                        mGridViewList.setNumColumns(3);
+//                        mGridViewList.setNumColumns(3);
+
+                        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,2);
+                        int rowNum = mGridViewList.getCount()%colInfo.countInRow == 0 ? mGridViewList.getCount()/colInfo.countInRow:mGridViewList.getCount()/colInfo.countInRow+1;
+//                        mGridViewList.setLayoutParams(new ConstraintLayout.LayoutParams(screenWidth,rowNum*colInfo.width+(rowNum-1)*2));
+                        mGridViewList.setNumColumns(colInfo.countInRow);
 //                        mGridViewList.setHorizontalSpacing();
 //                        if (mAdapter != null) {
 //                            mAdapter.clear();
@@ -179,6 +198,45 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         mGridViewList.setNumColumns(1);
         mGridViewList.setOnItemClickListener(this);
         mGridViewList.setOnItemLongClickListener(this);
+    }
+
+    //存放计算后的单元格相关信息
+    class ColumnInfo{
+        //单元格宽度
+        public int width = 0;
+        //每行所能容纳的单元格数量
+        public int countInRow = 0;
+    }
+
+    /**
+     * 根据手机屏幕宽度，计算gridview每个单元格的宽度
+     * @param screenWidth 屏幕宽度
+     * @param width 单元格预设宽度
+     * @param padding 单元格间距
+     * @return
+     */
+    private ColumnInfo calculateColumnWidthAndCountInRow(int screenWidth,int width,int padding){
+        ColumnInfo colInfo = new ColumnInfo();
+        int colCount = 0;
+        //判断屏幕是否刚好能容纳下整数个单元格，若不能，则将多出的宽度保存到space中
+        int space = screenWidth % width;
+
+        if( space == 0 ){ //正好容纳下
+            colCount = screenWidth / width;
+        }else if( space >= ( width / 2 ) ){ //多出的宽度大于单元格宽度的一半时，则去除最后一个单元格，将其所占的宽度平分并增加到其他每个单元格中
+            colCount = screenWidth / width;
+            space = width - space;
+            width = width + space / colCount;
+        }else{  //多出的宽度小于单元格宽度的一半时，则将多出的宽度平分，并让每个单元格减去平分后的宽度
+            colCount = screenWidth / width + 1;
+            width = width - space / colCount;
+        }
+
+        colInfo.countInRow = colCount;
+        //计算出每行的间距总宽度，并根据单元格的数量重新调整单元格的宽度
+        colInfo.width = width - (( colCount + 1 ) * padding ) / colCount;
+
+        return colInfo;
     }
 
     @Override
@@ -216,6 +274,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             isMultiChoose = true;
             llEditItemBar.setVisibility(View.VISIBLE);
             rgGroupDetail.setVisibility(View.INVISIBLE);
+            ibSearch.setVisibility(View.INVISIBLE);
             switch (mAdapter.currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
                     tvEditNav.setText("记录视频");
@@ -240,6 +299,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             case R.id.btn_cancel:
                 llEditItemBar.setVisibility(View.INVISIBLE);
                 rgGroupDetail.setVisibility(View.VISIBLE);
+                ibSearch.setVisibility(View.VISIBLE);
                 isMultiChoose = false;
                 mAdapter.isSelectedMap.clear();
                 btnSelectall.setChecked(false);
