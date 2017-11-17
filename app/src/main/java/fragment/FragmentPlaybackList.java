@@ -202,9 +202,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     //存放计算后的单元格相关信息
     class ColumnInfo{
-        //单元格宽度
+        //单元格宽度。
         public int width = 0;
-        //每行所能容纳的单元格数量
+        //每行所能容纳的单元格数量。
         public int countInRow = 0;
     }
 
