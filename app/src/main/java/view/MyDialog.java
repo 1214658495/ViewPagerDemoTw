@@ -1,10 +1,13 @@
 package view;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +38,8 @@ public class MyDialog extends DialogFragment {
     @BindView(R.id.btn_dialogCancel)
     LightButton btnDialogCancel;
     Unbinder unbinder;
+
+    private int mHeight;
 
     public static MyDialog newInstance(int style) {
         MyDialog newDialog = new MyDialog();
@@ -73,6 +78,19 @@ public class MyDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+//        //        dialogFragment  setting size
+//        getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+//        WindowManager.LayoutParams lp = getDialog().getWindow().getAttributes();
+//        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        if (mHeight == 0) {
+//            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        } else {
+//            lp.height = mHeight;
+//        }
+//        getDialog().getWindow().setAttributes(lp);
+
+
         View view;
         int myStyleNum = getArguments().getInt("myStyle", 0);
         if (myStyleNum == 0) {
@@ -85,16 +103,20 @@ public class MyDialog extends DialogFragment {
     }
 
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        Dialog myDialog = getDialog();
-//        if (myDialog != null) {
-//            DisplayMetrics dm = new DisplayMetrics();
-//            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-//            myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.70), (int) (dm.heightPixels * 0.25));
-//        }
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog myDialog = getDialog();
+        if (myDialog != null) {
+            DisplayMetrics dm = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.25));
+            } else {
+                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.6), (int) (dm.heightPixels * 0.5));
+            }
+        }
+    }
 
     @Override
     public void onDestroyView() {

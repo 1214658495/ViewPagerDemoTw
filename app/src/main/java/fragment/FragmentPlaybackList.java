@@ -3,6 +3,7 @@ package fragment;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -11,14 +12,13 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseBooleanArray;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -57,6 +57,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import view.MyDialog;
 
 
 /**
@@ -130,13 +131,26 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //        vpItemPreview.setOffscreenPageLimit(2);
 //        vpItemPreview.setAdapter(myFragmentPagerAdapter);
 
-        WindowManager manager = getActivity().getWindowManager();
-        Display display = manager.getDefaultDisplay();
+//        WindowManager manager = getActivity().getWindowManager();
+//        Display display = manager.getDefaultDisplay();
 
-        //屏幕高度
-         screenHeight = display.getHeight();
-        //屏幕宽度
-         screenWidth = display.getWidth();
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            //屏幕高度
+//         screenHeight = display.getHeight();
+            screenHeight = dm.heightPixels;
+            //屏幕宽度
+//         screenWidth = display.getWidth();
+            screenWidth = dm.widthPixels;
+        } else {
+            screenHeight = dm.heightPixels;
+            screenWidth = (int) (dm.widthPixels * 0.52);
+        }
+
+
+
 //        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,8);
 
         rgGroupDetail.check(R.id.rb_recordvideo);
@@ -171,8 +185,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         mAdapter.currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
 //                        mGridViewList.setNumColumns(3);
 
-                        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,2);
-                        int rowNum = mGridViewList.getCount()%colInfo.countInRow == 0 ? mGridViewList.getCount()/colInfo.countInRow:mGridViewList.getCount()/colInfo.countInRow+1;
+                        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 300, 12);
+                        int rowNum = mGridViewList.getCount() % colInfo.countInRow == 0 ? mGridViewList.getCount() / colInfo.countInRow : mGridViewList.getCount() / colInfo.countInRow + 1;
 //                        mGridViewList.setLayoutParams(new ConstraintLayout.LayoutParams(screenWidth,rowNum*colInfo.width+(rowNum-1)*2));
                         mGridViewList.setNumColumns(colInfo.countInRow);
 //                        mGridViewList.setHorizontalSpacing();
@@ -201,7 +215,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
     //存放计算后的单元格相关信息
-    class ColumnInfo{
+    class ColumnInfo {
         //单元格宽度。
         public int width = 0;
         //每行所能容纳的单元格数量。
@@ -210,31 +224,32 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     /**
      * 根据手机屏幕宽度，计算gridview每个单元格的宽度
+     *
      * @param screenWidth 屏幕宽度
-     * @param width 单元格预设宽度
-     * @param padding 单元格间距
+     * @param width       单元格预设宽度
+     * @param padding     单元格间距
      * @return
      */
-    private ColumnInfo calculateColumnWidthAndCountInRow(int screenWidth,int width,int padding){
+    private ColumnInfo calculateColumnWidthAndCountInRow(int screenWidth, int width, int padding) {
         ColumnInfo colInfo = new ColumnInfo();
         int colCount = 0;
         //判断屏幕是否刚好能容纳下整数个单元格，若不能，则将多出的宽度保存到space中
         int space = screenWidth % width;
 
-        if( space == 0 ){ //正好容纳下
+        if (space == 0) { //正好容纳下
             colCount = screenWidth / width;
-        }else if( space >= ( width / 2 ) ){ //多出的宽度大于单元格宽度的一半时，则去除最后一个单元格，将其所占的宽度平分并增加到其他每个单元格中
+        } else if (space >= (width / 2)) { //多出的宽度大于单元格宽度的一半时，则去除最后一个单元格，将其所占的宽度平分并增加到其他每个单元格中
             colCount = screenWidth / width;
             space = width - space;
             width = width + space / colCount;
-        }else{  //多出的宽度小于单元格宽度的一半时，则将多出的宽度平分，并让每个单元格减去平分后的宽度
+        } else {  //多出的宽度小于单元格宽度的一半时，则将多出的宽度平分，并让每个单元格减去平分后的宽度
             colCount = screenWidth / width + 1;
             width = width - space / colCount;
         }
 
         colInfo.countInRow = colCount;
         //计算出每行的间距总宽度，并根据单元格的数量重新调整单元格的宽度
-        colInfo.width = width - (( colCount + 1 ) * padding ) / colCount;
+        colInfo.width = width - ((colCount + 1) * padding) / colCount;
 
         return colInfo;
     }
@@ -332,9 +347,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-//        MyDialog myDialogTest = MyDialog.newInstance(1);
-//                myDialogTest.show(getActivity().getFragmentManager(), "test");
-        Toast.makeText(getActivity(),"search",Toast.LENGTH_SHORT).show();
+        MyDialog myDialogTest = MyDialog.newInstance(1);
+                myDialogTest.show(getActivity().getFragmentManager(), "test");
+//        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
 
 
