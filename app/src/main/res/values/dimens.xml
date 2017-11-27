@@ -23,7 +23,7 @@
 
 
     <!-- Add custom additions if you don't want them -->
-    <!-- common screen match for layout view size -->
+    <!-- common screen match for laycom.bydauto.myviewpager.viewview size -->
     <dimen name="dp_m_60">-60dp</dimen>
     <dimen name="dp_m_30">-30dp</dimen>
     <dimen name="dp_m_20">-20dp</dimen>

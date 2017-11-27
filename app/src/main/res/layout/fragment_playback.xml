@@ -146,13 +146,13 @@
     </LinearLayout>
 
     <!--</RelativeLayout>-->
-    <!--&lt;!&ndash;<view.NoScrollViewPager&ndash;&gt;-->
+    <!--&lt;!&ndacom.bydauto.myviewpager.viewview.NoScrollViewPager&ndash;&gt;-->
     <!--&lt;!&ndash;android:id="@+id/vp_itemPreview"&ndash;&gt;-->
     <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
     <!--&lt;!&ndash;android:layout_height="180dp"&ndash;&gt;-->
     <!--&lt;!&ndash;app:layout_constraintTop_toBottomOf="@+id/rg_groupDetail"&ndash;&gt;-->
     <!--&lt;!&ndash;android:background="#332">&ndash;&gt;-->
-    <!--&lt;!&ndash;</view.NoScrollViewPager>&ndash;&gt;-->
+    <!--&lt;!&ndascom.bydauto.myviewpager.viewview.NoScrollViewPager>&ndash;&gt;-->
     <ImageView
         android:id="@+id/iv_line_blowMenuEdit"
         android:layout_width="match_parent"

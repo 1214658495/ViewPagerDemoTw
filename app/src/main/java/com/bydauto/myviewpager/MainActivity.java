@@ -14,15 +14,15 @@ import com.byd.lighttextview.LightButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.MyFragmentPagerAdapter;
+import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import fragment.FragmentPlaybackList;
-import fragment.FragmentRTVideo;
-import fragment.FragmentSetting;
-import view.MyDialog;
-import view.NoScrollViewPager;
+import com.bydauto.myviewpager.fragment.FragmentPlaybackList;
+import com.bydauto.myviewpager.fragment.FragmentRTVideo;
+import com.bydauto.myviewpager.fragment.FragmentSetting;
+import com.bydauto.myviewpager.view.MyDialog;
+import com.bydauto.myviewpager.view.NoScrollViewPager;
 
 /**
  * @author byd_tw
@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
+        public boolean isViewFromObject(View com.bydauto.myviewpager.view, Object object) {
+            return com.bydauto.myviewpager.view == object;
         }
 
         @Override
