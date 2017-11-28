@@ -280,6 +280,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isMultiChoose) {
+//            Intent intent = new Intent(view.getContext(), ActivityViewPagerFragment.class);
             Intent intent = new Intent(view.getContext(), ActivityViewPager.class);
             intent.putStringArrayListExtra("mImgUrlsList", urlsList);
             intent.putExtra("position", i);
