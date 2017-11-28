@@ -10,19 +10,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.byd.lighttextview.LightButton;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.bydauto.myviewpager.fragment.FragmentPlaybackList;
 import com.bydauto.myviewpager.fragment.FragmentRTVideo;
 import com.bydauto.myviewpager.fragment.FragmentSetting;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.bydauto.myviewpager.view.NoScrollViewPager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author byd_tw
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
-                MyDialog myDialog = MyDialog.newInstance(0);
+                MyDialog myDialog = MyDialog.newInstance(0,"退出程序？");
                 myDialog.show(getFragmentManager(), "back");
                 break;
 //            case R.id.btn_test:

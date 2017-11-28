@@ -360,7 +360,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-        MyDialog myDialogTest = MyDialog.newInstance(1);
+        MyDialog myDialogTest = MyDialog.newInstance(1,"正在搜索");
                 myDialogTest.show(getActivity().getFragmentManager(), "test");
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
@@ -437,8 +437,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             String url = getItem(position);
-            Log.e(TAG, "getView: url" + url);
-            Log.e(TAG, "getView: currentRadioButton" + currentRadioButton);
+//            Log.e(TAG, "getView: url" + url);
+//            Log.e(TAG, "getView: currentRadioButton" + currentRadioButton);
             View view;
 //        ImageView imageView = null;
             if (convertView == null) {

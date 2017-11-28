@@ -31,6 +31,7 @@ import butterknife.Unbinder;
 public class MyDialog extends DialogFragment {
     @BindView(R.id.btn_closeDialog)
     ImageButton btnCloseDialog;
+
     @BindView(R.id.tv_dialogContent)
     TextView tvDialogContent;
     @BindView(R.id.btn_dialogSure)
@@ -38,15 +39,26 @@ public class MyDialog extends DialogFragment {
     @BindView(R.id.btn_dialogCancel)
     LightButton btnDialogCancel;
     Unbinder unbinder;
-
     private int mHeight;
 
-    public static MyDialog newInstance(int style) {
+    private OnDialogButtonClickListener buttonClickListener;
+
+    public static MyDialog newInstance(int style,String message) {
         MyDialog newDialog = new MyDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("myStyle", style);
+        bundle.putString("message",message);
         newDialog.setArguments(bundle);
         return newDialog;
+    }
+
+    public interface OnDialogButtonClickListener {
+        void okButtonClick();
+        void cancelButtonClick();
+    }
+
+    public void setOnDialogButtonClickListener(OnDialogButtonClickListener buttonClickListener) {
+        this.buttonClickListener = buttonClickListener;
     }
 
     @Override
@@ -93,12 +105,30 @@ public class MyDialog extends DialogFragment {
 
         View view;
         int myStyleNum = getArguments().getInt("myStyle", 0);
+        String message = getArguments().getString("message");
         if (myStyleNum == 0) {
             view = inflater.inflate(R.layout.fragment_dialog, container);
         } else {
             view = inflater.inflate(R.layout.fragment_simple_dialog, container);
         }
         unbinder = ButterKnife.bind(this, view);
+
+        tvDialogContent.setText(message);
+
+        btnDialogSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClickListener.okButtonClick();
+            }
+        });
+
+        btnDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClickListener.cancelButtonClick();
+                getDialog().cancel();
+            }
+        });
         return view;
     }
 
@@ -118,25 +148,14 @@ public class MyDialog extends DialogFragment {
         }
     }
 
+    @OnClick(R.id.btn_closeDialog)
+    public void onViewClicked(View view) {
+                dismiss();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @OnClick({R.id.btn_closeDialog, R.id.btn_dialogSure, R.id.btn_dialogCancel})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_closeDialog:
-                dismiss();
-                break;
-            case R.id.btn_dialogSure:
-                break;
-            case R.id.btn_dialogCancel:
-                dismiss();
-                break;
-            default:
-                break;
-        }
     }
 }

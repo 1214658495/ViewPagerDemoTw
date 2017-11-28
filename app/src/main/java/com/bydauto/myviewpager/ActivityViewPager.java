@@ -3,10 +3,13 @@ package com.bydauto.myviewpager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -16,8 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bydauto.myviewpager.view.MyDialog;
 import com.bydauto.myviewpager.view.MyImagesViewPager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -31,6 +36,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 
 public class ActivityViewPager extends AppCompatActivity {
+    private static final String TAG = "ActivityViewPager";
     @BindView(R.id.vp_viewPager)
     MyImagesViewPager vpViewPager;
     @BindView(R.id.tv_vpIndex)
@@ -55,6 +61,60 @@ public class ActivityViewPager extends AppCompatActivity {
     private ArrayList<String> urlList;
 
     private int currentItem;
+
+    private static final int FADE_OUT = 1;
+
+    public class MyHandler extends Handler {
+        private WeakReference<ActivityViewPager> mActivityViewPager;
+
+        MyHandler(ActivityViewPager activityViewPager) {
+            mActivityViewPager = new WeakReference<>(activityViewPager);
+
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+//            ActivityViewPager activityViewPager = mActivityViewPager.get();
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case FADE_OUT:
+                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
+                        rlBarShowTitle.setVisibility(View.INVISIBLE);
+                    }
+
+                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
+                        llBarEditPhoto.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private final MyHandler mHandler = new MyHandler(this);
+
+
+//    private Handler mHandler = new Handler(){
+//
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case FADE_OUT:
+//                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
+//                        rlBarShowTitle.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
+//                        llBarEditPhoto.setVisibility(View.INVISIBLE);
+//                    }
+//                    break;
+//                    default:
+//                        break;
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +143,11 @@ public class ActivityViewPager extends AppCompatActivity {
                 tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
             }
         });
+
+
+        Message msg = mHandler.obtainMessage(FADE_OUT);
+        mHandler.removeMessages(FADE_OUT);
+        mHandler.sendMessageDelayed(msg, 3000);
     }
 
     @Override
@@ -104,10 +169,24 @@ public class ActivityViewPager extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_gridview:
+                this.finish();
                 break;
             case R.id.btn_share_preview:
                 break;
             case R.id.btn_delete_preview:
+                MyDialog myDialog = MyDialog.newInstance(0,"确认删除？");
+                myDialog.show(getFragmentManager(), "delete");
+                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+                    @Override
+                    public void okButtonClick() {
+                        Log.e(TAG, "okButtonClick: ");
+                    }
+
+                    @Override
+                    public void cancelButtonClick() {
+                        Log.e(TAG, "cancelButtonClick: ");
+                    }
+                });
                 break;
             case R.id.btn_zoom:
                 break;
@@ -145,37 +224,30 @@ public class ActivityViewPager extends AppCompatActivity {
             photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
                 @Override
                 public void onPhotoTap(View view, float v, float v1) {
-//                    如下考虑算法优化
-                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
-                        rlBarShowTitle.setVisibility(View.INVISIBLE);
-                    } else {
-                        rlBarShowTitle.setVisibility(View.VISIBLE);
-                    }
-
-                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
-                        llBarEditPhoto.setVisibility(View.INVISIBLE);
-                    } else {
-                        llBarEditPhoto.setVisibility(View.VISIBLE);
-                    }
-
+                    showTitleBar();
                 }
 
                 @Override
                 public void onOutsidePhotoTap() {
-                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
-                        rlBarShowTitle.setVisibility(View.INVISIBLE);
-                    } else {
-                        rlBarShowTitle.setVisibility(View.VISIBLE);
-                    }
-
-                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
-                        llBarEditPhoto.setVisibility(View.INVISIBLE);
-                    } else {
-                        llBarEditPhoto.setVisibility(View.VISIBLE);
-                    }
+                    showTitleBar();
                 }
             });
             return photoView;
+        }
+
+        void showTitleBar() {
+            //                    如下考虑算法优化
+            if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
+                rlBarShowTitle.setVisibility(View.INVISIBLE);
+            } else {
+                rlBarShowTitle.setVisibility(View.VISIBLE);
+            }
+
+            if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
+                llBarEditPhoto.setVisibility(View.INVISIBLE);
+            } else {
+                llBarEditPhoto.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
