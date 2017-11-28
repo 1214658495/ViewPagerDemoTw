@@ -33,7 +33,7 @@ public class MyImagesViewPager extends ViewPager {
         } catch (IllegalArgumentException e) {
             return false;
         }
-//        改为如下则photoview无法监听点击事件
+//        改为如下则photoview无法监听点击事件。
 //        try {
 //            return super.onTouchEvent(ev);
 //        } catch (IllegalArgumentException ex) {
