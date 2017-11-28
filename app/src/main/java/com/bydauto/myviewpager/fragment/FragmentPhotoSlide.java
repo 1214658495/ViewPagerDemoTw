@@ -46,8 +46,23 @@ public class FragmentPhotoSlide extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_photoslide,container,false);
 
-        imageView= (ImageView) v.findViewById(R.id.iv_main_pic);
+        imageView= v.findViewById(R.id.iv_main_pic);
+
         mAttacher = new PhotoViewAttacher(imageView);
+//        如下只能在点击到图片才有响应
+//        mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+//            @Override
+//            public void onPhotoTap(View view, float v, float v1) {
+//                Toast.makeText(getContext(),"onPhotoTap",Toast.LENGTH_SHORT).show();
+////                rlBarShowTitle.setVisibility(View.INVISIBLE);
+////                llBarEditPhoto.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onOutsidePhotoTap() {
+//
+//            }
+//        });
 
         Glide.with(getActivity()).load(url).crossFade().into(new GlideDrawableImageViewTarget(imageView) {
             @Override

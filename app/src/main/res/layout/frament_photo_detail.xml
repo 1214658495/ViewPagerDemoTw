@@ -4,55 +4,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_photoDetail"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="16:9"
-        android:background="#443">
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/vp_photoDetail"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--app:layout_constraintDimensionRatio="16:9"-->
+        <!--android:background="#443">-->
 
-    </android.support.v4.view.ViewPager>
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_29"
-        android:gravity="center_vertical"
-        android:background="@mipmap/bg_text_item"
-        android:text="20170621-211520-01.jpg"
-        app:layout_constraintTop_toTopOf="@id/vp_photoDetail" />
+    <!--</android.support.v4.view.ViewPager>-->
+    <!---->
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_29"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@mipmap/bg_text_item"-->
+        <!--android:text="20170621-211520-01.jpg"-->
+        <!--app:layout_constraintTop_toTopOf="@id/vp_photoDetail" />-->
 
-    <ImageView
-        app:layout_constraintStart_toStartOf="@id/vp_photoDetail"
-        app:layout_constraintEnd_toEndOf="@id/vp_photoDetail"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@mipmap/bg_text_item"
-        app:layout_constraintTop_toTopOf="@id/btn_zoom"
-        app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail">
-    </ImageView>
+    <!--<ImageView-->
+        <!--app:layout_constraintStart_toStartOf="@id/vp_photoDetail"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/vp_photoDetail"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:background="@mipmap/bg_text_item"-->
+        <!--app:layout_constraintTop_toTopOf="@id/btn_zoom"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail">-->
+    <!--</ImageView>-->
 
-    <ImageButton
-        android:id="@+id/btn_zoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"
-        app:layout_constraintEnd_toEndOf="@id/vp_photoDetail"
-        android:background="@drawable/btn_edit_zoom_selector"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/btn_zoom"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/vp_photoDetail"-->
+        <!--android:background="@drawable/btn_edit_zoom_selector"/>-->
 
-    <ImageButton
-        android:id="@+id/btn_delete_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"
-        app:layout_constraintRight_toLeftOf="@id/btn_zoom"
-        android:background="@drawable/btn_edit_delete_selector"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/btn_delete_preview"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"-->
+        <!--app:layout_constraintRight_toLeftOf="@id/btn_zoom"-->
+        <!--android:background="@drawable/btn_edit_delete_selector"/>-->
 
-    <ImageButton
-        android:id="@+id/btn_share_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"
-        app:layout_constraintRight_toLeftOf="@id/btn_delete_preview"
-        android:background="@drawable/btn_edit_share_selector"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/btn_share_preview"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/vp_photoDetail"-->
+        <!--app:layout_constraintRight_toLeftOf="@id/btn_delete_preview"-->
+        <!--android:background="@drawable/btn_edit_share_selector"/>-->
 
 </android.support.constraint.ConstraintLayout>
