@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -88,11 +89,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.btn_cancel)
     LightButton btnCancel;
     @BindView(R.id.btn_share)
-    LightCheckBox btnShare;
+    LightButton btnShare;
     @BindView(R.id.btn_export)
-    LightCheckBox btnExport;
+    LightButton btnExport;
     @BindView(R.id.btn_delete)
-    LightCheckBox btnDelete;
+    LightButton btnDelete;
     @BindView(R.id.btn_selectall)
     LightCheckBox btnSelectall;
     @BindView(R.id.ll_editItemBar)
@@ -115,6 +116,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private int screenWidth;
 
     private ArrayList<String> urlsList;
+    private ArrayList<String> selectedUrlsList;
+    private ArrayList<Integer> selectedIntsList;
 
 
     @Nullable
@@ -129,7 +132,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     private void initdata() {
         urlsList = new ArrayList<>();
-        Collections.addAll(urlsList,Images.imageThumbUrls);
+        selectedUrlsList = new ArrayList<>();
+        Collections.addAll(urlsList, Images.imageThumbUrls);
         //新建fragment集合对象，传递给FragmentPagerAdapter
 //        fragments = new ArrayList<>();
 //        fragments.add(new FragmentVideoDetail());
@@ -157,7 +161,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             screenHeight = dm.heightPixels;
             screenWidth = (int) (dm.widthPixels * 0.52);
         }
-
 
 
 //        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,8);
@@ -288,9 +291,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         } else {
 //            checkbox初始状态默认为false。
             boolean isSelected = mAdapter.getIsSelectedAt(i);
+//            如下判断后续使用
+            if (!isSelected) {
+//                selectedUrlsList.add(urlsList.get(i));
+//                selectedIntsList.add(i);
+
+            } else {
+//                selectedUrlsList.remove(urlsList.get(i));
+//                selectedIntsList.remove(i);
+            }
             Log.e(TAG, "onItemClick: isSelected = " + isSelected + ";i = " + i);
 //            此处把指定位置变为true，并通知item更新。
             mAdapter.setItemIsSelectedMap(i, !isSelected);
+
         }
     }
 
@@ -303,6 +316,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             llEditItemBar.setVisibility(View.VISIBLE);
             rgGroupDetail.setVisibility(View.INVISIBLE);
             ibSearch.setVisibility(View.INVISIBLE);
+//            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
             switch (mAdapter.currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
                     tvEditNav.setText("记录视频");
@@ -337,6 +351,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             case R.id.btn_export:
                 break;
             case R.id.btn_delete:
+//                for (String url: selectedUrlsList) {
+//
+//                }
+//                for (int i : selectedIntsList) {
+//                    urlsList.
+//                }
+
+//                urlsList.remove()
+                // TODO: 2017/11/29 删除gridview item
                 break;
             case R.id.btn_selectall:
                 if (btnSelectall.isChecked()) {
@@ -360,8 +383,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-        MyDialog myDialogTest = MyDialog.newInstance(1,"正在搜索");
-                myDialogTest.show(getActivity().getFragmentManager(), "test");
+        MyDialog myDialogTest = MyDialog.newInstance(1, "正在搜索");
+        myDialogTest.show(getActivity().getFragmentManager(), "test");
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
 
@@ -457,8 +480,21 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (isMultiChoose) {
                 cbMuliChoose.setVisibility(View.VISIBLE);
                 cbMuliChoose.setChecked(getIsSelectedAt(position));
+//                如下怎么实现还是没理解
+                // TODO: 2017/11/29  如下怎么实现还是没理解
+                if (mAdapter.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                    if (getIsSelectedAt(position)) {
+                        view.setBackgroundColor(Color.parseColor("#1CC9FE"));
+                    } else {
+                        view.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
             } else {
                 cbMuliChoose.setVisibility(View.INVISIBLE);
+//                当按下取消后，isMultiChoose为falae了，所以执行下面。
+                if (mAdapter.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                        view.setBackgroundColor(Color.TRANSPARENT);
+                }
             }
 //		final ImageView imageView ;= com.bydauto.myviewpager.view.findViewById(R.id.photo);
             ImageView imageView;

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -170,6 +169,7 @@ public class ActivityViewPager extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_back_to_gridview:
                 this.finish();
+                // TODO: 2017/11/29 删除完成了，需要去更新gridview
                 break;
             case R.id.btn_share_preview:
                 break;
@@ -179,12 +179,15 @@ public class ActivityViewPager extends AppCompatActivity {
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
                     public void okButtonClick() {
-                        Log.e(TAG, "okButtonClick: ");
+                        // TODO: 2017/11/29  删除照片
+//                        myImagesPagerAdapter.destroyItem(vpViewPager,currentItem,vpViewPager.);
+//                        vpViewPager.removeViewAt(vpViewPager.getCurrentItem());
+                        urlList.remove(currentItem);
+                        myImagesPagerAdapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void cancelButtonClick() {
-                        Log.e(TAG, "cancelButtonClick: ");
                     }
                 });
                 break;

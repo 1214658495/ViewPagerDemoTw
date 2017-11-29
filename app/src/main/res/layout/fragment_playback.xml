@@ -103,7 +103,7 @@
             android:text="@string/cancel"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightCheckBox
+        <com.byd.lighttextview.LightButton
             android:id="@+id/btn_share"
             style="@style/ButtonSingleStyle"
             android:layout_width="0dp"
@@ -113,7 +113,7 @@
             android:text="@string/share"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightCheckBox
+        <com.byd.lighttextview.LightButton
             android:id="@+id/btn_export"
             style="@style/ButtonSingleStyle"
             android:layout_width="0dp"
@@ -123,7 +123,7 @@
             android:text="@string/export"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightCheckBox
+        <com.byd.lighttextview.LightButton
             android:id="@+id/btn_delete"
             style="@style/ButtonSingleStyle"
             android:layout_width="0dp"

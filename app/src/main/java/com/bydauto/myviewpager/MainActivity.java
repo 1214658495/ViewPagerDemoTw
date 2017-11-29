@@ -93,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_back:
                 MyDialog myDialog = MyDialog.newInstance(0,"退出程序？");
                 myDialog.show(getFragmentManager(), "back");
+                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+                    @Override
+                    public void okButtonClick() {
+
+                    }
+
+                    @Override
+                    public void cancelButtonClick() {
+
+                    }
+                });
                 break;
 //            case R.id.btn_test:
 //                MyDialog myDialogTest = MyDialog.newInstance(1);

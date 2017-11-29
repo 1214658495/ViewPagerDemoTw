@@ -119,6 +119,7 @@ public class MyDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 buttonClickListener.okButtonClick();
+                getDialog().cancel();
             }
         });
 
