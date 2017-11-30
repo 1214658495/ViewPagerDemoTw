@@ -83,13 +83,15 @@
 
         app:layout_constraintBottom_toBottomOf="@id/rg_groupDetail"
         app:layout_constraintStart_toStartOf="@id/rg_groupDetail"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/rg_groupDetail">
 
         <com.byd.lighttextview.LightTextView
             android:id="@+id/tv_editNav"
             style="@style/TextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="记录视频"
             android:textSize="@dimen/sp_9" />
 
@@ -99,6 +101,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_10"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
             android:text="@string/cancel"
             android:textSize="@dimen/sp_9" />

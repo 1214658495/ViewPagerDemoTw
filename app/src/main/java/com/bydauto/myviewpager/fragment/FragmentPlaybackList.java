@@ -34,7 +34,8 @@ import com.byd.lighttextview.LightButton;
 import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
-import com.bydauto.myviewpager.ActivityViewPager;
+import com.bydauto.myviewpager.ActivityImagesViewPager;
+import com.bydauto.myviewpager.ActivityVideoViewPager;
 import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.ServerConfig;
@@ -283,9 +284,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isMultiChoose) {
-//            Intent intent = new Intent(view.getContext(), ActivityViewPagerFragment.class);
-            Intent intent = new Intent(view.getContext(), ActivityViewPager.class);
-            intent.putStringArrayListExtra("mImgUrlsList", urlsList);
+            Intent intent;
+            if (mAdapter.currentRadioButton == ServerConfig.RB_RECORD_VIDEO
+                    || mAdapter.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
+            } else {
+                intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
+            }
+            intent.putStringArrayListExtra("mUrlsList", urlsList);
             intent.putExtra("position", i);
             startActivity(intent);
         } else {

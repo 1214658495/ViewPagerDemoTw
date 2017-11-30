@@ -5,18 +5,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_videoPreview"
+    <SurfaceView
+        android:id="@+id/sv_videoPlayView"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="#773">
-
-    </android.support.v4.view.ViewPager>
-
+        android:layout_height="match_parent" />
     <TextView
+        android:id="@+id/tv_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="videopreview" />
+        android:gravity="center"
+        android:text="test"
+        android:textStyle="bold"
+        android:background="#fff"
+        app:layout_constraintTop_toBottomOf="@+id/ib_playVideo"/>
+
+    <ImageButton
+        android:id="@+id/ib_playVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/btn_preview_play_big_selector"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

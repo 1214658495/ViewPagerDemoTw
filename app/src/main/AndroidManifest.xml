@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ActivityViewPagerFragment" />
-        <activity android:name=".ActivityViewPager" />
+        <activity android:name=".ActivityImagesViewPager" />
+        <activity android:name=".ActivityVideoViewPager" />
     </application>
 
 </manifest>

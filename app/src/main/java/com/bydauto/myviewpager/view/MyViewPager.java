@@ -12,16 +12,16 @@ import android.view.View;
  * Created by byd_tw on 2017/11/22.
  */
 
-public class MyImagesViewPager extends ViewPager {
+public class MyViewPager extends ViewPager {
     private static final String TAG = "MyImagesViewPager";
 
     private OnClickListener mOnClickListener;
-    public MyImagesViewPager(Context context) {
+    public MyViewPager(Context context) {
         super(context);
         setup();
     }
 
-    public MyImagesViewPager(Context context, AttributeSet attrs) {
+    public MyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         setup();
     }
@@ -84,7 +84,7 @@ public class MyImagesViewPager extends ViewPager {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if(mOnClickListener != null) {
                 Log.e(TAG, "onSingleTapConfirmed: /////////");
-                mOnClickListener.onViewPagerClick(MyImagesViewPager.this);
+                mOnClickListener.onViewPagerClick(MyViewPager.this);
             }
 
             return true;

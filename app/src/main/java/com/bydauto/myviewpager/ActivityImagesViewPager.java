@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bydauto.myviewpager.view.MyDialog;
-import com.bydauto.myviewpager.view.MyImagesViewPager;
+import com.bydauto.myviewpager.view.MyViewPager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * Created by byd_tw on 2017/11/28.
  */
 
-public class ActivityViewPager extends AppCompatActivity {
-    private static final String TAG = "ActivityViewPager";
+public class ActivityImagesViewPager extends AppCompatActivity {
+    private static final String TAG = "ActivityImagesViewPager";
     @BindView(R.id.vp_viewPager)
-    MyImagesViewPager vpViewPager;
+    MyViewPager vpViewPager;
     @BindView(R.id.tv_vpIndex)
     TextView tvVpIndex;
     @BindView(R.id.btn_back_to_gridview)
@@ -64,16 +64,16 @@ public class ActivityViewPager extends AppCompatActivity {
     private static final int FADE_OUT = 1;
 
     public class MyHandler extends Handler {
-        private WeakReference<ActivityViewPager> mActivityViewPager;
+        private WeakReference<ActivityImagesViewPager> mActivityViewPager;
 
-        MyHandler(ActivityViewPager activityViewPager) {
-            mActivityViewPager = new WeakReference<>(activityViewPager);
+        MyHandler(ActivityImagesViewPager activityImagesViewPager) {
+            mActivityViewPager = new WeakReference<>(activityImagesViewPager);
 
         }
 
         @Override
         public void handleMessage(Message msg) {
-//            ActivityViewPager activityViewPager = mActivityViewPager.get();
+//            ActivityImagesViewPager activityViewPager = mActivityViewPager.get();
             super.handleMessage(msg);
             switch (msg.what) {
                 case FADE_OUT:
@@ -119,7 +119,7 @@ public class ActivityViewPager extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.layout_viewpager);
+        setContentView(R.layout.layout_images_viewpager);
         ButterKnife.bind(this);
         initData();
     }
@@ -128,7 +128,7 @@ public class ActivityViewPager extends AppCompatActivity {
         urlList = new ArrayList<>();
 
         Intent intent = getIntent();
-        urlList = intent.getStringArrayListExtra("mImgUrlsList");
+        urlList = intent.getStringArrayListExtra("mUrlsList");
         currentItem = intent.getIntExtra("position", 0);
         myImagesPagerAdapter = new MyImagesPagerAdapter(urlList, this);
         vpViewPager.setAdapter(myImagesPagerAdapter);
