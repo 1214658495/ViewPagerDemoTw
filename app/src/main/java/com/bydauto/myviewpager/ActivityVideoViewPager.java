@@ -99,7 +99,7 @@ public class ActivityVideoViewPager extends AppCompatActivity {
         urlsList = intent.getStringArrayListExtra("mUrlsList");
         currentItem = intent.getIntExtra("position", 0);
 
-        vpVideoViewPager.setAdapter(new VideoDatilFragmentPagerAdapter(getSupportFragmentManager()));
+        vpVideoViewPager.setAdapter(new VideoDetailFragmentPagerAdapter(getSupportFragmentManager()));
         vpVideoViewPager.setCurrentItem(currentItem);
         vpVideoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -139,8 +139,8 @@ public class ActivityVideoViewPager extends AppCompatActivity {
         }
     }
 
-    private class VideoDatilFragmentPagerAdapter extends FragmentStatePagerAdapter {
-        public VideoDatilFragmentPagerAdapter(FragmentManager fm) {
+    private class VideoDetailFragmentPagerAdapter extends FragmentStatePagerAdapter {
+        public VideoDetailFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

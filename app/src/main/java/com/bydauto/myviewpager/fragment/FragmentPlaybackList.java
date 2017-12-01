@@ -39,6 +39,7 @@ import com.bydauto.myviewpager.ActivityVideoViewPager;
 import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.ServerConfig;
+import com.bydauto.myviewpager.Videos;
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.jakewharton.disklrucache.DiskLruCache;
@@ -117,6 +118,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private int screenWidth;
 
     private ArrayList<String> urlsList;
+    private ArrayList<String> urlVideosList;
     private ArrayList<String> selectedUrlsList;
     private ArrayList<Integer> selectedIntsList;
 
@@ -133,8 +135,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     private void initdata() {
         urlsList = new ArrayList<>();
+        urlVideosList = new ArrayList<>();
         selectedUrlsList = new ArrayList<>();
         Collections.addAll(urlsList, Images.imageThumbUrls);
+        Collections.addAll(urlVideosList, Videos.videosThumbUrls);
         //新建fragment集合对象，传递给FragmentPagerAdapter
 //        fragments = new ArrayList<>();
 //        fragments.add(new FragmentVideoDetail());
@@ -288,10 +292,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (mAdapter.currentRadioButton == ServerConfig.RB_RECORD_VIDEO
                     || mAdapter.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                 intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
+                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
             } else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
+                intent.putStringArrayListExtra("mUrlsList", urlsList);
             }
-            intent.putStringArrayListExtra("mUrlsList", urlsList);
             intent.putExtra("position", i);
             startActivity(intent);
         } else {
@@ -499,7 +504,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 cbMuliChoose.setVisibility(View.INVISIBLE);
 //                当按下取消后，isMultiChoose为falae了，所以执行下面。
                 if (mAdapter.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
-                        view.setBackgroundColor(Color.TRANSPARENT);
+                    view.setBackgroundColor(Color.TRANSPARENT);
                 }
             }
 //		final ImageView imageView ;= com.bydauto.myviewpager.view.findViewById(R.id.photo);

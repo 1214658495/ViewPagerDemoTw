@@ -1,9 +1,11 @@
 package com.bydauto.myviewpager.fragment;
 
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by byd_tw on 2017/11/1.
@@ -38,6 +41,8 @@ public class FragmentVideoDetail extends Fragment {
     private ArrayList<ImageView> imageLists;
     private ArrayList<String> urlsList;
     private String url;
+    private SurfaceHolder surfaceHolder;
+    private IjkMediaPlayer player;
 
     public static FragmentVideoDetail newInstance(ArrayList<String> urlsList, String url) {
         FragmentVideoDetail fragmentVideoDetail = new FragmentVideoDetail();
@@ -65,6 +70,74 @@ public class FragmentVideoDetail extends Fragment {
 
     private void initData() {
         tvTest.setText(url);
+
+        // 初始化播放器
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+
+        surfaceHolder = svVideoPlayView.getHolder();
+//        surfaceHolder.setFixedSize(getActivity().getWindowManager().getDefaultDisplay()
+//                .getWidth(), getActivity().getWindowManager().getDefaultDisplay().getWidth()
+//                / 16 * 9);
+        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                openVideo();
+                player.start();
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+    }
+
+    public void openVideo(){
+        release();
+
+        try {
+            player = new IjkMediaPlayer();
+
+            player.setDataSource(url);
+            player.setDisplay(surfaceHolder);
+
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            player.setScreenOnWhilePlaying(true);
+            player.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void release() {
+        if (player != null) {
+            player.reset();
+            player.release();
+            player = null;
+//            AudioManager am = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+//            am.abandonAudioFocus(null);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        // activity 可见时尝试继续播放
+        if (player != null){
+            player.start();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        player.pause();
     }
 
     @Override

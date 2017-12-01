@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.bydauto.myviewpager"
-        minSdkVersion 19
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,9 +28,8 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:disklrucache:2.0.2'
-
     compile 'com.github.bumptech.glide:glide:3.7.0'
-
-//    compile 'com.github.chrisbanes.photoview:library:1.2.6'
-
+    //    compile 'com.github.chrisbanes.photoview:library:1.2.6'
+    implementation project(':ijkplayer-armv7a')
+    implementation project(':ijkplayer-java')
 }
