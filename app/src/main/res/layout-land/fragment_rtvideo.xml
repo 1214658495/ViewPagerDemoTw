@@ -11,85 +11,89 @@
         android:id="@+id/iv_rt_record_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="1"
         android:background="@drawable/btn_rt_record_video_selector"
-        app:layout_constraintTop_toTopOf="parent"
+        android:button="@null"
+        app:layout_constraintBottom_toTopOf="@id/btn_rt_capture_photo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_rt_capture_photo"
-        android:button="@null" />
+        app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
+        app:layout_constraintVertical_weight="1" />
 
     <ImageButton
         android:id="@+id/btn_rt_capture_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iv_rt_record_video"
         android:background="@drawable/btn_rt_capture_photo_selector"
-        app:layout_constraintRight_toLeftOf="@id/iv_rt_lock_video"/>
+        app:layout_constraintLeft_toLeftOf="@id/iv_rt_record_video"
+        app:layout_constraintRight_toRightOf="@id/iv_rt_record_video"
+        app:layout_constraintTop_toBottomOf="@id/iv_rt_record_video"
+        app:layout_constraintBottom_toTopOf="@id/iv_rt_lock_video"
+        app:layout_constraintVertical_weight="1" />
 
     <ImageButton
         android:id="@+id/iv_rt_lock_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/btn_rt_lock_video_selector"
-        app:layout_constraintLeft_toRightOf="@id/btn_rt_capture_photo"
-        app:layout_constraintRight_toLeftOf="@id/iv_rt_record_voice" />
+        app:layout_constraintLeft_toLeftOf="@id/btn_rt_capture_photo"
+        app:layout_constraintRight_toRightOf="@id/btn_rt_capture_photo"
+        app:layout_constraintTop_toBottomOf="@id/btn_rt_capture_photo"
+        app:layout_constraintBottom_toTopOf="@id/iv_rt_record_voice"
+        app:layout_constraintVertical_weight="1" />
 
     <CheckBox
         android:id="@+id/iv_rt_record_voice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/btn_rt_record_voice_selector"
-        app:layout_constraintLeft_toRightOf="@id/iv_rt_lock_video"
-        app:layout_constraintRight_toRightOf="parent"
-        android:button="@null"/>
+        android:button="@null"
+        app:layout_constraintLeft_toLeftOf="@id/iv_rt_lock_video"
+        app:layout_constraintRight_toRightOf="@id/iv_rt_lock_video"
+        app:layout_constraintTop_toBottomOf="@id/iv_rt_lock_video"
+        app:layout_constraintBottom_toBottomOf="@id/sv_recordVideo"
+        app:layout_constraintVertical_weight="1" />
 
     <SurfaceView
         android:id="@+id/sv_recordVideo"
-        android:layout_height="0dp"
         android:layout_width="0dp"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_15"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_rt_record_video"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_icRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
+        android:src="@mipmap/ic_logo_record"
         app:layout_constraintStart_toStartOf="@id/sv_recordVideo"
-        android:src="@mipmap/ic_logo_record"/>
+        app:layout_constraintTop_toTopOf="@id/sv_recordVideo" />
 
     <TextView
         android:id="@+id/tv_dataOfSv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/iv_icRecord"
+        android:gravity="center"
+        android:text="2017/12/01"
+        android:textSize="@dimen/sp_8"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
         app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
-        android:text="2017/12/01"
-        android:gravity="center"
-        android:textSize="@dimen/sp_8"/>
+        app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
 
     <TextView
         android:id="@+id/tv_timeOfSv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        app:layout_constraintTop_toTopOf="@id/iv_icRecord"
+        android:gravity="center"
+        android:text="16:36:40"
+        android:textSize="@dimen/sp_8"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
         app:layout_constraintLeft_toRightOf="@id/tv_dataOfSv"
-        android:text="16:36:40"
-        android:gravity="center"
-        android:textSize="@dimen/sp_8"/>
+        app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
 
 
 </android.support.constraint.ConstraintLayout>
