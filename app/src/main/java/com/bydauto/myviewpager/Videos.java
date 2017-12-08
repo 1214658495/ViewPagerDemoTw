@@ -2,6 +2,7 @@ package com.bydauto.myviewpager;
 
 public class Videos {
 
+//     "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4"
     public final static String[] videosThumbUrls = new String[]{
             "http://192.168.42.1/SD0/EVENT/2017-11-28-19-09-56.MP4",
             "http://192.168.42.1/SD0/EVENT/2017-11-28-19-11-56.MP4",

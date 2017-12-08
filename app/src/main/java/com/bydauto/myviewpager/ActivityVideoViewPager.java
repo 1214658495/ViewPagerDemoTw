@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bydauto.myviewpager.fragment.FragmentVideoDetail;
+import com.bydauto.myviewpager.fragment.FragmentVideoPreview;
 import com.bydauto.myviewpager.view.MyViewPager;
 
 import java.lang.ref.WeakReference;
@@ -41,10 +41,10 @@ public class ActivityVideoViewPager extends AppCompatActivity {
     TextView tvVpVideoIndex;
     @BindView(R.id.rl_bar_showVideoTitle)
     RelativeLayout rlBarShowVideoTitle;
-    @BindView(R.id.btn_share_VideoPreview)
-    ImageButton btnShareVideoPreview;
-    @BindView(R.id.btn_delete_VideoPreview)
-    ImageButton btnDeleteVideoPreview;
+//    @BindView(R.id.btn_share_VideoPreview)
+//    ImageButton btnShareVideoPreview;
+//    @BindView(R.id.btn_delete_VideoPreview)
+//    ImageButton btnDeleteVideoPreview;
     @BindView(R.id.btn_VideoZoom)
     ImageButton btnVideoZoom;
     @BindView(R.id.ll_bar_editVideo)
@@ -123,14 +123,10 @@ public class ActivityVideoViewPager extends AppCompatActivity {
         mHandler.sendMessageDelayed(msg, 3000);
     }
 
-    @OnClick({R.id.btn_back_to_videoGridview, R.id.btn_share_VideoPreview, R.id.btn_delete_VideoPreview, R.id.btn_VideoZoom})
+    @OnClick({R.id.btn_back_to_videoGridview, R.id.btn_VideoZoom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
-                break;
-            case R.id.btn_share_VideoPreview:
-                break;
-            case R.id.btn_delete_VideoPreview:
                 break;
             case R.id.btn_VideoZoom:
                 break;
@@ -146,7 +142,8 @@ public class ActivityVideoViewPager extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return FragmentVideoDetail.newInstance(urlsList, urlsList.get(position));
+//            return FragmentVideoDetail.newInstance(urlsList, urlsList.get(position));
+            return FragmentVideoPreview.newInstance(urlsList, urlsList.get(position));
         }
 
         @Override
