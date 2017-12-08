@@ -241,6 +241,7 @@ public class FragmentVideoPreview extends Fragment {
     };
 
     private void showToastTips(final String tips) {
+        // TODO: 2017/12/8  
 //        runOnUiThread(new Runnable() {
 //            @Override
 //            public void run() {
