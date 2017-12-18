@@ -32,7 +32,7 @@
     <RadioGroup
         android:id="@+id/rg_group"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_30"
         android:orientation="horizontal"
@@ -47,6 +47,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_height="match_parent"
             android:drawableTop="@drawable/btn_tab_realtimevideo_selector"
             android:text="实时影像"
             android:textSize="@dimen/sp_11" />
@@ -57,6 +58,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_height="match_parent"
             android:drawableTop="@drawable/btn_tab_playbacklist_selector"
             android:text="回放列表"
             android:textSize="@dimen/sp_11" />
@@ -67,6 +69,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_height="match_parent"
             android:drawableTop="@drawable/btn_tab_setting_selector"
             android:text="设置"
             android:textSize="@dimen/sp_11" />
@@ -84,15 +87,16 @@
 
     <com.bydauto.myviewpager.view.NoScrollViewPager
         android:id="@+id/vp_main"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_line_hor_tomenu">
 
     </com.bydauto.myviewpager.view.NoScrollViewPager>
-
+    <!--android:layout_marginStart="@dimen/dp_14"-->
+    <!--android:layout_marginEnd="@dimen/dp_14"-->
 </android.support.constraint.ConstraintLayout>

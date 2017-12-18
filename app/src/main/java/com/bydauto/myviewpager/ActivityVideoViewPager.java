@@ -51,6 +51,7 @@ public class ActivityVideoViewPager extends AppCompatActivity {
     LinearLayout llBarEditVideo;
 
     private ArrayList<String> urlsList;
+    private VideoDetailFragmentPagerAdapter mAdapter;
 
     private int currentItem;
     private static final int FADE_OUT = 1;
@@ -98,8 +99,9 @@ public class ActivityVideoViewPager extends AppCompatActivity {
         Intent intent = getIntent();
         urlsList = intent.getStringArrayListExtra("mUrlsList");
         currentItem = intent.getIntExtra("position", 0);
-
-        vpVideoViewPager.setAdapter(new VideoDetailFragmentPagerAdapter(getSupportFragmentManager()));
+        mAdapter = new VideoDetailFragmentPagerAdapter(getSupportFragmentManager());
+        vpVideoViewPager.setAdapter(mAdapter);
+//        vpVideoViewPager.setOffscreenPageLimit(0);
         vpVideoViewPager.setCurrentItem(currentItem);
         vpVideoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

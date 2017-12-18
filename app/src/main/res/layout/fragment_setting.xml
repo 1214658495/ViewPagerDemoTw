@@ -72,6 +72,7 @@
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_memoryCard_format"
         style="@style/ButtonTextStyle"
+        android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/memoryCard_format"
@@ -109,6 +110,7 @@
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_firmwareVersion"
         style="@style/ButtonTextStyle"
+        android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="固件版本"

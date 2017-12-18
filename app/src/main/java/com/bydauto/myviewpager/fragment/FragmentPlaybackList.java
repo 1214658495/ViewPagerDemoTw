@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -35,7 +36,6 @@ import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
 import com.bydauto.myviewpager.ActivityImagesViewPager;
-import com.bydauto.myviewpager.ActivityVideoViewPager;
 import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.ServerConfig;
@@ -108,6 +108,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     ImageView ivLineBlowMenuEdit;
     @BindView(R.id.ib_search)
     ImageButton ibSearch;
+    @BindView(R.id.fl_videoPlayPreview)
+    FrameLayout flVideoPlayPreview;
+
+//    FragmentVideoPlay fragmentVideoDetail;
+    FragmentVideoDetail fragmentVideoDetail;
 
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
@@ -291,14 +296,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             Intent intent;
             if (mAdapter.currentRadioButton == ServerConfig.RB_RECORD_VIDEO
                     || mAdapter.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
-                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
+//                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
+                fragmentVideoDetail = FragmentVideoDetail.newInstance(urlVideosList,urlVideosList.get(i));
+//                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
+                getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+//                flVideoPlayPreview.setClickable(true);
+//                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
+//                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
+
             } else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
                 intent.putStringArrayListExtra("mUrlsList", urlsList);
+                intent.putExtra("position", i);
+                startActivity(intent);
             }
-            intent.putExtra("position", i);
-            startActivity(intent);
+//            intent.putExtra("position", i);
+//            startActivity(intent);
         } else {
 //            checkbox初始状态默认为false。
             boolean isSelected = mAdapter.getIsSelectedAt(i);
