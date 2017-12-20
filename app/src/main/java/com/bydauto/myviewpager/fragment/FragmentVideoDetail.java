@@ -226,7 +226,6 @@ public class FragmentVideoDetail extends Fragment {
                 btnStop.setVisibility(View.VISIBLE);
             }
         } else {
-            // TODO: 2017/12/18 如下行可能为空
             rlBarShowVideoTitle.setVisibility(View.INVISIBLE);
             llBarEditVideo.setVisibility(View.INVISIBLE);
             if (btnStart.getVisibility() == View.VISIBLE) {
@@ -344,6 +343,9 @@ public class FragmentVideoDetail extends Fragment {
             Log.e(TAG, "Play Completed !");
 //            showToastTips("Play Completed !");
 //            finish();
+            // TODO: 2017/12/18 播放结束的逻辑交互处理
+            isVideoStop = true;
+            showControlBar();
         }
     };
 

@@ -1,8 +1,10 @@
 package com.bydauto.myviewpager.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -11,9 +13,11 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 import com.bydauto.myviewpager.R;
+import com.bydauto.myviewpager.connectivity.IFragmentListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -38,6 +42,8 @@ public class FragmentRTVideo extends Fragment {
 //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;
 
+    private IFragmentListener mListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
@@ -46,6 +52,18 @@ public class FragmentRTVideo extends Fragment {
         return view;
     }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        Log.e("CAM_Commands:", "onAttach");
+        super.onAttach(activity);
+        try {
+            mListener = (IFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement IFragmentListener");
+        }
+    }
 //    private void initData() {
 //
 //        // 初始化播放器
@@ -117,25 +135,28 @@ public class FragmentRTVideo extends Fragment {
 //        player.pause();
 //    }
 //
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        unbinder.unbind();
-//    }
-//
-//    @OnClick({R.id.iv_rt_record_video, R.id.btn_rt_capture_photo, R.id.iv_rt_lock_video, R.id.iv_rt_record_voice})
-//    public void onViewClicked(View view) {
-//        switch (view.getId()) {
-//            case R.id.iv_rt_record_video:
-//                break;
-//            case R.id.btn_rt_capture_photo:
-//                break;
-//            case R.id.iv_rt_lock_video:
-//                break;
-//            case R.id.iv_rt_record_voice:
-//                break;
-//                default:
-//                    break;
-//        }
-//    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick({R.id.iv_rt_record_video, R.id.btn_rt_capture_photo, R.id.iv_rt_lock_video, R.id.iv_rt_record_voice})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_rt_record_video:
+                break;
+            case R.id.btn_rt_capture_photo:
+                if (mListener != null){
+                    mListener.onFragmentAction(IFragmentListener.ACTION_PHOTO_START,null);
+                }
+                break;
+            case R.id.iv_rt_lock_video:
+                break;
+            case R.id.iv_rt_record_voice:
+                break;
+                default:
+                    break;
+        }
+    }
 }

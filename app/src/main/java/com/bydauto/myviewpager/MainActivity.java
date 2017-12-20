@@ -1,16 +1,26 @@
 package com.bydauto.myviewpager;
 
-//import android.app.Fragment;
+//import android.app.FragmentLoading;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.byd.lighttextview.LightButton;
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
+import com.bydauto.myviewpager.connectivity.IChannelListener;
+import com.bydauto.myviewpager.connectivity.IFragmentListener;
+import com.bydauto.myviewpager.fragment.FragmentLoading;
 import com.bydauto.myviewpager.fragment.FragmentPlaybackList;
 import com.bydauto.myviewpager.fragment.FragmentRTVideo;
 import com.bydauto.myviewpager.fragment.FragmentSetting;
@@ -27,7 +37,15 @@ import butterknife.OnClick;
 /**
  * @author byd_tw
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IChannelListener,IFragmentListener{
+    private static final String TAG = "MainActivity";
+
+    private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
+    //    private final static String KEY_NEVER_SHOW = "key_never_show";
+    private int mConnectivityType;
+    public SharedPreferences mPref;
+
+    public RemoteCam mRemoteCam;
 
     @BindView(R.id.rb_realTimeVideo)
     RadioButton rbRealTimeVideo;
@@ -41,19 +59,34 @@ public class MainActivity extends AppCompatActivity {
     NoScrollViewPager vpMain;
     @BindView(R.id.btn_back)
     LightButton btnBack;
-//    @BindView(R.id.btn_test)
+    @BindView(R.id.fl_all)
+    FrameLayout flAll;
+    //    @BindView(R.id.btn_test)
 //    LightButton btnTest;
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private List<Fragment> fragments;
+    private FragmentLoading fragmentLoading = new FragmentLoading();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        mPref = getPreferences(MODE_PRIVATE);
+        getPrefs(mPref);
+        initView();
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        mRemoteCam = new RemoteCam(this);
+        mRemoteCam.setChannelListener(this).setConnectivity(mConnectivityType)
+                .setWifiInfo(wifiManager.getConnectionInfo().getSSID().replace("\"", ""), getWifiIpAddr());
+
+        fragmentLoading.setRemoteCam(mRemoteCam);
+
         fragments = new ArrayList<>();
         fragments.add(new FragmentRTVideo());
         fragments.add(new FragmentPlaybackList());
@@ -87,11 +120,48 @@ public class MainActivity extends AppCompatActivity {
 //        vp.setAdapter(new MyPagerAdapter());
     }
 
+    private void initView() {
+        showFramentLoading();
+    }
+
+    private void showFramentLoading() {
+        if (null == fragmentLoading) {
+            fragmentLoading = new FragmentLoading();
+        }
+        getSupportFragmentManager().beginTransaction().replace(flAll.getId(),fragmentLoading).commitAllowingStateLoss();
+    }
+
+    private void getPrefs(SharedPreferences preferences) {
+        mConnectivityType = preferences.getInt(KEY_CONNECTIVITY_TYPE, RemoteCam
+                .CAM_CONNECTIVITY_WIFI_WIFI);
+//        neverShow = mPref.getBoolean(KEY_NEVER_SHOW, false);
+    }
+
+    public void putPrefs(SharedPreferences preferences) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(KEY_CONNECTIVITY_TYPE, mConnectivityType);
+//        editor.putBoolean(KEY_NEVER_SHOW, neverShow);
+        editor.commit();
+    }
+
+    private String getWifiIpAddr() {
+        WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        int ip = mgr.getConnectionInfo().getIpAddress();
+        return String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
+                >> 24);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        putPrefs(mPref);
+    }
+
     @OnClick(R.id.btn_back)
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
-                MyDialog myDialog = MyDialog.newInstance(0,"退出程序？");
+                MyDialog myDialog = MyDialog.newInstance(0, "退出程序？");
                 myDialog.show(getFragmentManager(), "back");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -111,6 +181,76 @@ public class MainActivity extends AppCompatActivity {
 //                break;
             default:
                 break;
+        }
+    }
+    private void removeFrament() {
+        getSupportFragmentManager().beginTransaction().remove(fragmentLoading).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mRemoteCam.stopSession();
+        finish();
+        Log.e(TAG, "kill the process to force fresh launch next time");
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    @Override
+    public void onChannelEvent(final int type, final Object param, final String... array) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (type & IChannelListener.MSG_MASK) {
+                    case IChannelListener.CMD_CHANNEL_MSG:
+                        handleCmdChannelEvent(type, param, array);
+                        return;
+//                    case IChannelListener.DATA_CHANNEL_MSG:
+//                        handleDataChannelEvent(type, param);
+//                        return;
+//                    case IChannelListener.STREAM_CHANNEL_MSG:
+//                        handleStreamChannelEvent(type, param);
+//                        return;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    private void handleCmdChannelEvent(int type, Object param, String... array) {
+//        if (type >= 80) {
+//            handleCmdChannelError(type, param);
+//            return;
+//        }
+
+        switch (type) {
+            case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        removeFrament();
+                    }
+                },1000);
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO:
+                Toast.makeText(getApplicationContext(),"拍照成功！",Toast.LENGTH_SHORT).show();
+                default:
+                    break;
+
+        }
+    }
+
+
+
+    @Override
+    public void onFragmentAction(int type, Object param, Integer... array) {
+        switch (type) {
+            case IFragmentListener.ACTION_PHOTO_START:
+                mRemoteCam.takePhoto();
+                break;
+                default:
+                    break;
         }
     }
 

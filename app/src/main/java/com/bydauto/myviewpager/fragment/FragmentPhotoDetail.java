@@ -2,7 +2,7 @@
 //
 //import android.os.Bundle;
 //import android.support.annotation.Nullable;
-//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentLoading;
 //import android.support.v4.view.PagerAdapter;
 //import android.support.v4.view.ViewPager;
 //import android.view.LayoutInflater;
@@ -24,7 +24,7 @@
 // * Created by byd_tw on 2017/11/1.
 // */
 //
-//public class FragmentPhotoDetail extends Fragment {
+//public class FragmentPhotoDetail extends FragmentLoading {
 //
 //    Unbinder unbinder;
 //    @BindView(R.id.vp_photoDetail)

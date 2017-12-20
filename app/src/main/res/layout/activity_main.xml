@@ -98,4 +98,11 @@
     </com.bydauto.myviewpager.view.NoScrollViewPager>
     <!--android:layout_marginStart="@dimen/dp_14"-->
     <!--android:layout_marginEnd="@dimen/dp_14"-->
+
+    <FrameLayout
+        android:id="@+id/fl_all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
