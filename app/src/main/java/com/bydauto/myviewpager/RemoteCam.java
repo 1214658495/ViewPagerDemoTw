@@ -505,6 +505,30 @@ public class RemoteCam
             }
         });
     }
+//add
+    public void startMic() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.startMic();
+            }
+        });
+    }
+//add
+    public void stopMic() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.stopMic();
+            }
+        });
+    }
 
     public void forceSplit() {
         worker.execute(new Runnable() {
@@ -532,6 +556,16 @@ public class RemoteCam
                 if (!connectToCmdChannel())
                     return;
                 mCmdChannel.appStatus();
+            }
+        });
+    }
+//madd;
+    public void micStatus() {
+        worker.execute(new Runnable() {
+            public void run() {
+                if (!connectToCmdChannel())
+                    return;
+                mCmdChannel.micStatus();
             }
         });
     }

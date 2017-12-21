@@ -29,7 +29,7 @@ public class FragmentLoading extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_loading, container, false);
+        View view = inflater.inflate(R.layout.layout_welcome, container, false);
         unbinder = ButterKnife.bind(this, view);
 //        initData();
         return view;

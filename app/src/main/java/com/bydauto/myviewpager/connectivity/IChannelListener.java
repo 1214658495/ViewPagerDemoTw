@@ -44,6 +44,8 @@ public interface IChannelListener {
     //    madd
     final static int CMD_CHANNEL_EVENT_SYNC_TIME = 0x2A;
     final static int CMD_CHANNEL_EVENT_TAKE_PHOTO = 0x2B;
+    final static int CMD_CHANNEL_EVENT_APP_STATE = 0x2C;
+    final static int CMD_CHANNEL_EVENT_MIC_STATE = 0x2D;
 
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;

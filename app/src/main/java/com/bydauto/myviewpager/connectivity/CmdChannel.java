@@ -287,6 +287,12 @@ public abstract class CmdChannel {
                 + ",\"msg_id\":" + AMBA_GET_SETTING + ",\"type\": \"app_status\" }");
     }
 
+    //madd
+    public synchronized boolean micStatus() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_GET_SETTING + ",\"type\": \"micphone\" }");
+    }
+
     public synchronized boolean listDir(String dir) {
         if (!checkSessionID())
             return false;
@@ -391,6 +397,17 @@ public abstract class CmdChannel {
     public synchronized boolean stopRecord() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_RECORD_STOP + "}");
+    }
+
+    //    madd
+    public synchronized boolean startMic() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
+                AMBA_SET_SETTING + ",\"type\":\"" + "micphone" + "\",\"param\":" + "\"on\"" + "}");
+    }
+    //    madd
+    public synchronized boolean stopMic() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
+                AMBA_SET_SETTING + ",\"type\":\"" + "micphone" + "\",\"param\":" + "\"off\"" + "}");
     }
 
     public synchronized boolean getRecordTime() {
@@ -542,6 +559,23 @@ public abstract class CmdChannel {
                     case AMBA_STOP_SESSION:
                         mSessionId = 0;
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_STOP_SESSION, mSessionId);
+                        break;
+                    //madd
+                    case AMBA_GET_SETTING:
+                        String type = parser.getString("type");
+                        str = parser.getString("param");
+                        switch (type) {
+                            case "app_status":
+                                boolean isRecord = "record".equalsIgnoreCase(str);
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE, isRecord);
+                                break;
+                            case "micphone":
+                                boolean isMicOn = "on".equalsIgnoreCase(str);
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE, isMicOn);
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     case AMBA_SET_SETTING:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SET_SETTING, parser);

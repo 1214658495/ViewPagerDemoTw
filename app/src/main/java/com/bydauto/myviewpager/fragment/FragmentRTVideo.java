@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 import com.bydauto.myviewpager.R;
+import com.bydauto.myviewpager.RemoteCam;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
 
 import butterknife.BindView;
@@ -25,28 +26,33 @@ import butterknife.Unbinder;
  */
 
 public class FragmentRTVideo extends Fragment {
-    @BindView(R.id.iv_rt_record_video)
-    CheckBox ivRtRecordVideo;
+
     @BindView(R.id.btn_rt_capture_photo)
     ImageButton btnRtCapturePhoto;
     @BindView(R.id.iv_rt_lock_video)
     ImageButton ivRtLockVideo;
-    @BindView(R.id.iv_rt_record_voice)
-    CheckBox ivRtRecordVoice;
     @BindView(R.id.sv_recordVideo)
+
     SurfaceView svRecordVideo;
     Unbinder unbinder;
 
-    private String url = "rtsp://192.168.42.1/live" ;
+    private String url = "rtsp://192.168.42.1/live";
 //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
 //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;
 
     private IFragmentListener mListener;
+    private CheckBox ivRtRecordVideo;
+    private CheckBox ivRtRecordVoice;
+    private RemoteCam mRemoteCam;
+    private boolean isRecord;
+    private boolean isMicOn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
+        ivRtRecordVideo = view.findViewById(R.id.iv_rt_record_video);
+        ivRtRecordVoice = view.findViewById(R.id.iv_rt_record_voice);
         unbinder = ButterKnife.bind(this, view);
 //        initData();
         return view;
@@ -64,7 +70,12 @@ public class FragmentRTVideo extends Fragment {
                     + " must implement IFragmentListener");
         }
     }
-//    private void initData() {
+
+    public void setRemoteCam(RemoteCam mRemoteCam) {
+        this.mRemoteCam = mRemoteCam;
+    }
+
+    //    private void initData() {
 //
 //        // 初始化播放器
 //        IjkMediaPlayer.loadLibrariesOnce(null);
@@ -145,18 +156,36 @@ public class FragmentRTVideo extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_rt_record_video:
+                if (mListener != null) {
+                    isRecord = !isRecord;
+                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
+                }
                 break;
             case R.id.btn_rt_capture_photo:
-                if (mListener != null){
-                    mListener.onFragmentAction(IFragmentListener.ACTION_PHOTO_START,null);
+                if (mListener != null) {
+                    mListener.onFragmentAction(IFragmentListener.ACTION_PHOTO_START, null);
                 }
                 break;
             case R.id.iv_rt_lock_video:
                 break;
             case R.id.iv_rt_record_voice:
+                if (mListener != null) {
+                    isMicOn =!isMicOn;
+                    mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+                }
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
+    }
+
+    public void setRecordState(boolean isOn) {
+        isRecord = isOn;
+        ivRtRecordVideo.setChecked(!isOn);
+    }
+
+    public void setMicState(boolean isOn) {
+        isMicOn = isOn;
+        ivRtRecordVoice.setChecked(!isOn);
     }
 }

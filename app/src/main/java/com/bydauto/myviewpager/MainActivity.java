@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,10 +33,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
 /**
  * @author byd_tw
  */
-public class MainActivity extends AppCompatActivity implements IChannelListener,IFragmentListener{
+public class MainActivity extends AppCompatActivity implements IChannelListener, IFragmentListener {
     private static final String TAG = "MainActivity";
 
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
@@ -69,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private List<Fragment> fragments;
     private FragmentLoading fragmentLoading = new FragmentLoading();
+    private FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
+//    private FragmentRTVideo fragmentRTVideo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +81,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
         mPref = getPreferences(MODE_PRIVATE);
         getPrefs(mPref);
-        initView();
+//        initView();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         mRemoteCam = new RemoteCam(this);
         mRemoteCam.setChannelListener(this).setConnectivity(mConnectivityType)
                 .setWifiInfo(wifiManager.getConnectionInfo().getSSID().replace("\"", ""), getWifiIpAddr());
-
-        fragmentLoading.setRemoteCam(mRemoteCam);
+        mRemoteCam.startSession();
 
         fragments = new ArrayList<>();
-        fragments.add(new FragmentRTVideo());
+//        fragments.add(new FragmentRTVideo());
+        fragmentRTVideo = new FragmentRTVideo();
+        fragmentRTVideo.setRemoteCam(mRemoteCam);
+        fragments.add(fragmentRTVideo);
         fragments.add(new FragmentPlaybackList());
         fragments.add(new FragmentSetting());
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
@@ -120,16 +125,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        vp.setAdapter(new MyPagerAdapter());
     }
 
-    private void initView() {
-        showFramentLoading();
-    }
+//    private void initView() {
+//        showFragmentLoading();
+//    }
 
-    private void showFramentLoading() {
-        if (null == fragmentLoading) {
-            fragmentLoading = new FragmentLoading();
-        }
-        getSupportFragmentManager().beginTransaction().replace(flAll.getId(),fragmentLoading).commitAllowingStateLoss();
-    }
+//    private void showFragmentLoading() {
+//        if (null == fragmentLoading) {
+//            fragmentLoading = new FragmentLoading();
+//        }
+//        getSupportFragmentManager().beginTransaction().replace(flAll.getId(), fragmentLoading).commitAllowingStateLoss();
+//    }
 
     private void getPrefs(SharedPreferences preferences) {
         mConnectivityType = preferences.getInt(KEY_CONNECTIVITY_TYPE, RemoteCam
@@ -183,9 +188,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
         }
     }
-    private void removeFrament() {
-        getSupportFragmentManager().beginTransaction().remove(fragmentLoading).commit();
-    }
 
     @Override
     public void onBackPressed() {
@@ -225,22 +227,35 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        }
 
         switch (type) {
+            case IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT:
+                String str = (String) param;
+                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                break;
+
             case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeFrament();
-                    }
-                },1000);
+                mRemoteCam.appStatus();
+                mRemoteCam.micStatus();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO:
-                Toast.makeText(getApplicationContext(),"拍照成功！",Toast.LENGTH_SHORT).show();
-                default:
-                    break;
+                Toast.makeText(getApplicationContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
+                boolean isRecord = (boolean) param;
+                Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
+                // TODO: 2017/12/20
+                fragmentRTVideo.setRecordState(isRecord);
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE:
+                boolean isMicOn = (boolean) param;
+                Log.e(TAG, "handleCmdChannelEvent: isMicOn = " + isMicOn);
+                // TODO: 2017/12/20
+                fragmentRTVideo.setMicState(isMicOn);
+                break;
+            default:
+                break;
 
         }
     }
-
 
 
     @Override
@@ -249,8 +264,25 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IFragmentListener.ACTION_PHOTO_START:
                 mRemoteCam.takePhoto();
                 break;
-                default:
-                    break;
+            case IFragmentListener.ACTION_RECORD_START:
+                boolean isRecord = (boolean) param;
+                if (isRecord) {
+                    mRemoteCam.startRecord();
+                } else {
+                    mRemoteCam.stopRecord();
+                }
+                break;
+            case IFragmentListener.ACTION_MIC_ON:
+                boolean isMicOn = (boolean) param;
+                if (isMicOn) {
+                    mRemoteCam.startMic();
+                } else {
+                    mRemoteCam.stopMic();
+                }
+                break;
+
+            default:
+                break;
         }
     }
 

@@ -35,6 +35,11 @@ public interface IFragmentListener {
     final static int ACTION_BC_SET_SETTING = 0x17;
     final static int ACTION_BC_GET_ALL_SETTINGS_DONE = 0x18;
     final static int ACTION_BC_SET_BITRATE = 0x19;
+
+    //    madd
+    final static int ACTION_MIC_ON = 0x1A;
+    final static int ACTION_MIC_OFF = 0x1B;
+
     //getram
     final static int ACTION_BC_SET_CLIENT_INFO = 0x1A;
     final static int ACTION_DISC_SPACE = 0x1B;
@@ -42,7 +47,6 @@ public interface IFragmentListener {
     final static int ACTION_APP_STATUS = 0x1D;
     final static int ACTION_DEVICE_INFO = 0x1E;
     final static int ACTION_CLOSE_BLE = 0x1F;
-
 
 
     /**
