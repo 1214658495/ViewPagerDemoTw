@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -59,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     NoScrollViewPager vpMain;
     @BindView(R.id.btn_back)
     LightButton btnBack;
-    @BindView(R.id.fl_all)
-    FrameLayout flAll;
+
     //    @BindView(R.id.btn_test)
 //    LightButton btnTest;
     //    @BindView(R.id.vp)
@@ -70,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private List<Fragment> fragments;
     private FragmentLoading fragmentLoading = new FragmentLoading();
     private FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
+    private FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
 //    private FragmentRTVideo fragmentRTVideo;
 
 
@@ -91,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
         fragments = new ArrayList<>();
 //        fragments.add(new FragmentRTVideo());
-        fragmentRTVideo = new FragmentRTVideo();
-        fragmentRTVideo.setRemoteCam(mRemoteCam);
+
+//        fragmentRTVideo.setRemoteCam(mRemoteCam);
         fragments.add(fragmentRTVideo);
-        fragments.add(new FragmentPlaybackList());
+        fragments.add(fragmentPlaybackList);
         fragments.add(new FragmentSetting());
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
 

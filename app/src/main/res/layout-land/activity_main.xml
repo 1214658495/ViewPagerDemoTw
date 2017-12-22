@@ -99,11 +99,6 @@
 
     </com.bydauto.myviewpager.view.NoScrollViewPager>
 
-    <FrameLayout
-        android:id="@+id/fl_all"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
