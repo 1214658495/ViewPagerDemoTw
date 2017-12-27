@@ -86,8 +86,21 @@
     <!--app:layout_constraintTop_toBottomOf="@+id/btn_back"-->
     <!--android:visibility="gone"/>-->
 
-    <com.bydauto.myviewpager.view.NoScrollViewPager
-        android:id="@+id/vp_main"
+    <!--<com.bydauto.myviewpager.view.NoScrollViewPager-->
+        <!--android:id="@+id/vp_main"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_marginEnd="@dimen/dp_100"-->
+        <!--android:layout_marginStart="@dimen/dp_30"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintLeft_toRightOf="@id/btn_back"-->
+        <!--app:layout_constraintTop_toTopOf="@id/btn_back">-->
+
+    <!--</com.bydauto.myviewpager.view.NoScrollViewPager>-->
+
+    <FrameLayout
+        android:id="@+id/fl_main"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/dp_100"
@@ -97,7 +110,7 @@
         app:layout_constraintLeft_toRightOf="@id/btn_back"
         app:layout_constraintTop_toTopOf="@id/btn_back">
 
-    </com.bydauto.myviewpager.view.NoScrollViewPager>
+    </FrameLayout>
 
 
 

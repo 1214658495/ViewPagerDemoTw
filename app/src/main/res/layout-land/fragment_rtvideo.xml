@@ -70,18 +70,8 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_logo_record"
         app:layout_constraintStart_toStartOf="@id/sv_recordVideo"
-        app:layout_constraintTop_toTopOf="@id/sv_recordVideo" />
-
-    <TextView
-        android:id="@+id/tv_dataOfSv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="2017/12/01"
-        android:textSize="@dimen/sp_8"
-        app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
-        app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
-        app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
+        app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_timeOfSv"
@@ -89,10 +79,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:gravity="center"
-        android:text="16:36:40"
+        android:text="00:00:00"
+        android:visibility="gone"
+        android:textColor="#f00"
         android:textSize="@dimen/sp_8"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
-        app:layout_constraintLeft_toRightOf="@id/tv_dataOfSv"
+        app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
         app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
 
     <ProgressBar

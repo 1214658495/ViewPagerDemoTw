@@ -32,6 +32,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_bg_settingtext" />
     <!--</RelativeLayout>-->
     <com.byd.lighttextview.LightButton
+        android:id="@+id/btn_default_setting"
         style="@style/ButtonTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -133,5 +134,15 @@
         app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion"
         android:src="@mipmap/line_settingpartdetail" />
 
+    <TextView
+        android:id="@+id/tv_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试横竖屏"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_11"
+        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
+        app:layout_constraintTop_toBottomOf="@id/btn_appVersion" />
 
 </android.support.constraint.ConstraintLayout>

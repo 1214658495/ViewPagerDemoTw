@@ -6,26 +6,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.byd.lighttextview.LightButton;
-import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import com.bydauto.myviewpager.connectivity.IChannelListener;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
-import com.bydauto.myviewpager.fragment.FragmentLoading;
 import com.bydauto.myviewpager.fragment.FragmentPlaybackList;
 import com.bydauto.myviewpager.fragment.FragmentRTVideo;
 import com.bydauto.myviewpager.fragment.FragmentSetting;
 import com.bydauto.myviewpager.view.MyDialog;
-import com.bydauto.myviewpager.view.NoScrollViewPager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private static final String TAG = "MainActivity";
 
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
+    @BindView(R.id.fl_main)
+    FrameLayout flMain;
     //    private final static String KEY_NEVER_SHOW = "key_never_show";
     private int mConnectivityType;
     public SharedPreferences mPref;
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     RadioButton rbSetting;
     @BindView(R.id.rg_group)
     RadioGroup rgGroup;
-    @BindView(R.id.vp_main)
-    NoScrollViewPager vpMain;
+    //    @BindView(R.id.vp_main)
+//    NoScrollViewPager vpMain;
     @BindView(R.id.btn_back)
     LightButton btnBack;
 
@@ -64,12 +65,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
-    private MyFragmentPagerAdapter myFragmentPagerAdapter;
+//    private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private List<Fragment> fragments;
-    private FragmentLoading fragmentLoading = new FragmentLoading();
-    private FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
-    private FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
-//    private FragmentRTVideo fragmentRTVideo;
+    private FragmentRTVideo fragmentRTVideo;
+    private FragmentPlaybackList fragmentPlaybackList;
+    private int seconds;
+    //    private FragmentRTVideo fragmentRTVideo;
+    private Handler mHandler = new Handler();
+    private Runnable runnable;
+    private String recordTime;
+    private Fragment fragment;
 
 
     @Override
@@ -88,52 +93,91 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 .setWifiInfo(wifiManager.getConnectionInfo().getSSID().replace("\"", ""), getWifiIpAddr());
         mRemoteCam.startSession();
 
-        fragments = new ArrayList<>();
+//        fragments = new ArrayList<>();
 //        fragments.add(new FragmentRTVideo());
 
 //        fragmentRTVideo.setRemoteCam(mRemoteCam);
-        fragments.add(fragmentRTVideo);
-        fragments.add(fragmentPlaybackList);
-        fragments.add(new FragmentSetting());
-        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
-
-        vpMain.setAdapter(myFragmentPagerAdapter);
+//        fragments.add(fragmentRTVideo);
+//        fragments.add(fragmentPlaybackList);
+//        fragments.add(new FragmentSetting());
+//        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
+//
+//        vpMain.setAdapter(myFragmentPagerAdapter);
         rgGroup.check(R.id.rb_realTimeVideo);
-
+        if (fragment == null) {
+            fragment = FragmentRTVideo.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(flMain.getId(),fragment).commitAllowingStateLoss();
+        }
+//        switchFragment(0);
         rgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.rb_realTimeVideo:
-                        vpMain.setCurrentItem(0, false);
+//                        switchFragment(0);
+                        fragment = FragmentRTVideo.newInstance();
                         break;
                     case R.id.rb_playbackList:
-                        vpMain.setCurrentItem(1, false);
+//                        vpMain.setCurrentItem(1, false);
+//                        switchFragment(1);
+                        fragment = FragmentPlaybackList.newInstance();
                         break;
                     case R.id.rb_setting:
-                        vpMain.setCurrentItem(2, false);
+//                        vpMain.setCurrentItem(2, false);
+//                        switchFragment(2);
+                        fragment = FragmentSetting.newInstance();
                         break;
                     default:
                         break;
                 }
+                if (fragment != null) {
+                    getSupportFragmentManager().beginTransaction().replace(flMain.getId(),fragment).commitAllowingStateLoss();
+                }
             }
         });
 
-        vpMain.setOffscreenPageLimit(2);
+//        vpMain.setOffscreenPageLimit(2);
 //        initData();
 //        vp.setAdapter(new MyPagerAdapter());
+
+//        runnable = new Runnable( ) {
+//            @Override
+//            public void run ( ) {
+//                fragmentRTVideo.getTime(++seconds);
+//                mHandler.postDelayed(this,1000);
+//                //postDelayed(this,2000)方法安排一个Runnable对象到主线程队列中
+//            }
+//        };
     }
 
-//    private void initView() {
-//        showFragmentLoading();
+//    public void switchFragment(int position) {
+//        //开启事务
+//        FragmentTransaction fragmentTransaction =
+//                getSupportFragmentManager().beginTransaction();
+//        //遍历集合
+//        for (int i = 0; i < fragments.size(); i++) {
+//            Fragment fragment = fragments.get(i);
+//            if (i == position) {
+//                //显示fragment
+//                if (fragment.isAdded()) {
+//                    //如果这个fragment已经被事务添加,显示
+//                    fragmentTransaction.show(fragment);
+//                } else {
+//                    //如果这个fragment没有被事务添加过,添加
+//                    fragmentTransaction.replace(flMain.getId(), fragment);
+//                }
+//            } else {
+//                //隐藏fragment
+//                if (fragment.isAdded()) {
+//                    //如果这个fragment已经被事务添加,隐藏
+//                    fragmentTransaction.hide(fragment);
+//                }
+//            }
+//        }
+//        //提交事务
+//        fragmentTransaction.commitAllowingStateLoss();
 //    }
 
-//    private void showFragmentLoading() {
-//        if (null == fragmentLoading) {
-//            fragmentLoading = new FragmentLoading();
-//        }
-//        getSupportFragmentManager().beginTransaction().replace(flAll.getId(), fragmentLoading).commitAllowingStateLoss();
-//    }
 
     private void getPrefs(SharedPreferences preferences) {
         mConnectivityType = preferences.getInt(KEY_CONNECTIVITY_TYPE, RemoteCam
@@ -194,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         mRemoteCam.stopSession();
         finish();
         Log.e(TAG, "kill the process to force fresh launch next time");
-        android.os.Process.killProcess(android.os.Process.myPid());
+        Process.killProcess(Process.myPid());
     }
 
     @Override
@@ -232,8 +276,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
 
             case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
+                mRemoteCam.getAllSettings();
                 mRemoteCam.appStatus();
                 mRemoteCam.micStatus();
+                mRemoteCam.getTotalFreeSpace();
+                mRemoteCam.getTotalFileCount();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO:
                 Toast.makeText(getApplicationContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
@@ -242,18 +289,30 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 boolean isRecord = (boolean) param;
                 Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
                 // TODO: 2017/12/20
-                fragmentRTVideo.setRecordState(isRecord);
+//                fragmentRTVideo.setRecordState(isRecord);
+//                fragmentRTVideo.setRecordState();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE:
                 boolean isMicOn = (boolean) param;
                 Log.e(TAG, "handleCmdChannelEvent: isMicOn = " + isMicOn);
                 // TODO: 2017/12/20
-                fragmentRTVideo.setMicState(isMicOn);
+//                fragmentRTVideo.setMicState(isMicOn);
                 break;
+            case IChannelListener.CMD_CHANNEL_EVENT_RECORD_TIME:
+                // TODO: 2017/12/25
+//                fragmentRTVideo.updateRecordTime((String) param);
+//                seconds = Integer.parseInt((String) param);
+//                mHandler.postDelayed(runnable,1000);
+//                Timer timer = new Timer();
+//                timer.schedule(new RecordTimeTask(), 1000);
             default:
                 break;
 
         }
+    }
+
+    public String getRecordTime() {
+        return recordTime;
     }
 
 
@@ -279,11 +338,20 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     mRemoteCam.stopMic();
                 }
                 break;
+            case IFragmentListener.ACTION_RECORD_TIME:
+                mRemoteCam.getRecordTime();
 
             default:
                 break;
         }
     }
+
+//    private class RecordTimeTask extends TimerTask {
+//        @Override
+//        public void run() {
+//            fragmentRTVideo.getTime(seconds + 1);
+//        }
+//    }
 
 
 

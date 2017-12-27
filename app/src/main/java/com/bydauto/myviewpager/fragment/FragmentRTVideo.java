@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,14 +50,13 @@ public class FragmentRTVideo extends Fragment {
 //    SurfaceView svRecordVideo;
 
     Unbinder unbinder;
-//    @BindView(R.id.sv_recordVideo)
+    //    @BindView(R.id.sv_recordVideo)
 //    SurfaceView svRecordVideo;
 //    @BindView(R.id.iv_icRecord)
 //    ImageView ivIcRecord;
-    @BindView(R.id.tv_dataOfSv)
-    TextView tvDataOfSv;
-    @BindView(R.id.tv_timeOfSv)
-    TextView tvTimeOfSv;
+
+    //    @BindView(R.id.tv_timeOfSv)
+//    TextView tvTimeOfSv;
     @BindView(R.id.LoadingView)
     ProgressBar LoadingView;
 
@@ -70,19 +71,65 @@ public class FragmentRTVideo extends Fragment {
     private CheckBox ivRtRecordVideo;
     private CheckBox ivRtRecordVoice;
     private SurfaceView svRecordVideo;
+    private TextView tvTimeOfSv;
+    private ImageView ivIcRecord;
+
     private RemoteCam mRemoteCam;
     private boolean isRecord;
     private boolean isMicOn;
     private Toast mToast;
+    private boolean mIsStopped;
+    private int seconds;
+
+    private Runnable runnable;
+    private Handler mHandler = new Handler();
+// {
+//        @Override
+//        public void handleMessage(Message msg) {
+////            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case 1:
+//
+//            }
+//            Bundle bundle = msg.getData();
+//            String key = bundle.getString("mTime");
+//            tvTimeOfSv.setText(key);
+//            mHandler.sendEmptyMessage()
+//        }
+//    };
+    private String timeStr;
+
+    public static FragmentRTVideo newInstance() {
+        FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
+
+        return fragmentRTVideo;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
         ivRtRecordVideo = view.findViewById(R.id.iv_rt_record_video);
         ivRtRecordVoice = view.findViewById(R.id.iv_rt_record_voice);
         svRecordVideo = view.findViewById(R.id.sv_recordVideo);
-        unbinder = ButterKnife.bind(this, view);
+        tvTimeOfSv = view.findViewById(R.id.tv_timeOfSv);
+//        tvTimeOfSv.setVisibility(View.VISIBLE);//test
+//        tvTimeOfSv.setText("xiaobo");
+        ivIcRecord = view.findViewById(R.id.iv_icRecord);
+//        ivIcRecord.setVisibility(View.VISIBLE);//test
+
         initData();
+
+        runnable = new Runnable( ) {
+            @Override
+            public void run ( ) {
+                tvTimeOfSv.setText(getTime(++seconds));
+                mHandler.postDelayed(this,1000);
+                //postDelayed(this,2000)方法安排一个Runnable对象到主线程队列中
+            }
+        };
+
         return view;
     }
 
@@ -114,7 +161,7 @@ public class FragmentRTVideo extends Fragment {
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
 
 //        if (mIsLiveStreaming) {
-//        mAVOptions.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
+        mAVOptions.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
 //        }
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
@@ -134,7 +181,7 @@ public class FragmentRTVideo extends Fragment {
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(svRecordVideo.getHolder());
 //            if (!mIsLiveStreaming) {
-            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
+//            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
 //            }
             return;
         }
@@ -201,6 +248,7 @@ public class FragmentRTVideo extends Fragment {
                     LoadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
+                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
@@ -320,78 +368,6 @@ public class FragmentRTVideo extends Fragment {
         }
     }
 
-
-    //    private void initData() {
-//
-//        // 初始化播放器
-//        IjkMediaPlayer.loadLibrariesOnce(null);
-//        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
-//
-//        surfaceHolder = svRecordVideo.getHolder();
-////        surfaceHolder.setFixedSize(getActivity().getWindowManager().getDefaultDisplay()
-////                .getWidth(), getActivity().getWindowManager().getDefaultDisplay().getWidth()
-////                / 16 * 9);
-//        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-//            @Override
-//            public void surfaceCreated(SurfaceHolder holder) {
-//                openVideo();
-//                player.start();
-//            }
-//
-//            @Override
-//            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-//
-//            }
-//
-//            @Override
-//            public void surfaceDestroyed(SurfaceHolder holder) {
-//
-//            }
-//        });
-//    }
-//
-//    public void openVideo(){
-//        release();
-//
-//        try {
-//            player = new IjkMediaPlayer();
-//
-//            player.setDataSource(url);
-//            player.setDisplay(surfaceHolder);
-//
-//            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//            player.setScreenOnWhilePlaying(true);
-//            player.prepareAsync();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void release() {
-//        if (player != null) {
-//            player.reset();
-//            player.release();
-//            player = null;
-////            AudioManager am = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-////            am.abandonAudioFocus(null);
-//        }
-//    }
-//
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        // activity 可见时尝试继续播放
-//        if (player != null){
-//            player.start();
-//        }
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        player.pause();
-//    }
-//
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -418,11 +394,18 @@ public class FragmentRTVideo extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_rt_record_video:
-//                if (isRecord) {
-//                    mMediaPlayer.pause();
-//                } else {
-//                    mMediaPlayer.start();
-//                }
+                if (isRecord) {
+                    showToastTips("关闭录像！");
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.stop();
+                        mMediaPlayer.reset();
+                    }
+                    mMediaPlayer = null;
+                } else {
+                    showToastTips("开启录像！");
+                    prepare();
+
+                }
                 if (mListener != null) {
                     isRecord = !isRecord;
                     mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
@@ -436,6 +419,11 @@ public class FragmentRTVideo extends Fragment {
             case R.id.iv_rt_lock_video:
                 break;
             case R.id.iv_rt_record_voice:
+                if (isMicOn) {
+                    showToastTips("关闭录音！");
+                } else {
+                    showToastTips("开启录像！");
+                }
                 if (mListener != null) {
                     isMicOn = !isMicOn;
                     mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
@@ -455,4 +443,57 @@ public class FragmentRTVideo extends Fragment {
         isMicOn = isOn;
         ivRtRecordVoice.setChecked(!isOn);
     }
+
+    public void updateRecordTime(String time) {
+
+        int second = Integer.parseInt(time);
+        getTime(second);
+//        tvTimeOfSv.setVisibility(View.VISIBLE);
+//        ivIcRecord.setVisibility(View.VISIBLE);
+
+//        Timer timer = new Timer();
+//        timer.schedule(new RecordTimeTask(), 1000);
+        mHandler.postDelayed(runnable,1000);
+
+    }
+
+    public String getTime(int second) {
+        seconds = second;
+        int minute = second / 60;
+        int hour = minute / 60;
+        second -= minute * 60;
+        minute -= hour * 60;
+        timeStr = String.format("%02d:%02d:%02d", hour, minute, second);
+        if (tvTimeOfSv.getVisibility() != View.VISIBLE) {
+            tvTimeOfSv.setVisibility(View.VISIBLE);
+            ivIcRecord.setVisibility(View.VISIBLE);
+            tvTimeOfSv.setText(timeStr);
+        }
+        return timeStr;
+//
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                tvTimeOfSv.setVisibility(View.VISIBLE);
+//                ivIcRecord.setVisibility(View.VISIBLE);
+//                Log.e(TAG, "getTime: tvTimeOfSv.setVisibility");
+//                tvTimeOfSv.setText(timeStr);
+//            }
+//        });
+
+    }
+
+
+//    private class RecordTimeTask extends TimerTask {
+//        @Override
+//        public void run() {
+//            String mTime = getTime(++seconds);
+//            Message msg = new Message();
+//            Bundle bundle = new Bundle();
+//            bundle.putString("mTime", mTime);
+//            msg.setData(bundle);
+//            mHandler.sendMessage(msg);
+//        }
+//    }
+
 }

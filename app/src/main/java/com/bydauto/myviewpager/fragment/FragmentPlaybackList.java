@@ -127,6 +127,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private ArrayList<String> selectedUrlsList;
     private ArrayList<Integer> selectedIntsList;
 
+    public static FragmentPlaybackList newInstance() {
+        FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
+
+        return fragmentPlaybackList;
+    }
 
     @Nullable
     @Override
@@ -280,6 +285,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onPause() {
         super.onPause();
         mAdapter.fluchCache();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

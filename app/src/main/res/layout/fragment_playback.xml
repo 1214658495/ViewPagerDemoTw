@@ -4,26 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginEnd="@dimen/x40"-->
-    <!--android:layout_marginStart="@dimen/x40"-->
-    <!--android:orientation="vertical"-->
-    <!--android:background="@mipmap/bg_gridview">-->
-    <!---->
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_menu_edit"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
     <RadioGroup
         android:id="@+id/rg_groupDetail"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_30"
-        android:gravity="center"
         android:layout_marginEnd="@dimen/dp_30"
         android:layout_marginStart="@dimen/dp_16"
+        android:gravity="center"
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/ib_search"
@@ -43,8 +30,8 @@
         <com.byd.lighttextview.LightRadioButton
             android:id="@+id/rb_lockvideo"
             style="@style/RadioButtonStyle"
-            android:layout_height="match_parent"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="锁定视频"
@@ -53,8 +40,8 @@
         <com.byd.lighttextview.LightRadioButton
             android:id="@+id/rb_capturephoto"
             style="@style/RadioButtonStyle"
-            android:layout_height="match_parent"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="抓拍照片"
@@ -82,8 +69,8 @@
         android:visibility="invisible"
 
         app:layout_constraintBottom_toBottomOf="@id/rg_groupDetail"
-        app:layout_constraintStart_toStartOf="@id/rg_groupDetail"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/rg_groupDetail"
         app:layout_constraintTop_toTopOf="@id/rg_groupDetail">
 
         <com.byd.lighttextview.LightTextView
@@ -100,8 +87,8 @@
             style="@style/ButtonSingleStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_10"
+            android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
             android:text="@string/cancel"
             android:textSize="@dimen/sp_9" />
@@ -162,24 +149,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
         android:src="@mipmap/line_hor_tomenu"
-        app:layout_constraintTop_toBottomOf="@+id/ll_editItemBar" />
+        app:layout_constraintTop_toBottomOf="@id/ll_editItemBar"
+        app:layout_constraintBottom_toTopOf="@id/gv_dataList"/>
 
     <!--android:layout_height="@dimen/dp_356"-->
     <GridView
         android:id="@+id/gv_dataList"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/dp_70"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_70"
         android:horizontalSpacing="@dimen/dp_8"
         android:numColumns="auto_fit"
         android:scrollbarStyle="outsideInset"
         android:scrollbarThumbVertical="@drawable/myscrollbar"
         android:stretchMode="columnWidth"
         android:verticalSpacing="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@+id/iv_line_blowMenuEdit">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_line_blowMenuEdit">
 
     </GridView>
 
@@ -187,11 +175,10 @@
         android:id="@+id/fl_videoPlayPreview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/gv_dataList"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
     <!--</LinearLayout>-->
