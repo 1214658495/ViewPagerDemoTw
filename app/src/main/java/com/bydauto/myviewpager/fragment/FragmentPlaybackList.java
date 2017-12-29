@@ -1,5 +1,6 @@
 package com.bydauto.myviewpager.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -38,9 +39,11 @@ import com.byd.lighttextview.LightTextView;
 import com.bydauto.myviewpager.ActivityImagesViewPager;
 import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.R;
+import com.bydauto.myviewpager.RemoteCam;
 import com.bydauto.myviewpager.ServerConfig;
 import com.bydauto.myviewpager.Videos;
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
+import com.bydauto.myviewpager.connectivity.IFragmentListener;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.jakewharton.disklrucache.DiskLruCache;
 
@@ -127,10 +130,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private ArrayList<String> selectedUrlsList;
     private ArrayList<Integer> selectedIntsList;
 
+    private RemoteCam mRemoteCam;
+    private String mPWD;
+    private IFragmentListener mListener;
+
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
 
         return fragmentPlaybackList;
+    }
+
+    public void setRemoteCam(RemoteCam mRemoteCam) {
+        Log.e(TAG, "setRemoteCam: "+ this.mRemoteCam);
+        this.mRemoteCam = mRemoteCam;
     }
 
     @Nullable
@@ -138,29 +150,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
-        initdata();
+        initData();
         return view;
 
     }
 
-    private void initdata() {
+    private void initData() {
+        if (mAdapter == null) {
+//            mPWD = mRemoteCam.videoFolder();
+            mPWD = "/tmp/SD0/NORMAL";
+            listDirContents(mPWD);
+        }
         urlsList = new ArrayList<>();
         urlVideosList = new ArrayList<>();
         selectedUrlsList = new ArrayList<>();
         Collections.addAll(urlsList, Images.imageThumbUrls);
         Collections.addAll(urlVideosList, Videos.videosThumbUrls);
-        //新建fragment集合对象，传递给FragmentPagerAdapter
-//        fragments = new ArrayList<>();
-//        fragments.add(new FragmentVideoDetail());
-//        fragments.add(new FragmentVideoDetail());
-//        fragments.add(new FragmentPhotoDetail());
-//        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
-//
-//        vpItemPreview.setOffscreenPageLimit(2);
-//        vpItemPreview.setAdapter(myFragmentPagerAdapter);
-
-//        WindowManager manager = getActivity().getWindowManager();
-//        Display display = manager.getDefaultDisplay();
 
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -241,6 +246,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         mGridViewList.setOnItemLongClickListener(this);
     }
 
+    private void listDirContents(String psd) {
+        if (psd != null) {
+            mListener.onFragmentAction(IFragmentListener.ACTION_FS_LS, psd);
+        }
+    }
+
     //存放计算后的单元格相关信息
     class ColumnInfo {
         //单元格宽度。
@@ -279,6 +290,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         colInfo.width = width - ((colCount + 1) * padding) / colCount;
 
         return colInfo;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (IFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement IFragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override

@@ -78,6 +78,10 @@ public class RemoteCam
     private String mWifiHostURL;
     private String mSDCardDirectory;
 
+    private String mVideoFolder;
+    private String mEventFolder;
+    private String mPhotoFolder;
+
     private int    mMediaInfoStep;
     private String mMediaInfoReply;
 
@@ -659,6 +663,18 @@ public class RemoteCam
 //        AmbaStreamSource.stopWifi();
     }
 
+    public String videoFolder() {
+        return mVideoFolder;
+    }
+
+    public String eventFolder() {
+        return mEventFolder;
+    }
+
+    public String photoFolder() {
+        return mPhotoFolder;
+    }
+
     //--getram
     public void setClientInfo() {
         mCmdChannel.setClntInfo("TCP", mWifiIpAddr);
@@ -745,7 +761,7 @@ public class RemoteCam
         querySessionHolder_flag = Flag;
     }
 
-//    @Override
+/*//    @Override
 //    public void onStreamViewEvent(int event) {
 //        int type;
 //        switch (event) {
@@ -760,7 +776,7 @@ public class RemoteCam
 //                break;
 //        }
 //        mListener.onChannelEvent(type, null);
-//    }
+//    }*/
 
     public void onChannelEvent(int type, Object param, String...array) {
         JSONObject parser;
@@ -811,7 +827,7 @@ public class RemoteCam
             case IChannelListener.CMD_CHANNEL_EVENT_GET_DEVINFO:
                 try {
                     parser = (JSONObject)param;
-                    if (mSDCardDirectory == null) {
+                    /*if (mSDCardDirectory == null) {
                         if (parser.has("media_folder")) {
                             String val = parser.getString("media_folder");
                             val = val.substring(0, val.length()-1);
@@ -822,7 +838,34 @@ public class RemoteCam
                         }
                         //Log.e(TAG, "SD directory: " + mSDCardDirectory);
                         break;
+                    }*/
+
+                    if (mVideoFolder == null) {
+//                        if (parser.has("video_folder")) {
+                        if (parser.has("media_folder")) {
+                            String val = parser.getString("media_folder");
+                            mVideoFolder = val;
+                        }
+                        // break;
                     }
+                    // ������Ƶ·��
+                    if (mEventFolder == null) {
+                        if (parser.has("event_folder")) {
+                            String val = parser.getString("event_folder");
+                            mEventFolder = val;
+                        }
+                        // break;
+                    }
+                    // ���·��
+                    if (mPhotoFolder == null) {
+                        if (parser.has("photo_folder")) {
+                            String val = parser.getString("photo_folder");
+                            mPhotoFolder = val;
+//                            mPhotoFolder = "/tmp/SD0/PHOTO";
+                        }
+                        // break;
+                    }
+
                     Iterator<?> keys = parser.keys();
                     while (keys.hasNext()) {
                         String key = (String)keys.next();

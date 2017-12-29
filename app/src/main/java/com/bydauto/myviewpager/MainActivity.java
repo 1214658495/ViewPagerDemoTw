@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //    private ArrayList<ImageView> imageLists;
 //    private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private List<Fragment> fragments;
-    private FragmentRTVideo fragmentRTVideo;
-    private FragmentPlaybackList fragmentPlaybackList;
+    private static FragmentRTVideo fragmentRTVideo = FragmentRTVideo.newInstance();
+    private static FragmentPlaybackList fragmentPlaybackList = FragmentPlaybackList.newInstance();
+    private static FragmentSetting fragmentSetting = FragmentSetting.newInstance();
     private int seconds;
     //    private FragmentRTVideo fragmentRTVideo;
     private Handler mHandler = new Handler();
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
 //        fragments = new ArrayList<>();
 //        fragments.add(new FragmentRTVideo());
-
+            fragmentPlaybackList.setRemoteCam(mRemoteCam);
 //        fragmentRTVideo.setRemoteCam(mRemoteCam);
 //        fragments.add(fragmentRTVideo);
 //        fragments.add(fragmentPlaybackList);
@@ -105,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        vpMain.setAdapter(myFragmentPagerAdapter);
         rgGroup.check(R.id.rb_realTimeVideo);
         if (fragment == null) {
-            fragment = FragmentRTVideo.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(flMain.getId(),fragment).commitAllowingStateLoss();
+            fragment = fragmentRTVideo;
+            getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
         }
 //        switchFragment(0);
         rgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -115,23 +116,24 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 switch (i) {
                     case R.id.rb_realTimeVideo:
 //                        switchFragment(0);
-                        fragment = FragmentRTVideo.newInstance();
+
+                        fragment = fragmentRTVideo;
                         break;
                     case R.id.rb_playbackList:
 //                        vpMain.setCurrentItem(1, false);
 //                        switchFragment(1);
-                        fragment = FragmentPlaybackList.newInstance();
+                        fragment = fragmentPlaybackList;
                         break;
                     case R.id.rb_setting:
 //                        vpMain.setCurrentItem(2, false);
 //                        switchFragment(2);
-                        fragment = FragmentSetting.newInstance();
+                        fragment = fragmentSetting;
                         break;
                     default:
                         break;
                 }
                 if (fragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(flMain.getId(),fragment).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
                 }
             }
         });
@@ -149,34 +151,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //            }
 //        };
     }
-
-//    public void switchFragment(int position) {
-//        //开启事务
-//        FragmentTransaction fragmentTransaction =
-//                getSupportFragmentManager().beginTransaction();
-//        //遍历集合
-//        for (int i = 0; i < fragments.size(); i++) {
-//            Fragment fragment = fragments.get(i);
-//            if (i == position) {
-//                //显示fragment
-//                if (fragment.isAdded()) {
-//                    //如果这个fragment已经被事务添加,显示
-//                    fragmentTransaction.show(fragment);
-//                } else {
-//                    //如果这个fragment没有被事务添加过,添加
-//                    fragmentTransaction.replace(flMain.getId(), fragment);
-//                }
-//            } else {
-//                //隐藏fragment
-//                if (fragment.isAdded()) {
-//                    //如果这个fragment已经被事务添加,隐藏
-//                    fragmentTransaction.hide(fragment);
-//                }
-//            }
-//        }
-//        //提交事务
-//        fragmentTransaction.commitAllowingStateLoss();
-//    }
 
 
     private void getPrefs(SharedPreferences preferences) {
@@ -289,22 +263,27 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 boolean isRecord = (boolean) param;
                 Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
                 // TODO: 2017/12/20
-//                fragmentRTVideo.setRecordState(isRecord);
+                fragmentRTVideo.setRecordState(isRecord);
 //                fragmentRTVideo.setRecordState();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE:
                 boolean isMicOn = (boolean) param;
                 Log.e(TAG, "handleCmdChannelEvent: isMicOn = " + isMicOn);
                 // TODO: 2017/12/20
-//                fragmentRTVideo.setMicState(isMicOn);
+                fragmentRTVideo.setMicState(isMicOn);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_TIME:
                 // TODO: 2017/12/25
-//                fragmentRTVideo.updateRecordTime((String) param);
+                fragmentRTVideo.updateRecordTime((String) param);
 //                seconds = Integer.parseInt((String) param);
 //                mHandler.postDelayed(runnable,1000);
 //                Timer timer = new Timer();
 //                timer.schedule(new RecordTimeTask(), 1000);
+            case IChannelListener.CMD_CHANNEL_EVENT_START_LS:
+                // TODO: 2017/12/27 开始发送获取视频的列表，需做刷新或提示
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_LS:
+                break;
             default:
                 break;
 
@@ -340,57 +319,14 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IFragmentListener.ACTION_RECORD_TIME:
                 mRemoteCam.getRecordTime();
+                break;
+            case IFragmentListener.ACTION_FS_LS:
+                mRemoteCam.listDir((String) param);
+                break;
 
             default:
                 break;
         }
     }
 
-//    private class RecordTimeTask extends TimerTask {
-//        @Override
-//        public void run() {
-//            fragmentRTVideo.getTime(seconds + 1);
-//        }
-//    }
-
-
-
-
-    /*private void initData() {
-        int[] imageResIDs = {R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round, R.mipmap.ic_launcher};
-        imageLists = new ArrayList<>();
-        for (int imageResID : imageResIDs) {
-            ImageView imageView = new ImageView(this);
-            imageView.setBackgroundResource(imageResID);
-            imageLists.add(imageView);
-        }
-    }*/
-
-
-   /* public class MyPagerAdapter extends PagerAdapter {
-
-
-        @Override
-        public int getCount() {
-            return imageLists.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View com.bydauto.myviewpager.view, Object object) {
-            return com.bydauto.myviewpager.view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(imageLists.get(position));
-            return imageLists.get(position);
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-    }*/
 }
