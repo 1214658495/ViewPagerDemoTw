@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byd.lighttextview.LightButton;
@@ -38,6 +39,7 @@ import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
 import com.bydauto.myviewpager.ActivityImagesViewPager;
 import com.bydauto.myviewpager.Images;
+import com.bydauto.myviewpager.Model;
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.RemoteCam;
 import com.bydauto.myviewpager.ServerConfig;
@@ -46,6 +48,10 @@ import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.jakewharton.disklrucache.DiskLruCache;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -60,6 +66,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,7 +121,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.fl_videoPlayPreview)
     FrameLayout flVideoPlayPreview;
 
-//    FragmentVideoPlay fragmentVideoDetail;
+    //    FragmentVideoPlay fragmentVideoDetail;
     FragmentVideoDetail fragmentVideoDetail;
 
     private List<Fragment> fragments;
@@ -134,6 +141,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private String mPWD;
     private IFragmentListener mListener;
 
+    private ArrayList<Model> mPlayLists;
+    public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
+
+
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
 
@@ -141,8 +152,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
     public void setRemoteCam(RemoteCam mRemoteCam) {
-        Log.e(TAG, "setRemoteCam: "+ this.mRemoteCam);
+        Log.e(TAG, "setRemoteCam: " + this.mRemoteCam);
         this.mRemoteCam = mRemoteCam;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -160,6 +178,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            mPWD = mRemoteCam.videoFolder();
             mPWD = "/tmp/SD0/NORMAL";
             listDirContents(mPWD);
+        } else {
+            mGridViewList.setAdapter(mAdapter);
         }
         urlsList = new ArrayList<>();
         urlVideosList = new ArrayList<>();
@@ -192,8 +212,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.rb_recordvideo:
-                        mAdapter.currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
+                        currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
                         mGridViewList.setNumColumns(1);
+                        showRecordList();
 //                        mAdapter.notifyDataSetChanged();
 //                        if (mAdapter != null) {
 //                            mAdapter.clear();
@@ -203,8 +224,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                        vpItemPreview.setCurrentItem(0, false);
                         break;
                     case R.id.rb_lockvideo:
-                        mAdapter.currentRadioButton = ServerConfig.RB_LOCK_VIDEO;
+                        currentRadioButton = ServerConfig.RB_LOCK_VIDEO;
                         mGridViewList.setNumColumns(1);
+                        showLockVideoList();
 //                        mAdapter.notifyDataSetChanged();
 //                        if (mAdapter != null) {
 //                            mAdapter.clear();
@@ -214,13 +236,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                        vpItemPreview.setCurrentItem(1, false);
                         break;
                     case R.id.rb_capturephoto:
-                        mAdapter.currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
+                        currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
 //                        mGridViewList.setNumColumns(3);
 
                         ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 300, 12);
                         int rowNum = mGridViewList.getCount() % colInfo.countInRow == 0 ? mGridViewList.getCount() / colInfo.countInRow : mGridViewList.getCount() / colInfo.countInRow + 1;
 //                        mGridViewList.setLayoutParams(new ConstraintLayout.LayoutParams(screenWidth,rowNum*colInfo.width+(rowNum-1)*2));
                         mGridViewList.setNumColumns(colInfo.countInRow);
+                        showCapturePhotoList();
 //                        mGridViewList.setHorizontalSpacing();
 //                        if (mAdapter != null) {
 //                            mAdapter.clear();
@@ -239,8 +262,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
         });
 
-        mAdapter = new PhotoWallAdapter(getContext(), 0, Images.imageThumbUrls, mGridViewList);
-        mGridViewList.setAdapter(mAdapter);
+//        mAdapter = new PhotoWallAdapter(getContext(), 0, Images.imageThumbUrls, mGridViewList);
+//        mGridViewList.setAdapter(mAdapter);
+
         mGridViewList.setNumColumns(1);
         mGridViewList.setOnItemClickListener(this);
         mGridViewList.setOnItemLongClickListener(this);
@@ -252,12 +276,64 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
     }
 
+    public void updateDirContents(JSONObject parser) {
+        ArrayList<Model> models = new ArrayList<Model>();
+
+        try {
+            JSONArray contents = parser.getJSONArray("listing");
+
+            for (int i = 0; i < contents.length(); i++) {
+                models.add(new Model(contents.getJSONObject(i).toString()));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        Collections.sort(models, new order());
+        mPlayLists = models;
+        mAdapter = new PhotoWallAdapter(getActivity(), 0, mPlayLists, mGridViewList);
+        mGridViewList.setAdapter(mAdapter);
+//        mAdapter = new DentryAdapter(models);
+//        showDirContents();
+    }
+
+    private void showRecordList() {
+        if (mAdapter != null) {
+            mAdapter.clear();
+            mAdapter.cancelAllTasks();
+        }
+        mPWD = "/tmp/SD0/NORMAL";
+        listDirContents(mPWD);
+    }
+
+    private void showLockVideoList() {
+        if (mAdapter != null) {
+            mAdapter.clear();
+            mAdapter.cancelAllTasks();
+        }
+        mPWD = "/tmp/SD0/EVENT";
+        listDirContents(mPWD);
+    }
+
+    private void showCapturePhotoList(){
+        if (mAdapter != null) {
+            mAdapter.clear();
+            mAdapter.cancelAllTasks();
+        }
+        mPWD = "/tmp/SD0/PHOTO";
+        listDirContents(mPWD);
+
+    }
+
+
+
     //存放计算后的单元格相关信息
     class ColumnInfo {
         //单元格宽度。
         public int width = 0;
         //每行所能容纳的单元格数量。
         public int countInRow = 0;
+        //madd单元格高度。
+        public int height = 0;
     }
 
     /**
@@ -288,7 +364,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         colInfo.countInRow = colCount;
         //计算出每行的间距总宽度，并根据单元格的数量重新调整单元格的宽度
         colInfo.width = width - ((colCount + 1) * padding) / colCount;
-
+//        add
+        colInfo.height = width - ((colCount + 1) * padding) / colCount;
         return colInfo;
     }
 
@@ -331,10 +408,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isMultiChoose) {
             Intent intent;
-            if (mAdapter.currentRadioButton == ServerConfig.RB_RECORD_VIDEO
-                    || mAdapter.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO
+                    || currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
 //                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
-                fragmentVideoDetail = FragmentVideoDetail.newInstance(urlVideosList,urlVideosList.get(i));
+                fragmentVideoDetail = FragmentVideoDetail.newInstance(urlVideosList, urlVideosList.get(i));
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
@@ -378,7 +455,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             rgGroupDetail.setVisibility(View.INVISIBLE);
             ibSearch.setVisibility(View.INVISIBLE);
 //            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
-            switch (mAdapter.currentRadioButton) {
+            switch (currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
                     tvEditNav.setText("记录视频");
                     break;
@@ -449,13 +526,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
 
+    private class order implements Comparator<Model> {
+
+        @Override
+        public int compare(Model lhs, Model rhs) {
+            return rhs.getName().compareTo(lhs.getName());
+        }
+
+    }
+
 
     /**
      * GridView的适配器，负责异步从网络上下载图片展示在照片墙上。
      *
      * @author guolin
      */
-    public class PhotoWallAdapter extends ArrayAdapter<String> {
+    public class PhotoWallAdapter extends ArrayAdapter<Model> {
         private static final String TAG = "PhotoWallAdapter";
 
         /**
@@ -483,13 +569,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          */
         private int mItemHeight = 0;
 
-        public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
+//        public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
 
         private SparseBooleanArray isSelectedMap;
+        private ArrayList<Model> mArrayList;
 
-        public PhotoWallAdapter(Context context, int textViewResourceId, String[] objects,
+        public PhotoWallAdapter(Context context, int textViewResourceId, ArrayList<Model> arrayList,
                                 GridView photoWall) {
-            super(context, textViewResourceId, objects);
+            super(context, textViewResourceId, arrayList);
+            mArrayList = arrayList;
             mPhotoWall = photoWall;
             isSelectedMap = new SparseBooleanArray();
             taskCollection = new HashSet<BitmapWorkerTask>();
@@ -520,7 +608,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            String url = getItem(position);
+//            String url = getItem(position);
+            Model model = getItem(position);
 //            Log.e(TAG, "getView: url" + url);
 //            Log.e(TAG, "getView: currentRadioButton" + currentRadioButton);
             View view;
@@ -536,6 +625,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             } else {
                 view = convertView;
             }
+            TextView nameView = view.findViewById(R.id.tv_title);
+            nameView.setText(model.getName());
+
 
             LightCheckBox cbMuliChoose = view.findViewById(R.id.cb_cbx);
             if (isMultiChoose) {
@@ -543,7 +635,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 cbMuliChoose.setChecked(getIsSelectedAt(position));
 //                如下怎么实现还是没理解
                 // TODO: 2017/11/29  如下怎么实现还是没理解
-                if (mAdapter.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                     if (getIsSelectedAt(position)) {
                         view.setBackgroundColor(Color.parseColor("#1CC9FE"));
                     } else {
@@ -553,10 +645,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             } else {
                 cbMuliChoose.setVisibility(View.INVISIBLE);
 //                当按下取消后，isMultiChoose为falae了，所以执行下面。
-                if (mAdapter.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                     view.setBackgroundColor(Color.TRANSPARENT);
                 }
             }
+
+            String url;
+            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                url = "";
+            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                url = "";
+            } else {
+//                "http://192.168.42.1/SD0/PHOTO/2017-12-20-23-14-0100.JPG"
+                url = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" +
+                        model.getName();
+            }
+
 //		final ImageView imageView ;= com.bydauto.myviewpager.view.findViewById(R.id.photo);
             ImageView imageView;
 
@@ -807,9 +911,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 HttpURLConnection urlConnection = null;
                 BufferedOutputStream out = null;
                 BufferedInputStream in = null;
+                Bitmap bitmap;
                 try {
                     final URL url = new URL(urlString);
                     urlConnection = (HttpURLConnection) url.openConnection();
+
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+//                    options.inSampleSize = 18;  //16-free 2.3M
+//                    bitmap = BitmapFactory.decodeStream(urlConnection.getInputStream(), null, options);
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//                    InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
+//                    in = new BufferedInputStream(inputimage, 8 * 1024);
+
                     in = new BufferedInputStream(urlConnection.getInputStream(), 8 * 1024);
                     out = new BufferedOutputStream(outputStream, 8 * 1024);
                     int b;

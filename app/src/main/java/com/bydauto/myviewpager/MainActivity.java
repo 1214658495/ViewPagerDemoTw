@@ -25,6 +25,8 @@ import com.bydauto.myviewpager.fragment.FragmentRTVideo;
 import com.bydauto.myviewpager.fragment.FragmentSetting;
 import com.bydauto.myviewpager.view.MyDialog;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -283,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 // TODO: 2017/12/27 开始发送获取视频的列表，需做刷新或提示
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_LS:
+                fragmentPlaybackList.updateDirContents((JSONObject) param);
                 break;
             default:
                 break;
