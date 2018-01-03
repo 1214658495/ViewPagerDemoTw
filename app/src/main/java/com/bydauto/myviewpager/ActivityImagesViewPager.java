@@ -137,6 +137,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
         vpViewPager.setAdapter(myImagesPagerAdapter);
         vpViewPager.setCurrentItem(currentItem, false);
 //        tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
+        tvTitlePhoto.setText(photoLists.get(currentItem).getName());
         tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
         vpViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -144,6 +145,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
                 super.onPageSelected(position);
                 currentItem = position;
                 tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
+                tvTitlePhoto.setText(photoLists.get(currentItem).getName());
             }
         });
 
@@ -232,7 +234,6 @@ public class ActivityImagesViewPager extends AppCompatActivity {
             PhotoView photoView = new PhotoView(activity);
             Glide.with(activity)
                     .load(url)
-                    .placeholder(R.mipmap.ic_launcher)
                     .into(photoView);
             container.addView(photoView);
 //        photoView.setOnClickListener(new View.OnClickListener() {

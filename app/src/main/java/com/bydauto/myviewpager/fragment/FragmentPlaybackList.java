@@ -33,6 +33,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.byd.lighttextview.LightButton;
 import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
@@ -580,10 +581,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
         private SparseBooleanArray isSelectedMap;
         private ArrayList<Model> mArrayList;
+        private Context mContext;
 
         public PhotoWallAdapter(Context context, int textViewResourceId, ArrayList<Model> arrayList,
                                 GridView photoWall) {
             super(context, textViewResourceId, arrayList);
+            mContext = context;
             mArrayList = arrayList;
             mPhotoWall = photoWall;
             isSelectedMap = new SparseBooleanArray();
@@ -682,9 +685,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //			imageView.getLayoutParams().height = mItemHeight;
 //		}
             // 给ImageView设置一个Tag，保证异步加载图片时不会乱序
-            imageView.setTag(url);
+//            imageView.setTag(url);
             imageView.setImageResource(R.drawable.empty_photo);
-            loadBitmaps(imageView, url);
+//            loadBitmaps(imageView, url);
+            Glide.with(mContext).load(url).into(imageView);
             return view;
         }
 
