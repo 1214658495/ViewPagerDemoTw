@@ -1,6 +1,8 @@
 package com.bydauto.myviewpager;
 
-public class Model {
+import java.io.Serializable;
+
+public class Model implements Serializable {
     private boolean isDirectory;
     private int size;
     private String name;

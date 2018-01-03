@@ -59,6 +59,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
     private MyImagesPagerAdapter myImagesPagerAdapter;
 
     private ArrayList<String> urlList;
+    private ArrayList<Model> photoLists;
 
     private int currentItem;
 
@@ -127,20 +128,22 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
     private void initData() {
         urlList = new ArrayList<>();
-
+        photoLists = new ArrayList<>();
         Intent intent = getIntent();
-        urlList = intent.getStringArrayListExtra("mUrlsList");
+//        urlList = intent.getStringArrayListExtra("mUrlsList");
+        photoLists = (ArrayList<Model>) intent.getSerializableExtra("mPhotoList");
         currentItem = intent.getIntExtra("position", 0);
-        myImagesPagerAdapter = new MyImagesPagerAdapter(urlList, this);
+        myImagesPagerAdapter = new MyImagesPagerAdapter(photoLists, this);
         vpViewPager.setAdapter(myImagesPagerAdapter);
         vpViewPager.setCurrentItem(currentItem, false);
-        tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
+//        tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
+        tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
         vpViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 currentItem = position;
-                tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
+                tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
             }
         });
 
@@ -210,17 +213,22 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
     public class MyImagesPagerAdapter extends PagerAdapter {
 
-        private ArrayList<String> imageUrls;
+//        private ArrayList<String> imageUrls;
+        private ArrayList<Model> mPhotoLists;
         private AppCompatActivity activity;
 
-        public MyImagesPagerAdapter(ArrayList<String> imageUrls, AppCompatActivity activity) {
-            this.imageUrls = imageUrls;
+        public MyImagesPagerAdapter(ArrayList<Model> mPhotoLists, AppCompatActivity activity) {
+//            this.imageUrls = imageUrls;
+            this.mPhotoLists = mPhotoLists;
             this.activity = activity;
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            String url = imageUrls.get(position);
+//            String url = imageUrls.get(position);
+//            String url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+//            model.getName();
+            String url  = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + mPhotoLists.get(position).getName();
             PhotoView photoView = new PhotoView(activity);
             Glide.with(activity)
                     .load(url)
@@ -265,7 +273,8 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return imageUrls != null ? imageUrls.size() : 0;
+//            return imageUrls != null ? imageUrls.size() : 0;
+            return mPhotoLists != null ? mPhotoLists.size() : 0;
         }
 
         @Override

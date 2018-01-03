@@ -81,6 +81,7 @@ public class FragmentVideoDetail extends Fragment {
     private ArrayList<ImageView> imageLists;
     private ArrayList<String> urlsList;
     private String url;
+    private String fileName;
     //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;
     private AVOptions mAVOptions;
@@ -109,10 +110,10 @@ public class FragmentVideoDetail extends Fragment {
         }
     };
 
-    public static FragmentVideoDetail newInstance(ArrayList<String> urlsList, String url) {
+    public static FragmentVideoDetail newInstance(String url) {
         FragmentVideoDetail fragmentVideoDetail = new FragmentVideoDetail();
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList("urlsList", urlsList);
+//        bundle.putStringArrayList("urlsList", urlsList);
         bundle.putString("url", url);
         fragmentVideoDetail.setArguments(bundle);
         return fragmentVideoDetail;
@@ -121,8 +122,9 @@ public class FragmentVideoDetail extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        urlsList = getArguments().getStringArrayList("urlsList");
+//        urlsList = getArguments().getStringArrayList("urlsList");
         url = getArguments().getString("url");
+        fileName = url.substring(30);
     }
 
     @Override
@@ -134,6 +136,8 @@ public class FragmentVideoDetail extends Fragment {
     }
 
     private void initData() {
+        tvTitleVideo.setText(fileName);
+
         svVideoPlayView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {

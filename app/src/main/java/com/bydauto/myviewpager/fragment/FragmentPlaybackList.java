@@ -332,8 +332,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         public int width = 0;
         //每行所能容纳的单元格数量。
         public int countInRow = 0;
-        //madd单元格高度。
-        public int height = 0;
     }
 
     /**
@@ -364,8 +362,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         colInfo.countInRow = colCount;
         //计算出每行的间距总宽度，并根据单元格的数量重新调整单元格的宽度
         colInfo.width = width - ((colCount + 1) * padding) / colCount;
-//        add
-        colInfo.height = width - ((colCount + 1) * padding) / colCount;
         return colInfo;
     }
 
@@ -408,19 +404,30 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isMultiChoose) {
             Intent intent;
-            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO
-                    || currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                Model model = (Model) adapterView.getItemAtPosition(i);
+                String url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+                        model.getName();
 //                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
-                fragmentVideoDetail = FragmentVideoDetail.newInstance(urlVideosList, urlVideosList.get(i));
+                fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
 //                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
 //                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
 
-            } else {
+            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO){
+                Model model = (Model) adapterView.getItemAtPosition(i);
+//                http://192.169.42.1/SD0/EVENT/
+                String url = "http://" + ServerConfig.HOST + "/SD0/EVENT/" +
+                        model.getName();
+                fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
+                getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+            }else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
-                intent.putStringArrayListExtra("mUrlsList", urlsList);
+//                intent.putStringArrayListExtra("mUrlsList", urlsList);
+//                intent.putExtra("mPhotoList",mPlayLists);
+                intent.putExtra("mPhotoList", mPlayLists);
                 intent.putExtra("position", i);
                 startActivity(intent);
             }
