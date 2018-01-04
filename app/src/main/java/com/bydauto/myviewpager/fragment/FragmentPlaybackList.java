@@ -933,9 +933,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 while (!isYuvDownload) {
                     if (isThumbGetFail) {
                         // TODO: 2017/10/26 loadfail how to deal
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
+                        isThumbGetFail = false;
+                        return bitmap;
                     }
-                    isThumbGetFail = false;
                 }
                 isYuvDownload = false;
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
