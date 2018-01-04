@@ -47,6 +47,13 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_APP_STATE = 0x2C;
     final static int CMD_CHANNEL_EVENT_MIC_STATE = 0x2D;
 
+
+    //	我添加的协议
+    final static int CMD_CHANNEL_EVENT_GET_THUMB_TEST = 0x31;
+    final static int CMD_CHANNEL_EVENT_THUMB_CHECK = 0x32;
+    final static int CMD_CHANNEL_EVENT_THUMB_CHECKSIZE = 0x33;
+    final static int CMD_CHANNEL_EVENT_GET_THUMB_FAIL = 0x34;
+
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;
     final static int CMD_CHANNEL_ERROR_BLE_INVALID_ADDR = 0x82;

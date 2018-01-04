@@ -109,6 +109,11 @@ public class RemoteCam
         }
     }
 
+    //我自己加的
+    public DataChannel getDataChannel() {
+        return mDataChannel;
+    }
+
     public void reset() {
         mBlueAddrConnected = null;
         mWifiSSIDConnected = null;
@@ -323,10 +328,11 @@ public class RemoteCam
             public void run() {
                 if (!connectToDataChannel() || !connectToCmdChannel() )
                     return;
-                int len = path.length();
+                /*int len = path.length();
                 String surfix = path.substring(len-3, len).toLowerCase();
-                String type = surfix.equals("jpg") ? "thumb" : "IDR";
-                mCmdChannel.getThumb(path, type);
+                String type = surfix.equals("jpg") ? "thumb" : "IDR";*/
+               /* mCmdChannel.getThumb(path, type);*/
+                mCmdChannel.getThumb(path, "thumb");
             }
         });
     }
@@ -786,7 +792,21 @@ public class RemoteCam
         switch (type) {
             case IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB:
                 parser = (JSONObject)param;
+
                 try {
+                    if (parser.getInt("rval") != 0) {
+                        /*mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT,
+                                "GET_THUMB failed");*/
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_FAIL,true);
+
+                        break;
+                    }
+                    else {
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_TEST,true);
+                    }
+                } catch (JSONException e) {e.printStackTrace();}
+
+               /* try {
                     if (parser.getInt("rval") != 0) {
                         mListener.onChannelEvent(
                                 IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT,
@@ -797,7 +817,7 @@ public class RemoteCam
                     path = Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS) + "/" + mGetFileName;
                     mDataChannel.getFile(path, size);
-                } catch (JSONException e) {e.printStackTrace();}
+                } catch (JSONException e) {e.printStackTrace();}*/
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_FILE:
                 size = Integer.parseInt((String) param);

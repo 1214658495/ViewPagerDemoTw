@@ -145,6 +145,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private ArrayList<Model> mPlayLists;
     public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
 
+    public boolean isYuvDownload = false;
+    public boolean isThumbGetFail = false;
+
 
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
@@ -315,7 +318,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         listDirContents(mPWD);
     }
 
-    private void showCapturePhotoList(){
+    private void showCapturePhotoList() {
         if (mAdapter != null) {
             mAdapter.clear();
             mAdapter.cancelAllTasks();
@@ -324,7 +327,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         listDirContents(mPWD);
 
     }
-
 
 
     //存放计算后的单元格相关信息
@@ -417,14 +419,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
 //                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
 
-            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO){
+            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                 Model model = (Model) adapterView.getItemAtPosition(i);
 //                http://192.169.42.1/SD0/EVENT/
                 String url = "http://" + ServerConfig.HOST + "/SD0/EVENT/" +
                         model.getName();
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
-            }else {
+            } else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
 //                intent.putStringArrayListExtra("mUrlsList", urlsList);
 //                intent.putExtra("mPhotoList",mPlayLists);
@@ -556,6 +558,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          * 记录所有正在下载或等待下载的任务。
          */
         private Set<BitmapWorkerTask> taskCollection;
+        private Set<YuvBitmapWorkerTask> taskCollection1;
 
         /**
          * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
@@ -591,6 +594,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             mPhotoWall = photoWall;
             isSelectedMap = new SparseBooleanArray();
             taskCollection = new HashSet<BitmapWorkerTask>();
+            taskCollection1 = new HashSet<YuvBitmapWorkerTask>();
             // 获取应用程序最大可用内存
             int maxMemory = (int) Runtime.getRuntime().maxMemory();
             int cacheSize = maxMemory / 8;
@@ -613,6 +617,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+//            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO || currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+//                loadBitmaps(0, mArrayList.size());
+//            }
         }
 
         @NonNull
@@ -660,23 +668,34 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 }
             }
 
-            String url;
-            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
-                url = "";
-            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-                url = "";
-            } else {
+            ImageView imageView;
+            imageView = view.findViewById(R.id.iv_videoPhoto);
+
+            String url = null;
+            if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
 //                "http://192.168.42.1/SD0/PHOTO/2017-12-20-23-14-0100.JPG"
                 url = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" +
                         model.getName();
+                Glide.with(mContext).load(url).into(imageView);
+
+            } else {
+                if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+//                /tmp/SD0/NORMAL/2018-01-03-17-58-13.MP4
+                    url = "/tmp/SD0/NORMAL/" + model.getName();
+                } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                    url = "/tmp/SD0/EVENT/" + model.getName();
+                }
+                imageView.setTag(url);
+                setImageView(url, imageView);
+                loadBitmaps(imageView, url);
             }
 
 //		final ImageView imageView ;= com.bydauto.myviewpager.view.findViewById(R.id.photo);
-            ImageView imageView;
+            /*ImageView imageView;*/
 
 //  if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO ||
 //                currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-            imageView = view.findViewById(R.id.iv_videoPhoto);
+           /* imageView = view.findViewById(R.id.iv_videoPhoto);*/
 //        }
 //        else if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
 //            imageView = com.bydauto.myviewpager.view.findViewById(R.id.photo);
@@ -686,10 +705,48 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //		}
             // 给ImageView设置一个Tag，保证异步加载图片时不会乱序
 //            imageView.setTag(url);
-            imageView.setImageResource(R.drawable.empty_photo);
+//            imageView.setImageResource(R.drawable.empty_photo);
 //            loadBitmaps(imageView, url);
-            Glide.with(mContext).load(url).into(imageView);
+//            Glide.with(mContext).load(url).into(imageView);
             return view;
+        }
+
+
+        private void setImageView(String imageUrl, ImageView imageView) {
+            Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                imageView.setImageResource(R.drawable.empty_photo);
+            }
+        }
+
+        private void loadBitmaps(int firstVisibleItem, int visibleItemCount) {
+            try {
+                for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++) {
+                    Model model = mArrayList.get(i);
+                    String imageUrl = null;
+
+                    if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                        imageUrl = "/tmp/SD0/NORMAL/" + model.getName();
+                    } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                        imageUrl = "/tmp/SD0/EVENT/" + model.getName();
+                    }
+                    Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
+                    if (bitmap == null) {
+                        YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
+                        taskCollection1.add(task1);
+                        task1.execute(imageUrl);
+                    } else {
+                        ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                        if (imageView != null && bitmap != null) {
+                            imageView.setImageBitmap(bitmap);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -722,9 +779,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             try {
                 Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
                 if (bitmap == null) {
-                    BitmapWorkerTask task = new BitmapWorkerTask();
-                    taskCollection.add(task);
-                    task.execute(imageUrl);
+                    YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
+                    taskCollection1.add(task1);
+                    task1.execute(imageUrl);
                 } else {
                     if (imageView != null && bitmap != null) {
                         imageView.setImageBitmap(bitmap);
@@ -742,6 +799,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (taskCollection != null) {
                 for (BitmapWorkerTask task : taskCollection) {
                     task.cancel(false);
+                }
+            }
+
+            if (taskCollection1 != null) {
+                for (YuvBitmapWorkerTask task1 : taskCollection1) {
+                    task1.cancel(false);
                 }
             }
         }
@@ -835,6 +898,50 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         public void setItemIsSelectedMap(int position, boolean isSelected) {
             this.isSelectedMap.put(position, isSelected);
             notifyDataSetChanged();
+        }
+
+
+        class YuvBitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+
+            private String imageUrl;
+
+            @Override
+            protected Bitmap doInBackground(String... params) {
+                Log.e(TAG, "----YuvBitmapWorkerTaskdoInBackground: ");
+                imageUrl = params[0];
+                Bitmap bitmap = downloadYuvBitmap(params[0]);
+                if (bitmap != null) {
+                    addBitmapToMemoryCache(params[0], bitmap);
+                }
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                if (imageView != null && bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+                taskCollection1.remove(this);
+            }
+
+            private Bitmap downloadYuvBitmap(String param) {
+                Log.e(TAG, "downloadYuvBitmap: 开始");
+                Bitmap bitmap = null;
+                mRemoteCam.getThumb(param);
+                while (!isYuvDownload) {
+                    if (isThumbGetFail) {
+                        // TODO: 2017/10/26 loadfail how to deal
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                    }
+                    isThumbGetFail = false;
+                }
+                isYuvDownload = false;
+                Log.e(TAG, "downloadYuvBitmap: 接收到数据");
+                bitmap = mRemoteCam.getDataChannel().rxYuvStream2();
+                return bitmap;
+            }
         }
 
         /**

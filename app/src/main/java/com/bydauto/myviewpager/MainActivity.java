@@ -287,6 +287,25 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_LS:
                 fragmentPlaybackList.updateDirContents((JSONObject) param);
                 break;
+
+            case IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_TEST:
+                if ((boolean) param) {
+                    fragmentPlaybackList.isYuvDownload = true;
+                } else {
+                    fragmentPlaybackList.isYuvDownload = false;
+                }
+                Log.e(TAG, "handleCmdChannelEvent: main EVENT_GET_THUMB");
+
+                break;
+
+            case IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_FAIL:
+                if ((boolean) param) {
+                    fragmentPlaybackList.isThumbGetFail = true;
+                } else {
+                    fragmentPlaybackList.isThumbGetFail = false;
+                }
+                Log.e(TAG, "handleCmdChannelEvent: main EVENT_THUMB_CHECK");
+                break;
             default:
                 break;
 

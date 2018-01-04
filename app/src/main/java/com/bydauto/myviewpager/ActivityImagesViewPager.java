@@ -136,6 +136,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
         myImagesPagerAdapter = new MyImagesPagerAdapter(photoLists, this);
         vpViewPager.setAdapter(myImagesPagerAdapter);
         vpViewPager.setCurrentItem(currentItem, false);
+        vpViewPager.setOffscreenPageLimit(0);
 //        tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
         tvTitlePhoto.setText(photoLists.get(currentItem).getName());
         tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
