@@ -64,6 +64,7 @@ public class MyDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 //        int myStyleNum = getArguments().getInt("myStyle", 0);
 //        int style = 0;
 //        switch (myStyleNum) {
@@ -156,7 +157,23 @@ public class MyDialog extends DialogFragment {
 
     @Override
     public void onDestroyView() {
+        // 如下在旋转后重建了
+        Dialog dialog = getDialog();
+        // handles https://code.google.com/p/android/issues/detail?id=17423
+        if (dialog != null && getRetainInstance()) {
+            dialog.setDismissMessage(null);
+        }
         super.onDestroyView();
         unbinder.unbind();
     }
+
+//    @Override
+//    public void show(FragmentManager manager, String tag) {
+////        super.show(manager, tag);
+//        FragmentTransaction ft = manager.beginTransaction();
+//        ft.add(this, tag);
+//        // 这里吧原来的commit()方法换成了commitAllowingStateLoss()
+//        ft.commitAllowingStateLoss();
+//
+//    }
 }

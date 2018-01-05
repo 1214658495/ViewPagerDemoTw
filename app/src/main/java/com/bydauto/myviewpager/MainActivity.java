@@ -28,6 +28,7 @@ import com.bydauto.myviewpager.view.MyDialog;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private Runnable runnable;
     private String recordTime;
     private Fragment fragment;
+    private String appStateStr;
+    private MyDialog myDialog;
 
 
     @Override
@@ -181,11 +184,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         putPrefs(mPref);
     }
 
+
+//    @Override
+//    public void onConfigurationChanged(Configuration config) {
+//        super.onConfigurationChanged(config);
+//        setContentView(R.layout.activity_main);
+//    }
+
     @OnClick(R.id.btn_back)
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
-                MyDialog myDialog = MyDialog.newInstance(0, "退出程序？");
+                myDialog = MyDialog.newInstance(0, "退出程序？");
                 myDialog.show(getFragmentManager(), "back");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -262,10 +272,20 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 Toast.makeText(getApplicationContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
-                boolean isRecord = (boolean) param;
-                Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
-                // TODO: 2017/12/20
-                fragmentRTVideo.setRecordState(isRecord);
+//                boolean isRecord = (boolean) param;
+//                Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
+//                // TODO: 2017/12/20
+                appStateStr = (String) param;
+                if (Objects.equals(appStateStr, "record")) {
+                    fragmentRTVideo.setRecordState(true);
+                } else if (Objects.equals(appStateStr, "vf")) {
+                    fragmentRTVideo.setRecordState(false);
+                } else if (Objects.equals(appStateStr, "idle")) {
+                    // TODO: 2018/1/4 还需做弹窗的效果。
+                    Toast.makeText(getApplicationContext(),"请重启记录仪！",Toast.LENGTH_LONG).show();
+//                    MyDialog myDialogTest = MyDialog.newInstance(1, "请重启记录仪！");
+//                    myDialogTest.show(this.getFragmentManager(), "recordFail");
+                }
 //                fragmentRTVideo.setRecordState();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE:
@@ -306,6 +326,34 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 Log.e(TAG, "handleCmdChannelEvent: main EVENT_THUMB_CHECK");
                 break;
+
+            case IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD:
+                boolean isFormatSD = (boolean) param;
+                if (isFormatSD) {
+                    myDialog = MyDialog.newInstance(1, "存储卡格式化完成");
+                    myDialog.show(getFragmentManager(), "FormatDone");
+                    // TODO: 2018/1/5 如下发送后记录仪来不及反应，答复
+                    mRemoteCam.appStatus();
+                    mRemoteCam.startRecord();
+//                                    fragmentPlaybackList.showSD();
+                } else {
+                    myDialog = MyDialog.newInstance(0, "存储卡格式化失败");
+                    // TODO: 2018/1/5 失败如何处理
+                    myDialog.show(getFragmentManager(), "back");
+                    myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+                        @Override
+                        public void okButtonClick() {
+
+                        }
+
+                        @Override
+                        public void cancelButtonClick() {
+
+                        }
+                    });
+
+                }
+                break;
             default:
                 break;
 
@@ -345,7 +393,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IFragmentListener.ACTION_FS_LS:
                 mRemoteCam.listDir((String) param);
                 break;
+            case IFragmentListener.ACTION_DEFAULT_SETTING:
+                mRemoteCam.defaultSetting();
+                break;
 
+            case IFragmentListener.ACTION_FS_FORMAT_SD:
+                if (Objects.equals(appStateStr,"record")) {
+                    mRemoteCam.stopRecord();
+                }
+                mRemoteCam.formatSD((String) param);
+                break;
             default:
                 break;
         }

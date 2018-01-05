@@ -559,7 +559,19 @@ public class RemoteCam
             }
         });
     }
-
+    //madd;
+    public void defaultSetting() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.defaultSetting();
+            }
+        });
+    }
+    //madd;
     public void appStatus() {
         worker.execute(new Runnable() {
             public void run() {

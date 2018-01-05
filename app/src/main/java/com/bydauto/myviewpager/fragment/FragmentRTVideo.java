@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.RemoteCam;
+import com.bydauto.myviewpager.ServerConfig;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
@@ -60,7 +61,7 @@ public class FragmentRTVideo extends Fragment {
     @BindView(R.id.LoadingView)
     ProgressBar LoadingView;
 
-    private String url = "rtsp://192.168.42.1/live";
+    private String url = "rtsp://" + ServerConfig.HOST + "/live";
     //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
 //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;
@@ -407,10 +408,11 @@ public class FragmentRTVideo extends Fragment {
                         mMediaPlayer.reset();
                     }
                     mMediaPlayer = null;
+//                    tvTimeOfSv.setVisibility(View.INVISIBLE);
                 } else {
                     showToastTips("开启录像！");
                     prepare();
-
+//                    tvTimeOfSv.setVisibility(View.VISIBLE);
                 }
                 if (mListener != null) {
                     isRecord = !isRecord;

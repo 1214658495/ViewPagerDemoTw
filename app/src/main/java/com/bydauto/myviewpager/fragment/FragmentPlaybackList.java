@@ -328,6 +328,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     }
 
+    public void showSD() {
+
+        listDirContents(mPWD);
+    }
+
 
     //存放计算后的单元格相关信息
     class ColumnInfo {

@@ -85,7 +85,8 @@ public interface IFragmentListener {
     final static int ACTION_FORCE_SPLIT = 0x39;
     final static int ACTION_SET_ZOOM = 0x3A;
     final static int ACTION_GET_ZOOM_INFO = 0x3B;
-
+//madd
+    final static int ACTION_DEFAULT_SETTING = 0x3C;
     /* MISC --getram -- UI related
      */
     final static int ACTION_OPEN_CAMERA_LIVEVIEW = 0x40;

@@ -463,6 +463,12 @@ public abstract class CmdChannel {
                 + ",\"param\":\"" + slot + "\"}");
     }
 
+    public synchronized boolean defaultSetting() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
+                AMBA_SET_SETTING + ",\"type\":\"" + "default_setting" + "\",\"param\":" +
+                "\"on\"" + "}");
+    }
+
     public synchronized boolean getBatteryLevel() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_BATTERY_LEVEL + "}");
@@ -566,8 +572,9 @@ public abstract class CmdChannel {
                         str = parser.getString("param");
                         switch (type) {
                             case "app_status":
-                                boolean isRecord = "record".equalsIgnoreCase(str);
-                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE, isRecord);
+//                                boolean isRecord = "record".equalsIgnoreCase(str);
+//                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE, isRecord);
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE,str);
                                 break;
                             case "micphone":
                                 boolean isMicOn = "on".equalsIgnoreCase(str);
@@ -633,7 +640,13 @@ public abstract class CmdChannel {
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_TIME, parser.getString("param"));
                         break;
                     case AMBA_FORMAT_SD:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD, null);
+//madd
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD, true);
+
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD, false);
+                        }
                         break;
                     case AMBA_BATTERY_LEVEL:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BATTERY_LEVEL,

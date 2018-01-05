@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyViewPager</string>
+    <string name="app_name">BYD行车记录仪</string>
     <string name="setting">设置</string>
     <string name="system">系统</string>
     <string name="memoryCard_format">存储卡格式化</string>
