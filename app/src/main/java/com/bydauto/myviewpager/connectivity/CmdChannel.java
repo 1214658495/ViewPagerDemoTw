@@ -404,6 +404,7 @@ public abstract class CmdChannel {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
                 AMBA_SET_SETTING + ",\"type\":\"" + "micphone" + "\",\"param\":" + "\"on\"" + "}");
     }
+
     //    madd
     public synchronized boolean stopMic() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
@@ -524,8 +525,10 @@ public abstract class CmdChannel {
 
                 if (parser.getInt("msg_id") == AMBA_NOTIFICATION) {
                     String type = parser.getString("type");
-                    if (type.equals("fw_upgrade_failed") ||
-                            type.equals("fw_upgrade_complete")) {
+                    if ("fw_upgrade_failed".equals(type) ||
+                            "fw_upgrade_complete".equals(type) || "CARD_REMOVED".equals(type) ||
+                            "CARD_INSERTED".equals(type)) {
+                        Log.e(TAG, "handleNotification: AMBA_NOTIFICATION");
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT, type);
                     } else {
                         Log.e(CommonUtility.LOG_TAG, "unhandled notification " + type + "!!!");
@@ -574,7 +577,7 @@ public abstract class CmdChannel {
                             case "app_status":
 //                                boolean isRecord = "record".equalsIgnoreCase(str);
 //                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE, isRecord);
-                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE,str);
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE, str);
                                 break;
                             case "micphone":
                                 boolean isMicOn = "on".equalsIgnoreCase(str);
@@ -622,7 +625,11 @@ public abstract class CmdChannel {
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_INFO, str);
                         break;
                     case AMBA_GET_SPACE:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE, parser.getString("param"));
+//                        madd
+                        if (rval != 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE, null);
+                        }
+//                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE, parser.getString("param"));
                         break;
                     case AMBA_GET_NUM_FILES:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_NUM_FILES, parser.getString("param"));
@@ -715,26 +722,54 @@ public abstract class CmdChannel {
                                 break;
                         }
                     }
-                    if (timerFlag) {
+//                    if (timerFlag) {
                         addLog("<font color=#cc0029>" + msg + "<br ></font>");
-                        Log.e(TAG, msg);
-                        if (msg.contains("rval")) {
-                            handleResponse(msg);
-                            mReplyReceived = true;
-                            //msg = msg.replaceAll(".*", msg);
-                            stopTimerTask();
-                            synchronized (mRxLock) {
-                                mRxLock.notify();
-                                //reset the msg to nothing
-                                ////if (timerFlag == false) {
-                                ////    msg = "";
-                                ////}
+
+//                        if (msg.contains("}{")) {
+//                            Log.e(TAG, "警报！！！！！出现了粘包");
+//                            //处理粘包第一段数据
+//                            String tmpOne = msg.substring(0, msg.indexOf("}{") + 1);
+//                            Log.e(TAG, tmpOne);
+//                            if (tmpOne.contains("rval")) {
+//                                handleResponse(tmpOne);
+//                            } else {
+//                                handleNotification(tmpOne);
+//                            }
+//                            //处理粘包第二段数据
+//                            String tmpTwo = msg.substring(msg.indexOf("}{") + 1);
+//                            Log.e(TAG, tmpTwo);
+//                            if (tmpTwo.contains("rval")) {
+//                                handleResponse(tmpTwo);
+//                            } else {
+//                                handleNotification(tmpTwo);
+//                            }
+//
+//                            mReplyReceived = true;
+//                            stopTimerTask();
+//                            synchronized (mRxLock) {
+//                                mRxLock.notify();
+//                            }
+//                        } else {
+                            Log.e(TAG, msg);
+                            if (msg.contains("rval")) {
+                                handleResponse(msg);
+                                mReplyReceived = true;
+                                //msg = msg.replaceAll(".*", msg);
+                                stopTimerTask();
+                                synchronized (mRxLock) {
+                                    mRxLock.notify();
+                                    //reset the msg to nothing
+                                    ////if (timerFlag == false) {
+                                    ////    msg = "";
+                                    ////}
+                                }
+                            } else {
+                                handleNotification(msg);
+                                stopTimerTask();
                             }
-                        } else {
-                            handleNotification(msg);
-                            stopTimerTask();
-                        }
-                    } ////else {
+//                        }
+//                    }
+                    ////else {
                     ////msgRecv = msgRecv.replaceAll(".*", "");
                     ////}
                 }

@@ -840,12 +840,13 @@ public class RemoteCam
             case IChannelListener.CMD_CHANNEL_EVENT_PUT_FILE:
                 mDataChannel.putFile(mPutFileName);
                 break;
-            case IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE:
-                mMediaInfoStep++;
-                mMediaInfoReply += "\n" + (mMediaInfoStep == 4 ? "free space: " : "total space: ");
-                mMediaInfoReply += (String) param;
-                mMediaInfoReply += "KB";
-                break;
+//                mremove
+//            case IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE:
+//                mMediaInfoStep++;
+//                mMediaInfoReply += "\n" + (mMediaInfoStep == 4 ? "free space: " : "total space: ");
+//                mMediaInfoReply += (String) param;
+//                mMediaInfoReply += "KB";
+//                break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_NUM_FILES:
                 mMediaInfoStep++;
                 if (mMediaInfoStep == 1)

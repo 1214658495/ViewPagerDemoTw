@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private Fragment fragment;
     private String appStateStr;
     private MyDialog myDialog;
+    private boolean isGetFormatedAppState = false;
+    private boolean isFormat = false;
 
 
     @Override
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
 //        fragments = new ArrayList<>();
 //        fragments.add(new FragmentRTVideo());
-            fragmentPlaybackList.setRemoteCam(mRemoteCam);
+        fragmentPlaybackList.setRemoteCam(mRemoteCam);
 //        fragmentRTVideo.setRemoteCam(mRemoteCam);
 //        fragments.add(fragmentRTVideo);
 //        fragments.add(fragmentPlaybackList);
@@ -258,7 +260,26 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         switch (type) {
             case IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT:
                 String str = (String) param;
-                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                // TODO: 2018/1/8 旋转屏后dialog触发就闪退
+                if ("CARD_REMOVED".equals(str)) {
+                    str = "存储卡被移除！";
+                } else if ("CARD_INSERTED".equals(str)) {
+                    str = "存储卡已插入！";
+                }
+                if (myDialog != null) {
+                    myDialog.dismiss();
+                }
+                myDialog = MyDialog.newInstance(1, str);
+                myDialog.show(getFragmentManager(), "SHOW_ALERT");
+//                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                break;
+
+            case IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE:
+                if (myDialog != null) {
+                    myDialog.dismiss();
+                }
+                myDialog = MyDialog.newInstance(1, "请插入存储卡！");
+                myDialog.show(getFragmentManager(), "SHOW_ALERT1");
                 break;
 
             case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
@@ -275,14 +296,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                boolean isRecord = (boolean) param;
 //                Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
 //                // TODO: 2017/12/20
+                Log.e(TAG, "handleCmdChannelEvent: /////isGetFormatedAppState");
+//                if (isFormat) {
+//                    isGetFormatedAppState = true;
+//                }
                 appStateStr = (String) param;
                 if (Objects.equals(appStateStr, "record")) {
                     fragmentRTVideo.setRecordState(true);
                 } else if (Objects.equals(appStateStr, "vf")) {
                     fragmentRTVideo.setRecordState(false);
                 } else if (Objects.equals(appStateStr, "idle")) {
-                    // TODO: 2018/1/4 还需做弹窗的效果。
-                    Toast.makeText(getApplicationContext(),"请重启记录仪！",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "请重启记录仪！", Toast.LENGTH_LONG).show();
+                    // TODO: 2018/1/4 如下显示弹窗，旋转就闪退。
+
 //                    MyDialog myDialogTest = MyDialog.newInstance(1, "请重启记录仪！");
 //                    myDialogTest.show(this.getFragmentManager(), "recordFail");
                 }
@@ -330,14 +356,14 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD:
                 boolean isFormatSD = (boolean) param;
                 if (isFormatSD) {
-                    myDialog = MyDialog.newInstance(1, "存储卡格式化完成");
+                    myDialog = MyDialog.newInstance(1, "存储卡格式化完成！");
                     myDialog.show(getFragmentManager(), "FormatDone");
                     // TODO: 2018/1/5 如下发送后记录仪来不及反应，答复
-                    mRemoteCam.appStatus();
-                    mRemoteCam.startRecord();
+//                    mRemoteCam.appStatus();
+//                    mRemoteCam.startRecord();
 //                                    fragmentPlaybackList.showSD();
                 } else {
-                    myDialog = MyDialog.newInstance(0, "存储卡格式化失败");
+                    myDialog = MyDialog.newInstance(0, "存储卡格式化失败！");
                     // TODO: 2018/1/5 失败如何处理
                     myDialog.show(getFragmentManager(), "back");
                     myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
@@ -398,10 +424,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
 
             case IFragmentListener.ACTION_FS_FORMAT_SD:
-                if (Objects.equals(appStateStr,"record")) {
-                    mRemoteCam.stopRecord();
-                }
-                mRemoteCam.formatSD((String) param);
+//                isFormat = true;
+//                mRemoteCam.stopRecord();
+//                若关闭录像后马上发指令检测app的状态，则为idle；
+//                mRemoteCam.appStatus();
+//                while (!isGetFormatedAppState) {
+//
+//                }
+//                isGetFormatedAppState = false;
+//                isFormat = false;
+//                if (Objects.equals(appStateStr, "vf")) {
+                    mRemoteCam.formatSD((String) param);
+//                }
                 break;
             default:
                 break;

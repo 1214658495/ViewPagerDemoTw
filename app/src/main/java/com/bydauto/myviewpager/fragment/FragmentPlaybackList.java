@@ -294,8 +294,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
         Collections.sort(models, new order());
         mPlayLists = models;
-        mAdapter = new PhotoWallAdapter(getActivity(), 0, mPlayLists, mGridViewList);
-        mGridViewList.setAdapter(mAdapter);
+        if (getActivity() != null) {
+            mAdapter = new PhotoWallAdapter(getActivity(), 0, mPlayLists, mGridViewList);
+            mGridViewList.setAdapter(mAdapter);
+        }
 //        mAdapter = new DentryAdapter(models);
 //        showDirContents();
     }
