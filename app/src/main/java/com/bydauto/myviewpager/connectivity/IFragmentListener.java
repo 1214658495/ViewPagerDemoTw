@@ -37,8 +37,9 @@ public interface IFragmentListener {
     final static int ACTION_BC_SET_BITRATE = 0x19;
 
     //    madd
-    final static int ACTION_MIC_ON = 0x1A;
-    final static int ACTION_MIC_OFF = 0x1B;
+    final static int ACTION_MIC_ON = 0x60;
+    final static int ACTION_FS_DELETE_MULTI = 0x61;
+
 
     //getram
     final static int ACTION_BC_SET_CLIENT_INFO = 0x1A;

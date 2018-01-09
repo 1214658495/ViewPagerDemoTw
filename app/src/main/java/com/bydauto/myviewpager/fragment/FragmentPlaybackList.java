@@ -143,10 +143,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private IFragmentListener mListener;
 
     private ArrayList<Model> mPlayLists;
+    private ArrayList<Model> mSelectedLists;
     public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
 
     public boolean isYuvDownload = false;
     public boolean isThumbGetFail = false;
+    private MyDialog myDialogTest;
 
 
     public static FragmentPlaybackList newInstance() {
@@ -190,6 +192,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         selectedUrlsList = new ArrayList<>();
         Collections.addAll(urlsList, Images.imageThumbUrls);
         Collections.addAll(urlVideosList, Videos.videosThumbUrls);
+
+        mPlayLists = new ArrayList<>();
+        mSelectedLists = new ArrayList<>();
 
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -302,32 +307,54 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //        showDirContents();
     }
 
-    private void showRecordList() {
+    public void showRecordList() {
         if (mAdapter != null) {
             mAdapter.clear();
             mAdapter.cancelAllTasks();
         }
         mPWD = "/tmp/SD0/NORMAL";
         listDirContents(mPWD);
+        if (isMultiChoose) {
+            cancelMultiChoose();
+        }
     }
 
-    private void showLockVideoList() {
+    public void showLockVideoList() {
         if (mAdapter != null) {
             mAdapter.clear();
             mAdapter.cancelAllTasks();
         }
         mPWD = "/tmp/SD0/EVENT";
         listDirContents(mPWD);
+        if (isMultiChoose) {
+            cancelMultiChoose();
+        }
     }
 
-    private void showCapturePhotoList() {
+    public void showCapturePhotoList() {
         if (mAdapter != null) {
             mAdapter.clear();
             mAdapter.cancelAllTasks();
         }
         mPWD = "/tmp/SD0/PHOTO";
         listDirContents(mPWD);
+        if (isMultiChoose) {
+            cancelMultiChoose();
+        }
+    }
 
+    private void cancelMultiChoose() {
+        isMultiChoose = false;
+        llEditItemBar.setVisibility(View.INVISIBLE);
+        rgGroupDetail.setVisibility(View.VISIBLE);
+        ibSearch.setVisibility(View.VISIBLE);
+        btnSelectall.setChecked(false);
+        mSelectedLists.clear();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+             mAdapter.isSelectedMap.clear();
+
+        }
     }
 
     public void showSD() {
@@ -386,12 +413,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         mAdapter.fluchCache();
@@ -407,7 +428,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         super.onDestroyView();
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
-        mAdapter.cancelAllTasks();
+//        mAdapter.cancelAllTasks();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.e(TAG, "onDetach: ");
+        super.onDetach();
+        if (mAdapter != null) {
+            mAdapter.cancelAllTasks();
+            mAdapter.clear();
+        }
+        mListener = null;
+        cancelMultiChoose();
     }
 
     @Override
@@ -441,19 +474,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 intent.putExtra("position", i);
                 startActivity(intent);
             }
-//            intent.putExtra("position", i);
-//            startActivity(intent);
         } else {
 //            checkbox初始状态默认为false。
             boolean isSelected = mAdapter.getIsSelectedAt(i);
 //            如下判断后续使用
             if (!isSelected) {
-//                selectedUrlsList.add(urlsList.get(i));
-//                selectedIntsList.add(i);
+                mSelectedLists.add(mPlayLists.get(i));
 
             } else {
-//                selectedUrlsList.remove(urlsList.get(i));
-//                selectedIntsList.remove(i);
+                mSelectedLists.remove(mPlayLists.get(i));
             }
             Log.e(TAG, "onItemClick: isSelected = " + isSelected + ";i = " + i);
 //            此处把指定位置变为true，并通知item更新。
@@ -471,6 +500,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             llEditItemBar.setVisibility(View.VISIBLE);
             rgGroupDetail.setVisibility(View.INVISIBLE);
             ibSearch.setVisibility(View.INVISIBLE);
+//            如下可能不需要
+            mSelectedLists.clear();
 //            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
             switch (currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
@@ -506,24 +537,47 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             case R.id.btn_export:
                 break;
             case R.id.btn_delete:
-//                for (String url: selectedUrlsList) {
-//
-//                }
-//                for (int i : selectedIntsList) {
-//                    urlsList.
-//                }
+                if (mSelectedLists.size() > 0) {
+                    myDialogTest = MyDialog.newInstance(0, "确定删除？");
+                    myDialogTest.show(getActivity().getFragmentManager(), "delete");
+                    myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+                        @Override
+                        public void okButtonClick() {
+                            for (Model model :
+                                    mSelectedLists) {
+                                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE_MULTI, mSelectedLists);
+                                String fileHead;
+                                if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                                    fileHead = "/tmp/SD0/NORMAL/";
+                                } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                                    fileHead = "/tmp/SD0/EVENT/";
+                                } else {
+                                    fileHead = "/tmp/SD0/PHOTO/";
+                                }
+                                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE, fileHead + model.getName());
+                            }
 
-//                urlsList.remove()
-                // TODO: 2017/11/29 删除gridview item
+                        }
+
+                        @Override
+                        public void cancelButtonClick() {
+
+                        }
+                    });
+                } else {
+                    myDialogTest = MyDialog.newInstance(1, "请选择要删除的文件");
+                    myDialogTest.show(getActivity().getFragmentManager(), "selected_delete");
+                }
                 break;
             case R.id.btn_selectall:
+                mSelectedLists.clear();
+                mAdapter.isSelectedMap.clear();
                 if (btnSelectall.isChecked()) {
-                    mAdapter.isSelectedMap.clear();
                     for (int i = 0; i < mGridViewList.getAdapter().getCount(); i++) {
                         mAdapter.setItemIsSelectedMap(i, true);
+                        mSelectedLists.add(mPlayLists.get(i));
                     }
                 } else {
-                    mAdapter.isSelectedMap.clear();
                     for (int i = 0; i < mGridViewList.getAdapter().getCount(); i++) {
                         mAdapter.setItemIsSelectedMap(i, false);
                     }
@@ -538,8 +592,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-        MyDialog myDialogTest = MyDialog.newInstance(1, "正在搜索");
+        myDialogTest = MyDialog.newInstance(2, "正在搜索");
         myDialogTest.show(getActivity().getFragmentManager(), "test");
+        myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+            @Override
+            public void okButtonClick() {
+
+            }
+
+            @Override
+            public void cancelButtonClick() {
+
+            }
+        });
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
 

@@ -600,7 +600,11 @@ public abstract class CmdChannel {
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LS, parser);
                         break;
                     case AMBA_DEL:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL, null);
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL, null);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL_FAIL,null);
+                        }
                         break;
                     case AMBA_GET_THUMB:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB, parser);

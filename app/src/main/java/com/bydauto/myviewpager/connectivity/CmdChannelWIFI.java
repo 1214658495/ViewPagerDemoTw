@@ -77,8 +77,9 @@ public class CmdChannelWIFI extends CmdChannel {
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_START, null);
         InetAddress bcAddr;
         try {
-            //bcAddr = getBroadcastAddress(mgr);
-            bcAddr = InetAddress.getByName("192.168.42.1");
+//            如下俩行被我反向注释了
+            bcAddr = getBroadcastAddress(mgr);
+//            bcAddr = InetAddress.getByName("192.168.42.1");
         } catch (IOException e) {
             Log.e(TAG, "Can't get broadcast address!!!");
             e.printStackTrace();

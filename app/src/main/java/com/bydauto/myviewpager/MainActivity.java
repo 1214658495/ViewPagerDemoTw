@@ -27,6 +27,7 @@ import com.bydauto.myviewpager.view.MyDialog;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private MyDialog myDialog;
     private boolean isGetFormatedAppState = false;
     private boolean isFormat = false;
+    private ArrayList<Model> selectedLists;
+    private int selectedCounts;
+    private int hadDelete;
 
 
     @Override
@@ -265,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     str = "存储卡被移除！";
                 } else if ("CARD_INSERTED".equals(str)) {
                     str = "存储卡已插入！";
+                    // TODO: 2018/1/8 卡插入后，如何更新文件列表？
                 }
                 if (myDialog != null) {
                     myDialog.dismiss();
@@ -380,6 +385,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
                 }
                 break;
+            case IChannelListener.CMD_CHANNEL_EVENT_DEL:
+                hadDelete++;
+                if (hadDelete == selectedCounts) {
+                    if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                        fragmentPlaybackList.showRecordList();
+                    } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                        fragmentPlaybackList.showLockVideoList();
+                    } else {
+                        fragmentPlaybackList.showCapturePhotoList();
+                    }
+                    hadDelete = 0;
+                }
+                break;
             default:
                 break;
 
@@ -436,6 +454,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                if (Objects.equals(appStateStr, "vf")) {
                     mRemoteCam.formatSD((String) param);
 //                }
+                break;
+            case IFragmentListener.ACTION_FS_DELETE_MULTI:
+                selectedLists = (ArrayList<Model>) param;
+                selectedCounts = selectedLists.size();
+                break;
+            case IFragmentListener.ACTION_FS_DELETE:
+                mRemoteCam.deleteFile((String) param);
                 break;
             default:
                 break;

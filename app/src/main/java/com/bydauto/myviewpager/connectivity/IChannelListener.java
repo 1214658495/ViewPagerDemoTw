@@ -46,7 +46,7 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_TAKE_PHOTO = 0x2B;
     final static int CMD_CHANNEL_EVENT_APP_STATE = 0x2C;
     final static int CMD_CHANNEL_EVENT_MIC_STATE = 0x2D;
-
+    final static int CMD_CHANNEL_EVENT_DEL_FAIL = 0x2E;
 
     //	我添加的协议
     final static int CMD_CHANNEL_EVENT_GET_THUMB_TEST = 0x31;

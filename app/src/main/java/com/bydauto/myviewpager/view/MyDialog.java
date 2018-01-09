@@ -109,8 +109,10 @@ public class MyDialog extends DialogFragment {
         String message = getArguments().getString("message");
         if (myStyleNum == 0) {
             view = inflater.inflate(R.layout.fragment_dialog, container);
-        } else {
+        } else if (myStyleNum == 1) {
             view = inflater.inflate(R.layout.fragment_simple_dialog, container);
+        } else {
+            view = inflater.inflate(R.layout.fragment_progress_dialog,container);
         }
         unbinder = ButterKnife.bind(this, view);
 
