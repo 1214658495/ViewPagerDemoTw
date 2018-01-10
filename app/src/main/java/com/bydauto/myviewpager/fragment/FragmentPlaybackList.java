@@ -56,10 +56,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -143,7 +146,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private IFragmentListener mListener;
 
     private ArrayList<Model> mPlayLists;
-    private ArrayList<Model> mSelectedLists;
+    private ArrayList<Model> mSelectedLists = new ArrayList<>();
     public int currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
 
     public boolean isYuvDownload = false;
@@ -162,9 +165,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         this.mRemoteCam = mRemoteCam;
     }
 
+    //存放计算后的单元格相关信息
+    @Override
+    public void onAttach(Activity activity) {
+        Log.e(TAG, "onAttach: ");
+        super.onAttach(activity);
+        try {
+            mListener = (IFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement IFragmentListener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: ");
         // retain this fragment
         setRetainInstance(true);
     }
@@ -172,6 +188,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
         initData();
@@ -193,8 +210,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         Collections.addAll(urlsList, Images.imageThumbUrls);
         Collections.addAll(urlVideosList, Videos.videosThumbUrls);
 
-        mPlayLists = new ArrayList<>();
-        mSelectedLists = new ArrayList<>();
+//        mPlayLists = new ArrayList<>();
+//        mSelectedLists = new ArrayList<>();
 
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -298,6 +315,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             Log.e(TAG, e.getMessage());
         }
         Collections.sort(models, new order());
+//        if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO && models.size() > 0) {
+//            models.remove(0);
+//        }
         mPlayLists = models;
         if (getActivity() != null) {
             mAdapter = new PhotoWallAdapter(getActivity(), 0, mPlayLists, mGridViewList);
@@ -352,23 +372,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         mSelectedLists.clear();
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
-             mAdapter.isSelectedMap.clear();
+            mAdapter.isSelectedMap.clear();
 
         }
     }
+
 
     public void showSD() {
 
         listDirContents(mPWD);
     }
-
-
-    //存放计算后的单元格相关信息
     class ColumnInfo {
         //单元格宽度。
         public int width = 0;
         //每行所能容纳的单元格数量。
         public int countInRow = 0;
+
     }
 
     /**
@@ -403,44 +422,38 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (IFragmentListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement IFragmentListener");
-        }
-    }
-
-    @Override
     public void onPause() {
+        Log.e(TAG, "onPause: ");
         super.onPause();
         mAdapter.fluchCache();
     }
 
     @Override
     public void onStop() {
+        Log.e(TAG, "onStop: ");
         super.onStop();
+        cancelMultiChoose();
     }
 
     @Override
     public void onDestroyView() {
+        Log.e(TAG, "onDestroyView: ");
         super.onDestroyView();
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
-//        mAdapter.cancelAllTasks();
+        mAdapter.cancelAllTasks();
+
     }
 
     @Override
     public void onDetach() {
         Log.e(TAG, "onDetach: ");
         super.onDetach();
-        if (mAdapter != null) {
-            mAdapter.cancelAllTasks();
-            mAdapter.clear();
-        }
+//        if (mAdapter != null) {
+//            mAdapter.cancelAllTasks();
+//            mAdapter.clear();
+//        }
         mListener = null;
-        cancelMultiChoose();
     }
 
     @Override
@@ -630,7 +643,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          * 记录所有正在下载或等待下载的任务。
          */
         private Set<BitmapWorkerTask> taskCollection;
-        private Set<YuvBitmapWorkerTask> taskCollection1;
+        private Set<YuvBitmapWorkerTaskCashe> taskCollection1;
 
         /**
          * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
@@ -666,7 +679,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             mPhotoWall = photoWall;
             isSelectedMap = new SparseBooleanArray();
             taskCollection = new HashSet<BitmapWorkerTask>();
-            taskCollection1 = new HashSet<YuvBitmapWorkerTask>();
+            taskCollection1 = new HashSet<YuvBitmapWorkerTaskCashe>();
             // 获取应用程序最大可用内存
             int maxMemory = (int) Runtime.getRuntime().maxMemory();
             int cacheSize = maxMemory / 8;
@@ -806,7 +819,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     }
                     Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
                     if (bitmap == null) {
-                        YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
+                        YuvBitmapWorkerTaskCashe task1 = new YuvBitmapWorkerTaskCashe();
                         taskCollection1.add(task1);
                         task1.execute(imageUrl);
                     } else {
@@ -851,7 +864,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             try {
                 Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
                 if (bitmap == null) {
-                    YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
+                    YuvBitmapWorkerTaskCashe task1 = new YuvBitmapWorkerTaskCashe();
                     taskCollection1.add(task1);
                     task1.execute(imageUrl);
                 } else {
@@ -875,7 +888,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
 
             if (taskCollection1 != null) {
-                for (YuvBitmapWorkerTask task1 : taskCollection1) {
+                for (YuvBitmapWorkerTaskCashe task1 : taskCollection1) {
                     task1.cancel(false);
                 }
             }
@@ -1017,6 +1030,119 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 return bitmap;
             }
         }
+
+        class YuvBitmapWorkerTaskCashe extends AsyncTask<String, Void, Bitmap> {
+
+            private String imageUrl;
+
+            @Override
+            protected Bitmap doInBackground(String... params) {
+                imageUrl = params[0];
+                FileDescriptor fileDescriptor = null;
+                FileInputStream fileInputStream = null;
+                DiskLruCache.Snapshot snapShot = null;
+                try {
+                    // 生成图片URL对应的key
+                    final String key = hashKeyForDisk(imageUrl);
+                    // 查找key对应的缓存
+                    snapShot = mDiskLruCache.get(key);
+                    if (snapShot == null) {
+                        // 如果没有找到对应的缓存，则准备从网络上请求数据，并写入缓存
+                        DiskLruCache.Editor editor = mDiskLruCache.edit(key);
+                        if (editor != null) {
+                            OutputStream outputStream = editor.newOutputStream(0);
+                            if (downloadUrlToStreamCashe(imageUrl, outputStream)) {
+                                editor.commit();
+                            } else {
+                                editor.abort();
+                            }
+                        }
+                        // 缓存被写入后，再次查找key对应的缓存
+                        snapShot = mDiskLruCache.get(key);
+                    }
+                    if (snapShot != null) {
+                        fileInputStream = (FileInputStream) snapShot.getInputStream(0);
+                        fileDescriptor = fileInputStream.getFD();
+                    }
+                    // 将缓存数据解析成Bitmap对象
+                    Bitmap bitmap = null;
+                    if (fileDescriptor != null) {
+                        bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                    }
+                    if (bitmap != null) {
+                        // 将Bitmap对象添加到内存缓存当中
+                        addBitmapToMemoryCache(params[0], bitmap);
+                    }
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fileDescriptor == null && fileInputStream != null) {
+                        try {
+                            fileInputStream.close();
+                        } catch (IOException e) {
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                if (imageView != null && bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+                taskCollection1.remove(this);
+            }
+
+            private boolean downloadUrlToStreamCashe(String param, OutputStream outputStream) {
+                Log.e(TAG, "downloadYuvBitmap: 开始");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                BufferedOutputStream out = null;
+                BufferedInputStream in = null;
+                Bitmap bitmap = null;
+                mRemoteCam.getThumb(param);
+                while (!isYuvDownload) {
+                    if (isThumbGetFail) {
+                        // TODO: 2018/1/9 此时bitmap如何处理
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
+                        isThumbGetFail = false;
+                        return false;
+                    }
+                }
+                isYuvDownload = false;
+                Log.e(TAG, "downloadYuvBitmap: 接收到数据");
+                bitmap = mRemoteCam.getDataChannel().rxYuvStream2();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
+                in = new BufferedInputStream(inputimage, 8 * 1024);
+                out = new BufferedOutputStream(outputStream, 8 * 1024);
+                int b;
+                try {
+                    while ((b = in.read()) != -1) {
+                        out.write(b);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                        }
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return true;
+            }
+        }
+
 
         /**
          * 异步下载图片的任务。

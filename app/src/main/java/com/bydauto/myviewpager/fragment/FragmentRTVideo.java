@@ -430,7 +430,7 @@ public class FragmentRTVideo extends Fragment {
                 if (isMicOn) {
                     showToastTips("关闭录音！");
                 } else {
-                    showToastTips("开启录像！");
+                    showToastTips("开启录音！");
                 }
                 if (mListener != null) {
                     isMicOn = !isMicOn;

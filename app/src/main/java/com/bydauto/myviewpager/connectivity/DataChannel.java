@@ -240,4 +240,80 @@ public class DataChannel {
         }
         return bitmap;
     }
+
+
+    public ByteArrayOutputStream rxYuvStreamCashe() {
+        int total = 0;
+        int width = 160;
+        int height = 90;
+        int size = 34560;
+        Bitmap bitmap = null;
+        MessageDigest digest = null;
+        try {
+            byte[] yuvArray = new byte[size];
+            byte[] yuvArray1 = new byte[160 * 90 * 2];
+            byte[] yuvArray2 = new byte[160 * 90 * 2];
+//			FileOutputStream out = new FileOutputStream(dstPath);
+            int bytes;
+            try {
+                digest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+
+//			mListener.onChannelEvent(IChannelListener.DATA_CHANNEL_EVENT_GET_START, dstPath);
+            while (total < size) {
+                try {
+                    bytes = mInputStream.read(yuvArray, total, size - total);
+                    Log.e(TAG, "rxYuvStream2: bytes = " + bytes);
+                    if (bytes > 0) {
+                        total += bytes;
+                    } else {
+                        Log.e(TAG, "rxYuvStream2: bytes <= 0");
+                        break;
+                    }
+                    Log.e(TAG, "rxYuvStream2: mInputStream.read");
+                    if (total == size) {
+                        digest.update(yuvArray, 0, bytes);
+                        BigInteger bigInt = new BigInteger(1, digest.digest());
+                        String bitIntString = "00" + bigInt.toString(16);
+                        String bitIntString1 = bitIntString.substring(bitIntString.length() - 32);
+                        Log.e(TAG, "rxYUY2Stream: bigInt.toString(16) = " + bigInt.toString(16));
+                        Log.e(TAG, "rxYUY2Stream: bitIntString1       = " + bitIntString1);
+//                        Log.e(TAG, "rxYUY2Stream: 原md5 =               " + md5);
+                        for (int i = 0; i < 90 * 2; i++) {
+                            System.arraycopy(yuvArray, 192 * i, yuvArray1, 160 * i, 160);
+                        }
+
+                        for (int j = 0; j < 160 * 90; j++) {
+                            yuvArray2[2 * j] = yuvArray1[j];
+                            yuvArray2[2 * j + 1] = yuvArray1[160 * 90 + j];
+                        }
+
+                        YuvImage yuvImage = new YuvImage(yuvArray2, ImageFormat.YUY2, width, height, null);
+
+                        if (yuvArray2 != null) {
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, stream);
+//                            bitmap = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                            return stream;
+//                            try {
+//                                stream.close();
+//                            } catch (IOException e) {
+//                                // TODO Auto-generated catch block
+//                                e.printStackTrace();
+//                            }
+                        }
+                    }
+                } catch (SocketTimeoutException e) {
+                }
+            }
+//			out.close();
+//            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_TEST, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
