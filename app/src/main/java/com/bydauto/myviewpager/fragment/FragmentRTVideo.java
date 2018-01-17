@@ -30,6 +30,10 @@ import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,7 +88,7 @@ public class FragmentRTVideo extends Fragment {
 
     private Runnable runnable;
     private Handler mHandler = new Handler();
-// {
+    // {
 //        @Override
 //        public void handleMessage(Message msg) {
 ////            super.handleMessage(msg);
@@ -122,7 +126,7 @@ public class FragmentRTVideo extends Fragment {
 
         initData();
 
-        runnable = new Runnable( ) {
+      /*  runnable = new Runnable( ) {
             @Override
             public void run ( ) {
                 tvTimeOfSv.setText(getTime(++seconds));
@@ -130,7 +134,7 @@ public class FragmentRTVideo extends Fragment {
                 //postDelayed(this,2000)方法安排一个Runnable对象到主线程队列中
             }
         };
-
+*/
         return view;
     }
 
@@ -456,12 +460,16 @@ public class FragmentRTVideo extends Fragment {
 
         int second = Integer.parseInt(time);
         getTime(second);
-//        tvTimeOfSv.setVisibility(View.VISIBLE);
-//        ivIcRecord.setVisibility(View.VISIBLE);
+
+        tvTimeOfSv.setVisibility(View.VISIBLE);
+        ivIcRecord.setVisibility(View.VISIBLE);
 
 //        Timer timer = new Timer();
 //        timer.schedule(new RecordTimeTask(), 1000);
-        mHandler.postDelayed(runnable,1000);
+        /*mHandler.postDelayed(runnable,1000);*/
+
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(new RecordTimeTask(),0, 1000, TimeUnit.MILLISECONDS);
 
     }
 
@@ -492,16 +500,28 @@ public class FragmentRTVideo extends Fragment {
     }
 
 
-//    private class RecordTimeTask extends TimerTask {
-//        @Override
-//        public void run() {
-//            String mTime = getTime(++seconds);
+    private class RecordTimeTask extends TimerTask {
+        @Override
+        public void run() {
 //            Message msg = new Message();
 //            Bundle bundle = new Bundle();
 //            bundle.putString("mTime", mTime);
 //            msg.setData(bundle);
 //            mHandler.sendMessage(msg);
-//        }
-//    }
+            final String mTime = getTime(++seconds);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+
+//                tvTimeOfSv.setVisibility(View.VISIBLE);
+//                ivIcRecord.setVisibility(View.VISIBLE);
+//                Log.e(TAG, "getTime: tvTimeOfSv.setVisibility");
+                    tvTimeOfSv.setText(mTime);
+                }
+            });
+        }
+    }
 
 }

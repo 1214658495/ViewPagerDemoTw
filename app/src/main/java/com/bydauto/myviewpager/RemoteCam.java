@@ -346,6 +346,7 @@ public class RemoteCam
             }
         });
     }*/
+
     public void getFile(final String path) {
         int pos = path.lastIndexOf('/');
         mGetFileName = path.substring(pos+1, path.length());
@@ -833,8 +834,14 @@ public class RemoteCam
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_FILE:
                 size = Integer.parseInt((String) param);
-                path = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS) + "/" + mGetFileName;
+                /*path = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS) + "/" + mGetFileName;*/
+                String dirName = Environment.getExternalStorageDirectory() + "/" + "行车记录仪";
+                File dir = new File(dirName);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                path = dirName + "/" + mGetFileName;
                 mDataChannel.getFile(path, size);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_PUT_FILE:

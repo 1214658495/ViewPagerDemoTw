@@ -9,9 +9,13 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -39,15 +43,14 @@ import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
 import com.bydauto.myviewpager.ActivityImagesViewPager;
-import com.bydauto.myviewpager.Images;
 import com.bydauto.myviewpager.Model;
 import com.bydauto.myviewpager.R;
 import com.bydauto.myviewpager.RemoteCam;
 import com.bydauto.myviewpager.ServerConfig;
-import com.bydauto.myviewpager.Videos;
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
 import com.bydauto.myviewpager.view.MyDialog;
+import com.bydauto.myviewpager.view.ProgressDialogFragment;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import org.json.JSONArray;
@@ -64,13 +67,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -138,8 +140,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     private ArrayList<String> urlsList;
     private ArrayList<String> urlVideosList;
-    private ArrayList<String> selectedUrlsList;
-    private ArrayList<Integer> selectedIntsList;
 
     private RemoteCam mRemoteCam;
     private String mPWD;
@@ -152,6 +152,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public boolean isYuvDownload = false;
     public boolean isThumbGetFail = false;
     private MyDialog myDialogTest;
+    private ProgressDialogFragment progressDialogFragment;
 
 
     public static FragmentPlaybackList newInstance() {
@@ -204,11 +205,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         } else {
             mGridViewList.setAdapter(mAdapter);
         }
-        urlsList = new ArrayList<>();
-        urlVideosList = new ArrayList<>();
-        selectedUrlsList = new ArrayList<>();
-        Collections.addAll(urlsList, Images.imageThumbUrls);
-        Collections.addAll(urlVideosList, Videos.videosThumbUrls);
 
 //        mPlayLists = new ArrayList<>();
 //        mSelectedLists = new ArrayList<>();
@@ -218,10 +214,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             //屏幕高度
-//         screenHeight = display.getHeight();
             screenHeight = dm.heightPixels;
             //屏幕宽度
-//         screenWidth = display.getWidth();
             screenWidth = dm.widthPixels;
         } else {
             screenHeight = dm.heightPixels;
@@ -315,9 +309,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             Log.e(TAG, e.getMessage());
         }
         Collections.sort(models, new order());
-//        if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO && models.size() > 0) {
-//            models.remove(0);
-//        }
+        if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO && models.size() > 0) {
+            models.remove(0);
+        }
         mPlayLists = models;
         if (getActivity() != null) {
             mAdapter = new PhotoWallAdapter(getActivity(), 0, mPlayLists, mGridViewList);
@@ -382,6 +376,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
         listDirContents(mPWD);
     }
+
     class ColumnInfo {
         //单元格宽度。
         public int width = 0;
@@ -481,8 +476,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
             } else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
-//                intent.putStringArrayListExtra("mUrlsList", urlsList);
-//                intent.putExtra("mPhotoList",mPlayLists);
                 intent.putExtra("mPhotoList", mPlayLists);
                 intent.putExtra("position", i);
                 startActivity(intent);
@@ -548,6 +541,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             case R.id.btn_share:
                 break;
             case R.id.btn_export:
+                if (mSelectedLists.size() > 0) {
+                    mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE_MULTI, mSelectedLists);
+                    mListener.onFragmentAction(IFragmentListener.ACTION_FS_DOWNLOAD,null);
+                } else {
+                    // TODO: 2018/1/12 后续调用主函数的showdialog方法
+                    myDialogTest = MyDialog.newInstance(1, "请选择要下载的文件");
+                    myDialogTest.show(getActivity().getFragmentManager(), "selected_delete");
+                }
+
+                isMultiChoose = false;
+                llEditItemBar.setVisibility(View.INVISIBLE);
+                rgGroupDetail.setVisibility(View.VISIBLE);
+                ibSearch.setVisibility(View.VISIBLE);
+                btnSelectall.setChecked(false);
+                mSelectedLists.clear();
+                mAdapter.isSelectedMap.clear();
                 break;
             case R.id.btn_delete:
                 if (mSelectedLists.size() > 0) {
@@ -605,7 +614,20 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-        myDialogTest = MyDialog.newInstance(2, "正在搜索");
+        progressDialogFragment = ProgressDialogFragment.newInstance("正在搜索...");
+        progressDialogFragment.show(getActivity().getFragmentManager(),"text");
+        progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
+            @Override
+            public void okButtonClick() {
+
+            }
+
+            @Override
+            public void cancelButtonClick() {
+
+            }
+        });
+        /*myDialogTest = MyDialog.newInstance(2, "正在搜索");
         myDialogTest.show(getActivity().getFragmentManager(), "test");
         myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
             @Override
@@ -617,7 +639,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             public void cancelButtonClick() {
 
             }
-        });
+        });*/
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
     }
 
@@ -642,7 +664,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         /**
          * 记录所有正在下载或等待下载的任务。
          */
-        private Set<BitmapWorkerTask> taskCollection;
+      /*  private Set<BitmapWorkerTask> taskCollection;*/
         private Set<YuvBitmapWorkerTaskCashe> taskCollection1;
 
         /**
@@ -678,8 +700,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             mArrayList = arrayList;
             mPhotoWall = photoWall;
             isSelectedMap = new SparseBooleanArray();
-            taskCollection = new HashSet<BitmapWorkerTask>();
-            taskCollection1 = new HashSet<YuvBitmapWorkerTaskCashe>();
+            /*taskCollection = new HashSet<>();*/
+            taskCollection1 = new HashSet<>();
             // 获取应用程序最大可用内存
             int maxMemory = (int) Runtime.getRuntime().maxMemory();
             int cacheSize = maxMemory / 8;
@@ -767,32 +789,21 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
 //                /tmp/SD0/NORMAL/2018-01-03-17-58-13.MP4
                     url = "/tmp/SD0/NORMAL/" + model.getName();
+//                    url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+//                            model.getName();
                 } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                     url = "/tmp/SD0/EVENT/" + model.getName();
+//                    url = "http://" + ServerConfig.HOST + "/SD0/EVENT/" +
+//                            model.getName();
                 }
                 imageView.setTag(url);
                 setImageView(url, imageView);
                 loadBitmaps(imageView, url);
+//                long interval = 5000 * 1000;
+//                RequestOptions options = new RequestOptions().frame(interval);
+//                Glide.with(mContext).asBitmap().load(url).apply(options).into(imageView);
             }
 
-//		final ImageView imageView ;= com.bydauto.myviewpager.view.findViewById(R.id.photo);
-            /*ImageView imageView;*/
-
-//  if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO ||
-//                currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-           /* imageView = view.findViewById(R.id.iv_videoPhoto);*/
-//        }
-//        else if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
-//            imageView = com.bydauto.myviewpager.view.findViewById(R.id.photo);
-//        }
-//		if (imageView.getLayoutParams().height != mItemHeight) {
-//			imageView.getLayoutParams().height = mItemHeight;
-//		}
-            // 给ImageView设置一个Tag，保证异步加载图片时不会乱序
-//            imageView.setTag(url);
-//            imageView.setImageResource(R.drawable.empty_photo);
-//            loadBitmaps(imageView, url);
-//            Glide.with(mContext).load(url).into(imageView);
             return view;
         }
 
@@ -806,7 +817,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
         }
 
-        private void loadBitmaps(int firstVisibleItem, int visibleItemCount) {
+      /*  private void loadBitmaps(int firstVisibleItem, int visibleItemCount) {
             try {
                 for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++) {
                     Model model = mArrayList.get(i);
@@ -823,7 +834,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         taskCollection1.add(task1);
                         task1.execute(imageUrl);
                     } else {
-                        ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                        ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
                         if (imageView != null && bitmap != null) {
                             imageView.setImageBitmap(bitmap);
                         }
@@ -832,7 +843,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         /**
          * 将一张图片存储到LruCache中。
@@ -863,6 +874,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         public void loadBitmaps(ImageView imageView, String imageUrl) {
             try {
                 Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
+//                Bitmap bitmap = createVideoThumbnail(imageUrl,100,100);
                 if (bitmap == null) {
                     YuvBitmapWorkerTaskCashe task1 = new YuvBitmapWorkerTaskCashe();
                     taskCollection1.add(task1);
@@ -877,15 +889,43 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
         }
 
+        private Bitmap createVideoThumbnail(String url, int width, int height) {
+            Bitmap bitmap = null;
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            int kind = MediaStore.Video.Thumbnails.MINI_KIND;
+            try {
+                if (Build.VERSION.SDK_INT >= 14) {
+                    retriever.setDataSource(url, new HashMap<String, String>());
+                } else {
+                    retriever.setDataSource(url);
+                }
+                bitmap = retriever.getFrameAtTime();
+            } catch (IllegalArgumentException ex) {
+                // Assume this is a corrupt video file
+            } catch (RuntimeException ex) {
+                // Assume this is a corrupt video file.
+            } finally {
+                try {
+                    retriever.release();
+                } catch (RuntimeException ex) {
+                    // Ignore failures while cleaning up.
+                }
+            }
+            if (kind == MediaStore.Images.Thumbnails.MICRO_KIND && bitmap != null) {
+                bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+            }
+            return bitmap;
+        }
+
         /**
          * 取消所有正在下载或等待下载的任务。
          */
         public void cancelAllTasks() {
-            if (taskCollection != null) {
+           /* if (taskCollection != null) {
                 for (BitmapWorkerTask task : taskCollection) {
                     task.cancel(false);
                 }
-            }
+            }*/
 
             if (taskCollection1 != null) {
                 for (YuvBitmapWorkerTaskCashe task1 : taskCollection1) {
@@ -994,6 +1034,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             protected Bitmap doInBackground(String... params) {
                 Log.e(TAG, "----YuvBitmapWorkerTaskdoInBackground: ");
                 imageUrl = params[0];
+
+
                 Bitmap bitmap = downloadYuvBitmap(params[0]);
                 if (bitmap != null) {
                     addBitmapToMemoryCache(params[0], bitmap);
@@ -1004,7 +1046,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
-                ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
                 if (imageView != null && bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                 }
@@ -1012,18 +1054,31 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
 
             private Bitmap downloadYuvBitmap(String param) {
+                int timecount = 0;
                 Log.e(TAG, "downloadYuvBitmap: 开始");
                 Bitmap bitmap = null;
                 mRemoteCam.getThumb(param);
                 while (!isYuvDownload) {
                     if (isThumbGetFail) {
                         // TODO: 2017/10/26 loadfail how to deal
-//                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
                         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
                         isThumbGetFail = false;
                         return bitmap;
+//                        break;
+                    }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    timecount++;
+                    if (timecount == 3) {
+//                        break;
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
+                        return bitmap;
                     }
                 }
+
                 isYuvDownload = false;
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
                 bitmap = mRemoteCam.getDataChannel().rxYuvStream2();
@@ -1090,7 +1145,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
-                ImageView imageView = (ImageView) mPhotoWall.findViewWithTag(imageUrl);
+                ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
                 if (imageView != null && bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                 }
@@ -1103,6 +1158,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 BufferedOutputStream out = null;
                 BufferedInputStream in = null;
                 Bitmap bitmap = null;
+                int timecount = 0;
                 mRemoteCam.getThumb(param);
                 while (!isYuvDownload) {
                     if (isThumbGetFail) {
@@ -1110,6 +1166,17 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
                         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
                         isThumbGetFail = false;
+                        return false;
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    timecount++;
+                    if (timecount == 3) {
+//                        break;
                         return false;
                     }
                 }
@@ -1127,7 +1194,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     try {
                         if (out != null) {
                             out.close();
@@ -1139,21 +1206,20 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         e.printStackTrace();
                     }
                 }
-                return true;
+                return false;
             }
         }
-
 
         /**
          * 异步下载图片的任务。
          *
          * @author guolin
          */
-        class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+       /* class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
 
-            /**
-             * 图片的URL地址
-             */
+            *//**
+         * 图片的URL地址
+         *//*
             private String imageUrl;
 
             @Override
@@ -1219,12 +1285,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 taskCollection.remove(this);
             }
 
-            /**
-             * 建立HTTP请求，并获取Bitmap对象。
-             *
-             * @param urlString 图片的URL地址
-             * @return 解析后的Bitmap对象
-             */
+            *//**
+         * 建立HTTP请求，并获取Bitmap对象。
+         *
+         * @param urlString 图片的URL地址
+         * @return 解析后的Bitmap对象
+         *//*
             private boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
                 HttpURLConnection urlConnection = null;
                 BufferedOutputStream out = null;
@@ -1270,7 +1336,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
 
         }
-
+*/
     }
 
 
