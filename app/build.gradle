@@ -34,10 +34,10 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.5.0'
     compile 'com.qiniu:happy-dns:0.2.13'
 
-    implementation 'com.liulishuo.filedownloader:library:1.6.9'
-
-    compile 'com.arialyy.aria:aria-core:3.3.10'
-    annotationProcessor 'com.arialyy.aria:aria-compiler:3.3.10'
+//    implementation 'com.liulishuo.filedownloader:library:1.6.9'
+//
+//    compile 'com.arialyy.aria:aria-core:3.3.10'
+//    annotationProcessor 'com.arialyy.aria:aria-compiler:3.3.10'
 
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
 

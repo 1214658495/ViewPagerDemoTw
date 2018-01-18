@@ -2,6 +2,7 @@ package com.bydauto.myviewpager.utils;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +14,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by byd_tw on 2018/1/17.
@@ -34,8 +37,8 @@ public class DownloadUtil {
     }
 
     /**
-     * @param url 下载连接
-     * @param saveDir 储存下载文件的SDCard目录
+     * @param url      下载连接
+     * @param saveDir  储存下载文件的SDCard目录
      * @param listener 下载监听
      */
     public void download(final String url, final String saveDir, final OnDownloadListener listener) {
@@ -46,6 +49,7 @@ public class DownloadUtil {
                 // 下载失败
                 listener.onDownloadFailed();
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 listener.onDownloadStart();
@@ -72,7 +76,11 @@ public class DownloadUtil {
                     // 下载完成
                     listener.onDownloadSuccess();
                 } catch (Exception e) {
-                    listener.onDownloadFailed();
+                    if (e.toString().contains("closed")) {
+                    } else {
+                        listener.onDownloadFailed();
+
+                    }
                 } finally {
                     try {
                         if (is != null) {
@@ -91,11 +99,15 @@ public class DownloadUtil {
         });
     }
 
+    public void cancelDownload() {
+        Log.e(TAG, "cancelDownload: ");
+        okHttpClient.dispatcher().cancelAll();
+    }
+
     /**
      * @param saveDir
      * @return
-     * @throws IOException
-     * 判断下载目录是否存在
+     * @throws IOException 判断下载目录是否存在
      */
     private String isExistDir(String saveDir) throws IOException {
         // 下载位置
@@ -109,8 +121,7 @@ public class DownloadUtil {
 
     /**
      * @param url
-     * @return
-     * 从下载连接中解析出文件名
+     * @return 从下载连接中解析出文件名
      */
     @NonNull
     private String getNameFromUrl(String url) {
@@ -124,8 +135,7 @@ public class DownloadUtil {
         void onDownloadSuccess();
 
         /**
-         * @param progress
-         * 下载进度
+         * @param progress 下载进度
          */
         void onDownloading(int progress);
 

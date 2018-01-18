@@ -153,6 +153,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public boolean isThumbGetFail = false;
     private MyDialog myDialogTest;
     private ProgressDialogFragment progressDialogFragment;
+    private Fragment listFragment;
 
 
     public static FragmentPlaybackList newInstance() {
@@ -451,6 +452,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         mListener = null;
     }
 
+    public Fragment getListFragment() {
+        return listFragment;
+    }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!isMultiChoose) {
@@ -462,7 +467,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
+
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+                listFragment = fragmentVideoDetail;
+//                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
 //                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
 //                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
@@ -614,19 +622,19 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-        progressDialogFragment = ProgressDialogFragment.newInstance("正在搜索...");
-        progressDialogFragment.show(getActivity().getFragmentManager(),"text");
-        progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
-            @Override
-            public void okButtonClick() {
-
-            }
-
-            @Override
-            public void cancelButtonClick() {
-
-            }
-        });
+//        progressDialogFragment = ProgressDialogFragment.newInstance("正在搜索...");
+//        progressDialogFragment.show(getActivity().getFragmentManager(),"text");
+//        progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
+//            @Override
+//            public void okButtonClick() {
+//
+//            }
+//
+//            @Override
+//            public void cancelButtonClick() {
+//
+//            }
+//        });
         /*myDialogTest = MyDialog.newInstance(2, "正在搜索");
         myDialogTest.show(getActivity().getFragmentManager(), "test");
         myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
@@ -665,7 +673,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          * 记录所有正在下载或等待下载的任务。
          */
       /*  private Set<BitmapWorkerTask> taskCollection;*/
-        private Set<YuvBitmapWorkerTaskCashe> taskCollection1;
+        private Set<YuvBitmapWorkerTask> taskCollection1;
 
         /**
          * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
@@ -876,7 +884,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
 //                Bitmap bitmap = createVideoThumbnail(imageUrl,100,100);
                 if (bitmap == null) {
-                    YuvBitmapWorkerTaskCashe task1 = new YuvBitmapWorkerTaskCashe();
+                    YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
                     taskCollection1.add(task1);
                     task1.execute(imageUrl);
                 } else {
@@ -928,7 +936,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }*/
 
             if (taskCollection1 != null) {
-                for (YuvBitmapWorkerTaskCashe task1 : taskCollection1) {
+                for (YuvBitmapWorkerTask task1 : taskCollection1) {
                     task1.cancel(false);
                 }
             }
@@ -1164,7 +1172,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     if (isThumbGetFail) {
                         // TODO: 2018/1/9 此时bitmap如何处理
 //                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
                         isThumbGetFail = false;
                         return false;
                     }
