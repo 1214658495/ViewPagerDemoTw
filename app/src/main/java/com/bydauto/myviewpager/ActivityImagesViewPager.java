@@ -58,7 +58,6 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
     private MyImagesPagerAdapter myImagesPagerAdapter;
 
-    private ArrayList<String> urlList;
     private ArrayList<Model> photoLists;
 
     private int currentItem;
@@ -127,7 +126,6 @@ public class ActivityImagesViewPager extends AppCompatActivity {
     }
 
     private void initData() {
-        urlList = new ArrayList<>();
         photoLists = new ArrayList<>();
         Intent intent = getIntent();
 //        urlList = intent.getStringArrayListExtra("mUrlsList");
@@ -198,7 +196,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
                         // TODO: 2017/11/29  删除照片
 //                        myImagesPagerAdapter.destroyItem(vpViewPager,currentItem,vpViewPager.);
 //                        vpViewPager.removeViewAt(vpViewPager.getCurrentItem());
-                        urlList.remove(currentItem);
+                        photoLists.remove(currentItem);
                         myImagesPagerAdapter.notifyDataSetChanged();
                     }
 

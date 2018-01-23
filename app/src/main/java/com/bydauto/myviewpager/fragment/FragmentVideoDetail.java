@@ -290,6 +290,7 @@ public class FragmentVideoDetail extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        getFragmentManager().beginTransaction().addToBackStack(null);
     }
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
@@ -357,7 +358,9 @@ public class FragmentVideoDetail extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
-                getFragmentManager().beginTransaction().remove(this).commit();
+//                当未添加到返回栈时使用如下
+//                getFragmentManager().beginTransaction().remove(this).commit();
+                getFragmentManager().popBackStack();
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();

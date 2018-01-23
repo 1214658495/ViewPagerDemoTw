@@ -1,6 +1,9 @@
 package com.bydauto.myviewpager.fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -133,10 +136,28 @@ public class FragmentSetting extends Fragment {
             case R.id.btn_firmwareVersion:
                 break;
             case R.id.btn_appVersion:
+                String ver = getAppVersion(getContext());
+                myDialog = MyDialog.newInstance(1, "App版本" + ver);
+                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * 获取当前应用程序的版本号。
+     */
+    public String getAppVersion(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),
+                    0);
+//            return info.versionCode;
+            return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "1.0.0";
     }
 
 }

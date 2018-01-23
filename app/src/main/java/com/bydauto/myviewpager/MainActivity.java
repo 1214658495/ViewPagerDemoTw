@@ -2,14 +2,18 @@ package com.bydauto.myviewpager;
 
 //import android.app.FragmentLoading;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Process;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -68,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @BindView(R.id.btn_back)
     LightButton btnBack;
 
-    //    @BindView(R.id.btn_test)
-//    LightButton btnTest;
     //    @BindView(R.id.vp)
 //    ViewPager vp;
 //    private ArrayList<ImageView> imageLists;
@@ -96,11 +98,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     String dirName = Environment.getExternalStorageDirectory() + "/" + "行车记录仪/";
     private ProgressDialogFragment progressDialogFragment;
     private Fragment mainCurrentFragment;
+    public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestPermission();
         ButterKnife.bind(this);
 //        Aria.download(this).register();
 //        FileDownloader.setup(getApplicationContext());
@@ -255,14 +259,23 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
     }
 
+    public void setCurrentFragment(Fragment fragment) {
+        mainCurrentFragment = fragment;
+
+    }
+
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
-        mRemoteCam.stopSession();
-        finish();
-        Log.e(TAG, "kill the process to force fresh launch next time");
-        Process.killProcess(Process.myPid());
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            super.onBackPressed();
+            mRemoteCam.stopSession();
+            finish();
+            Log.e(TAG, "kill the process to force fresh launch next time");
+            Process.killProcess(Process.myPid());
+        } else {
+            getFragmentManager().popBackStack();
+        }
     }
 
     @Override
@@ -536,15 +549,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         for (int i = 0; i < selectedCounts; i++) {
             if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
 //                mGetFileName = "/tmp/SD0/NORMAL/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/NORMAL/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" + selectedLists.get(i).getName();
             } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
 //                mGetFileName = "/tmp/SD0/EVENT/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/EVENT/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/EVENT/" + selectedLists.get(i).getName();
             } else {
 //                mGetFileName = "/tmp/SD0/PHOTO/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/PHOTO/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + selectedLists.get(i).getName();
             }
-            doingDownFileCounts++;
+//            doingDownFileCounts++;
+            doingDownFileCounts = i;
             String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
                     + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
             File file = new File(fileName);
@@ -579,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     @Override
                     public void onDownloadSuccess() {
                         Log.e(TAG, "onDownloadSuccess: 下载完成" + mGetFileName);
-                        if (doingDownFileCounts == selectedCounts) {
+                        if (doingDownFileCounts == (selectedCounts - 1)) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -617,7 +631,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     }
                 });
             } else {
-                Toast.makeText(MainActivity.this, "文件已下载", Toast.LENGTH_SHORT).show();
+                if (doingDownFileCounts == (selectedCounts - 1)) {
+                    Toast.makeText(MainActivity.this, "文件已下载", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
@@ -692,6 +708,26 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
         myDialog = MyDialog.newInstance(1, msg);
         myDialog.show(getFragmentManager(), "showTipDialog");
+    }
+
+    public void requestPermission() {
+        //判断当前Activity是否已经获得了该权限
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            //如果App的权限申请曾经被用户拒绝过，就需要在这里跟用户做出解释
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                Toast.makeText(this,"please give me the permission",Toast.LENGTH_SHORT).show();
+                showTipDialog("请打开app的存储权限");
+            } else {
+                //进行权限请求
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        EXTERNAL_STORAGE_REQ_CODE);
+            }
+        }
     }
 
 }

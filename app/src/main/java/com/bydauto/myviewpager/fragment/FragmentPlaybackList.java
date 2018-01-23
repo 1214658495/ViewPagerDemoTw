@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
@@ -35,7 +37,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.byd.lighttextview.LightButton;
@@ -49,6 +50,7 @@ import com.bydauto.myviewpager.RemoteCam;
 import com.bydauto.myviewpager.ServerConfig;
 import com.bydauto.myviewpager.adapter.MyFragmentPagerAdapter;
 import com.bydauto.myviewpager.connectivity.IFragmentListener;
+import com.bydauto.myviewpager.utils.DownloadUtil;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.bydauto.myviewpager.view.ProgressDialogFragment;
 import com.jakewharton.disklrucache.DiskLruCache;
@@ -154,6 +156,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private MyDialog myDialogTest;
     private ProgressDialogFragment progressDialogFragment;
     private Fragment listFragment;
+    private MyDialog myDialog;
+    private int doingDownFileCounts;
+    private Intent shareIntent;
 
 
     public static FragmentPlaybackList newInstance() {
@@ -241,7 +246,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                            mAdapter.clear();
 //                            mAdapter.cancelAllTasks();
 //                        }
-                        Toast.makeText(getContext(), "recordvideo", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "recordvideo", Toast.LENGTH_SHORT).show();
 //                        vpItemPreview.setCurrentItem(0, false);
                         break;
                     case R.id.rb_lockvideo:
@@ -253,7 +258,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                            mAdapter.clear();
 //                            mAdapter.cancelAllTasks();
 //                        }
-                        Toast.makeText(getContext(), "lockvideo", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "lockvideo", Toast.LENGTH_SHORT).show();
 //                        vpItemPreview.setCurrentItem(1, false);
                         break;
                     case R.id.rb_capturephoto:
@@ -458,6 +463,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (!isMultiChoose) {
             Intent intent;
             if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
@@ -468,7 +474,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
 
-                getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+                fragmentTransaction.replace(flVideoPlayPreview.getId(), fragmentVideoDetail, "fragmentVideoDetail");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commitAllowingStateLoss();
                 listFragment = fragmentVideoDetail;
 //                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
@@ -547,11 +555,103 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 btnSelectall.setChecked(false);
                 break;
             case R.id.btn_share:
+//                share("测试",/2018-01-19-06-56-2000.JPG);
+                if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                    shareIntent = null;
+                    final int selectedCount = mSelectedLists.size();
+                    final ArrayList<Uri> localUriList = new ArrayList<>();
+                    for (int i = 0; i < selectedCount; i++) {
+                        doingDownFileCounts = i;
+                        String mGetFileName = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + mSelectedLists.get(i).getName();
+                        final String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
+                                + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
+                        final File file = new File(fileName);
+                        if (!file.exists()) {
+                            final DownloadUtil downloadUtil = DownloadUtil.get();
+                            downloadUtil.download(mGetFileName, "行车记录仪", new DownloadUtil.OnDownloadListener() {
+                                @Override
+                                public void onDownloadSuccess() {
+                                    // TODO: 2018/1/23 此处会异步多次调用，如何处理
+                                    synchronized (this) {
+                                        if (doingDownFileCounts == (selectedCount - 1)) {
+                                            if (progressDialogFragment != null) {
+                                                progressDialogFragment.dismiss();
+                                            }
+                                            localUriList.add(Uri.fromFile(file));
+                                            if (shareIntent == null) {
+                                                shareIntent = new Intent();
+                                                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                                                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
+                                                shareIntent.setType("image/*");
+                                                startActivity(Intent.createChooser(shareIntent, "分享到"));
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onDownloading(final int progress) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (progressDialogFragment != null) {
+                                                progressDialogFragment.setProgressText(progress);
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onDownloadFailed() {
+
+                                }
+
+                                @Override
+                                public void onDownloadStart() {
+                                    synchronized (this) {
+                                        if (progressDialogFragment == null) {
+                                            progressDialogFragment = ProgressDialogFragment.newInstance("正在下载...");
+                                            progressDialogFragment.show(getActivity().getFragmentManager(), "text");
+                                            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
+                                                @Override
+                                                public void okButtonClick() {
+
+                                                }
+
+                                                @Override
+                                                public void cancelButtonClick() {
+                                                    downloadUtil.cancelDownload();
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            localUriList.add(Uri.fromFile(file));
+//                            synchronized (this) {
+                            if (doingDownFileCounts == (selectedCount - 1)) {
+                                if (shareIntent == null) {
+                                    shareIntent = new Intent();
+                                    shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                                    shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
+                                    shareIntent.setType("image/*");
+                                    startActivity(Intent.createChooser(shareIntent, "分享到"));
+                                }
+                            }
+//                            }
+                        }
+                    }
+
+
+                } else {
+                    showTipDialog("视频暂时无法分享！");
+                }
                 break;
             case R.id.btn_export:
                 if (mSelectedLists.size() > 0) {
                     mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE_MULTI, mSelectedLists);
-                    mListener.onFragmentAction(IFragmentListener.ACTION_FS_DOWNLOAD,null);
+                    mListener.onFragmentAction(IFragmentListener.ACTION_FS_DOWNLOAD, null);
                 } else {
                     // TODO: 2018/1/12 后续调用主函数的showdialog方法
                     myDialogTest = MyDialog.newInstance(1, "请选择要下载的文件");
@@ -649,6 +749,35 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
         });*/
 //        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
+    }
+
+    public void showTipDialog(String msg) {
+        if (myDialog != null) {
+            myDialog.dismiss();
+        }
+        if (progressDialogFragment != null) {
+            progressDialogFragment.dismiss();
+        }
+        myDialog = MyDialog.newInstance(1, msg);
+        myDialog.show(getActivity().getFragmentManager(), "showTipDialog");
+    }
+
+    private void share(String content, Uri uri) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        if (uri != null) {
+            //uri 是图片的地址
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setType("image/*");
+            //当用户选择短信时使用sms_body取得文字
+            shareIntent.putExtra("sms_body", content);
+        } else {
+            shareIntent.setType("text/plain");
+        }
+        shareIntent.putExtra(Intent.EXTRA_TEXT, content);
+        //自定义选择框的标题
+        //startActivity(Intent.createChooser(shareIntent, "邀请好友"));
+        //系统默认标题
+        startActivity(shareIntent);
     }
 
     private class order implements Comparator<Model> {

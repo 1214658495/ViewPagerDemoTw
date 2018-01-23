@@ -7,8 +7,8 @@ public class ServerConfig {
 
 	public static final String FIRMWARE_INFO_JSON_ADDRESS = SERVER_HOME + "/hm/firmware_update.json";
 	public static final String FIRMWARE_NAME = "MainActivity.apk";
-	public static final String HOST = "192.168.42.1";
-//	public static final String HOST = "192.168.8.6";
+//	public static final String HOST = "192.168.42.1";
+	public static final String HOST = "192.168.8.6";
 	public static final int RB_RECORD_VIDEO = 0;
 	public static final int RB_LOCK_VIDEO = 1;
 	public static final int RB_CAPTURE_PHOTO = 2;
