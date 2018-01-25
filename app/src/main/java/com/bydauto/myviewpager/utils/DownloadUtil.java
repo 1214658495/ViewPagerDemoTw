@@ -99,6 +99,28 @@ public class DownloadUtil {
         });
     }
 
+    public String getStringContent(String url) {
+        Request request = new Request.Builder().url(url).build();
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+//            String jsonData = response.body().string();
+            byte[] b = response.body().bytes();     //获取数据的bytes
+            String info = new String(b, "GB2312");
+            if (info != null) {
+                return info;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public void cancelDownload() {
         Log.e(TAG, "cancelDownload: ");
         okHttpClient.dispatcher().cancelAll();

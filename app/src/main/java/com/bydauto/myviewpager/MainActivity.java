@@ -3,17 +3,26 @@ package com.bydauto.myviewpager;
 //import android.app.FragmentLoading;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Process;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,15 +37,19 @@ import com.bydauto.myviewpager.connectivity.IFragmentListener;
 import com.bydauto.myviewpager.fragment.FragmentPlaybackList;
 import com.bydauto.myviewpager.fragment.FragmentRTVideo;
 import com.bydauto.myviewpager.fragment.FragmentSetting;
+import com.bydauto.myviewpager.utils.Config;
 import com.bydauto.myviewpager.utils.DownloadUtil;
+import com.bydauto.myviewpager.utils.Utility;
 import com.bydauto.myviewpager.view.MyDialog;
 import com.bydauto.myviewpager.view.ProgressDialogFragment;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -100,11 +113,22 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private Fragment mainCurrentFragment;
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
 
+    private int newVerCode;
+    private String newVerName = "", downloadURL = "", newVerDetail = "";
+    private File updateDir = null;
+    private File updateFile = null;
+    private String newSaveApkName = "";
+    private ProgressDialog prg_dialog;
+    private String connect_err = " ", lastCar = "";
+    private long fileSize, nDownloaded;
+    private Handler handlerUpdate = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermission();
+        checkUpdateThread();
         ButterKnife.bind(this);
 //        Aria.download(this).register();
 //        FileDownloader.setup(getApplicationContext());
@@ -729,5 +753,265 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             }
         }
     }
+
+    private void checkUpdateThread() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                if (getUpdateServer()) {
+                    int verCode = Utility
+                            .getVerCode(MainActivity.this);
+                    if (newVerCode > 1) {
+                        updateHandler.sendEmptyMessage(99);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private boolean getUpdateServer() {
+        try {
+            String url = Utility.UPDATE_DIR + Utility.UPDATE_JSONVER;
+//            String verjson = Utility.getContent(url);
+            String verjson = DownloadUtil.get().getStringContent(url);
+            JSONArray array = new JSONArray(verjson);
+            if (array.length() > 0) {
+                JSONObject obj = array.getJSONObject(0);
+                try {
+                    newVerCode = Integer.parseInt(obj.getString("verCode"));
+                    newVerName = obj.getString("verName");
+                    downloadURL = obj.getString("downloadURL");
+                    newSaveApkName = obj.getString("apkname") + ".apk";
+                    newVerDetail = obj.getString("detail");
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    newVerCode = -1;
+                    newVerName = "";
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            //Log.e("connect to update error", e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 更新当前app
+     */
+    private void updateAppVer() {
+        try {
+            String detail = getVerDetail(newVerDetail);
+            StringBuffer sb = new StringBuffer();
+            sb.append(getString(R.string.appname_tag)).append("\n\n")
+                    .append("V").append(newVerName)
+                    .append(getString(R.string.features)).append("\n")
+                    .append(detail);
+            Dialog dialog = new AlertDialog.Builder(
+                    MainActivity.this)
+                    .setTitle(getString(R.string.strNewerVer))
+                    .setMessage(sb.toString())
+                    // 设置内容
+                    .setPositiveButton(getString(R.string.updateNow),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                  /*  prg_dialog = new ProgressDialog(
+                                            MainActivity.this);
+                                    prg_dialog
+                                            .setTitle(getString(R.string.isDownLoading));
+                                    prg_dialog.setIndeterminate(false);
+                                    prg_dialog.setCancelable(false);
+                                    prg_dialog
+                                            .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    prg_dialog.setMax(100);
+                                    // 获取系统设置
+//                                    downLoadApk(downloadURL);*/
+                                    downloadApkByOkhttp(downloadURL);
+                                }
+                            })
+                    .setNegativeButton(getString(R.string.downloadlater),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    // 点击取消后
+                                    dialog.dismiss();
+                                }
+                            }).create();
+            // 显示对话框
+            dialog.show();
+        } catch (Exception e) {
+            // TODO: handle exception
+            connect_err = e.toString();
+            updateHandler.sendEmptyMessage(Config.ERROR);
+        }
+    }
+
+    /**
+     * 根据中英文解析 版本详细信息
+     *
+     * @param strDetail
+     * @return
+     */
+    private String getVerDetail(String strDetail) {
+
+        int startIndx = 0, endIndx = 0;
+        String strTemp = "";
+        if (strDetail.length() > 10) {
+            Locale local = Locale.getDefault();
+            if (local.getLanguage().equalsIgnoreCase("zh")) {
+                startIndx = strDetail.indexOf("##zh#");
+            }
+            if (local.getLanguage().equalsIgnoreCase("en")) {
+                startIndx = strDetail.indexOf("##en#");
+            }
+            if (startIndx != -1) {
+                endIndx = strDetail.indexOf("##", startIndx + 5);
+                if (endIndx == -1) {
+                    // 英文
+                    strTemp = strDetail.substring(startIndx + 5);
+                } else {// 表示中文
+                    strTemp = strDetail.substring(startIndx + 5, endIndx - 1);
+                }
+            } else {
+                strTemp = "";
+            }
+        }
+
+        return strTemp;
+    }
+
+    private void downloadApkByOkhttp(String downloadURL) {
+//        prg_dialog.show();
+        final DownloadUtil downloadUtil = DownloadUtil.get();
+        downloadUtil.get().download(downloadURL, "行车记录仪", new DownloadUtil.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        showTipDialog("下载完成！");
+//                    }
+//                });
+                if (myDialog != null) {
+                    myDialog.dismiss();
+                }
+                if (progressDialogFragment != null) {
+                    progressDialogFragment.dismiss();
+                }
+                down();
+            }
+
+            @Override
+            public void onDownloading(final int progress) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (progressDialogFragment != null) {
+                            progressDialogFragment.setProgressText(progress);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onDownloadFailed() {
+
+            }
+
+            @Override
+            public void onDownloadStart() {
+                if (myDialog != null) {
+                    myDialog.dismiss();
+                }
+                if (progressDialogFragment == null) {
+                    progressDialogFragment = ProgressDialogFragment.newInstance("正在下载...");
+                    progressDialogFragment.show(getFragmentManager(), "text");
+                    progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
+                        @Override
+                        public void okButtonClick() {
+
+                        }
+
+                        @Override
+                        public void cancelButtonClick() {
+                            downloadUtil.cancelDownload();
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
+    void down() {
+        handlerUpdate.post(new Runnable() {
+            @Override
+            public void run() {
+//                prg_dialog.cancel();
+                update();
+            }
+        });
+    }
+
+    private void update() {
+        String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
+                + "/bluetoothkey.apk";
+        File file = new File(fileName);
+//        if (!updateFile.exists()) {
+//            return;
+//        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(MainActivity.this, BuildConfig
+                    .APPLICATION_ID + "" +
+                    ".fileProvider", file);
+//                    ".fileProvider", updateFile);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
+    }
+
+    private Handler updateHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Intent intent = null;
+            switch (msg.what) {
+//                case Config.DOWNLOAD_VALUE:// 更新下载进度
+//                    prg_dialog.setProgress((int) (nDownloaded * 100 / fileSize));
+//                    break;
+//                case Config.DOWNLOAD_SUCCESS:// 下载完成
+//                    prg_dialog.dismiss();
+//                    break;
+//                case Config.DOWNLOAD_FAIL:
+//                    Toast.makeText(MainActivity.this,
+//                            getString(R.string.strFectch_NewerVer_error),
+//                            Toast.LENGTH_LONG).show();
+//                    prg_dialog.dismiss();
+//                    break;
+                case Config.ERROR:
+                    Toast.makeText(MainActivity.this, connect_err,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                case 99:
+                    updateAppVer();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
 }

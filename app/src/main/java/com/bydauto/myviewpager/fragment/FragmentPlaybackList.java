@@ -558,6 +558,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                share("测试",/2018-01-19-06-56-2000.JPG);
                 if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                     shareIntent = null;
+                    if (progressDialogFragment != null) {
+                        progressDialogFragment = null;
+                    }
                     final int selectedCount = mSelectedLists.size();
                     final ArrayList<Uri> localUriList = new ArrayList<>();
                     for (int i = 0; i < selectedCount; i++) {

@@ -150,14 +150,13 @@ public class FragmentSetting extends Fragment {
      */
     public String getAppVersion(Context context) {
         try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),
-                    0);
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 //            return info.versionCode;
             return info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        return "1.0.0";
+        return "";
     }
 
 }

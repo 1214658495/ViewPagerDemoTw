@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BYD行车记录仪</string>
+    <string name="app_name">行车记录仪</string>
     <string name="setting">设置</string>
     <string name="system">系统</string>
     <string name="memoryCard_format">存储卡格式化</string>
@@ -9,4 +9,11 @@
     <string name="delete">删除</string>
     <string name="selectall">全选</string>
     <string name="exit">再按一次退出程序</string>
+
+    <string name="appname_tag">程序名称: 行车记录仪</string>
+    <string name="features">特性:</string>
+    <string name="strNewerVer">发现新版本，是否立即升级？</string>
+    <string name="updateNow">升级</string>
+    <string name="isDownLoading">正在更新...</string>
+    <string name="downloadlater">取消</string>
 </resources>
