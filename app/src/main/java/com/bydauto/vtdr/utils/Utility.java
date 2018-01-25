@@ -28,8 +28,10 @@ public class Utility {
 	/**************************************************/
 	public static final String UPDATE_DIR = "http://i.byd.com.cn:8099/BYDi/";// i.byd.com.cn
 	// 下载服务器根目录http://i.byd.com.cn:8099/BYDi/
-	public static final String UPDATE_JSONVER = "bluetoothkey.json";
-	public static final String PACKAGE = "com.byd.mybluetoothkey";
+//	public static final String UPDATE_JSONVER = "bluetoothkey.json";
+	public static final String UPDATE_JSONVER = "vtdr.json";
+//	public static final String PACKAGE = "com.byd.mybluetoothkey";
+	public static final String PACKAGE = "com.bydauto.vtdr";
 
 	public static void log(final Class<?> classObject, final String logString) {
 		Log.d(LOG_DEBUG,
@@ -50,7 +52,7 @@ public class Utility {
 		String verName = "";
 		try {
 			verName = context.getPackageManager().getPackageInfo(
-					"com.byd.mybluetoothkey", 0).versionName;
+					"com.bydauto.vtdr", 0).versionName;
 		} catch (NameNotFoundException e) {
 			Log.e("ver_err", e.getMessage());
 		}

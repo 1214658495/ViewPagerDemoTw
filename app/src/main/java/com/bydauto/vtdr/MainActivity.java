@@ -763,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 if (getUpdateServer()) {
                     int verCode = Utility
                             .getVerCode(MainActivity.this);
-                    if (newVerCode > 1) {
+                    if (newVerCode > verCode) {
                         updateHandler.sendEmptyMessage(99);
                     }
                 }
@@ -962,11 +962,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     private void update() {
         String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
-                + "/bluetoothkey.apk";
+                + "/vtdr.apk";
         File file = new File(fileName);
-//        if (!updateFile.exists()) {
-//            return;
-//        }
+        if (!file.exists()) {
+            return;
+        }
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         //判断是否是AndroidN以及更高的版本
