@@ -805,7 +805,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          * 记录所有正在下载或等待下载的任务。
          */
       /*  private Set<BitmapWorkerTask> taskCollection;*/
-        private Set<YuvBitmapWorkerTask> taskCollection1;
+        private Set<YuvBitmapWorkerTaskCashe> taskCollection1;
 
         /**
          * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
@@ -923,7 +923,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                "http://192.168.42.1/SD0/PHOTO/2017-12-20-23-14-0100.JPG"
                 url = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" +
                         model.getName();
-                Glide.with(mContext).load(url).into(imageView);
+                Glide.with(mContext).load(url).thumbnail(0.1f).into(imageView);
 
             } else {
                 if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
@@ -1016,7 +1016,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
 //                Bitmap bitmap = createVideoThumbnail(imageUrl,100,100);
                 if (bitmap == null) {
-                    YuvBitmapWorkerTask task1 = new YuvBitmapWorkerTask();
+                    YuvBitmapWorkerTaskCashe task1 = new YuvBitmapWorkerTaskCashe();
                     taskCollection1.add(task1);
                     task1.execute(imageUrl);
                 } else {
@@ -1068,7 +1068,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }*/
 
             if (taskCollection1 != null) {
-                for (YuvBitmapWorkerTask task1 : taskCollection1) {
+                for (YuvBitmapWorkerTaskCashe task1 : taskCollection1) {
                     task1.cancel(false);
                 }
             }
@@ -1198,6 +1198,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Log.e(TAG, "downloadYuvBitmap: 开始");
                 Bitmap bitmap = null;
                 mRemoteCam.getThumb(param);
+                // TODO: 2018/1/26 加判断已获得了数据
                 while (!isYuvDownload) {
                     if (isThumbGetFail) {
                         // TODO: 2017/10/26 loadfail how to deal
@@ -1221,7 +1222,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
                 isYuvDownload = false;
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
-                bitmap = mRemoteCam.getDataChannel().rxYuvStream2();
+                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
                 return bitmap;
             }
         }
@@ -1322,7 +1323,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 }
                 isYuvDownload = false;
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
-                bitmap = mRemoteCam.getDataChannel().rxYuvStream2();
+                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
                 in = new BufferedInputStream(inputimage, 8 * 1024);
@@ -1346,7 +1347,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         e.printStackTrace();
                     }
                 }
-                return false;
+                return true;
             }
         }
 

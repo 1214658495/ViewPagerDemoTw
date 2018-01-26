@@ -74,7 +74,7 @@ public class DataChannel {
 
     public int cancelPutFile() {
         mContinueTx = false;
-        synchronized(mTxLock) {
+        synchronized (mTxLock) {
             try {
                 mTxLock.wait();
             } catch (InterruptedException e) {
@@ -92,7 +92,7 @@ public class DataChannel {
             byte[] buffer = new byte[1024];
             File file = new File(srcPath);
             FileInputStream in = new FileInputStream(file);
-            final int size = (int)file.length();
+            final int size = (int) file.length();
 
             mTxBytes = 0;
             mListener.onChannelEvent(
@@ -105,7 +105,7 @@ public class DataChannel {
                 mTxBytes += read;
 
                 total += read;
-                int curr = (int)(((long)total*100) / size);
+                int curr = (int) (((long) total * 100) / size);
                 if (curr - prev >= PROGRESS_MIN_STEP) {
                     mListener.onChannelEvent(
                             IChannelListener.DATA_CHANNEL_EVENT_PUT_PROGRESS, curr);
@@ -127,6 +127,7 @@ public class DataChannel {
         }
     }
 
+    // TODO: 2018/1/26 研究流程
     private void rxStream(String dstPath, int size) {
         int total = 0;
         int prev = 0;
@@ -151,7 +152,7 @@ public class DataChannel {
                 }
 
                 total += bytes;
-                int curr = (int)(((long)total*100) / size);
+                int curr = (int) (((long) total * 100) / size);
                 if (curr - prev >= PROGRESS_MIN_STEP) {
                     mListener.onChannelEvent(IChannelListener.DATA_CHANNEL_EVENT_GET_PROGRESS,
                             curr);
@@ -163,6 +164,57 @@ public class DataChannel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Bitmap rxYuvStreamUpdate() {
+        int total = 0;
+        int width = 160;
+        int height = 90;
+        int size = 34560;
+        Bitmap bitmap = null;
+        byte[] yuvArray = new byte[size];
+        byte[] yuvArray1 = new byte[160 * 90 * 2];
+        byte[] yuvArray2 = new byte[160 * 90 * 2];
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            int bytes;
+           /* mListener.onChannelEvent(IChannelListener.DATA_CHANNEL_EVENT_GET_START, dstPath);*/
+            while (total < size) {
+                try {
+                    bytes = mInputStream.read(yuvArray);
+                    //Log.e(TAG, "read bytes " + bytes);
+                    /*out.write(buffer, 0, bytes);*/
+                } catch (SocketTimeoutException e) {
+                    /*if (!mContinueRx) {
+                        Log.e(TAG, "RX canceled");
+                        out.close();
+                        return;
+                    }*/
+                    continue;
+                }
+
+                total += bytes;
+                if (total == size) {
+                    for (int i = 0; i < 90 * 2; i++) {
+                        System.arraycopy(yuvArray, 192 * i, yuvArray1, 160 * i, 160);
+                    }
+                    for (int j = 0; j < 160 * 90; j++) {
+                        yuvArray2[2 * j] = yuvArray1[j];
+                        yuvArray2[2 * j + 1] = yuvArray1[160 * 90 + j];
+                    }
+                    YuvImage yuvImage = new YuvImage(yuvArray2, ImageFormat.YUY2, width, height, null);
+                    yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, stream);
+                    bitmap = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                    stream.close();
+                    return bitmap;
+                }
+            }
+//            stream.close();
+            /*mListener.onChannelEvent(IChannelListener.DATA_CHANNEL_EVENT_GET_FINISH, dstPath);*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
