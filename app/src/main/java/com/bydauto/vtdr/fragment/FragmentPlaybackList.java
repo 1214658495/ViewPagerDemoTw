@@ -468,14 +468,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             Intent intent;
             if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
                 Model model = (Model) adapterView.getItemAtPosition(i);
-                String url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+                String url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
                         model.getName();
 //                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
 
                 fragmentTransaction.replace(flVideoPlayPreview.getId(), fragmentVideoDetail, "fragmentVideoDetail");
-                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commitAllowingStateLoss();
                 listFragment = fragmentVideoDetail;
 //                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
@@ -486,7 +486,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                 Model model = (Model) adapterView.getItemAtPosition(i);
 //                http://192.169.42.1/SD0/EVENT/
-                String url = "http://" + ServerConfig.HOST + "/SD0/EVENT/" +
+                String url = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" +
                         model.getName();
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
                 getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
@@ -565,7 +565,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     final ArrayList<Uri> localUriList = new ArrayList<>();
                     for (int i = 0; i < selectedCount; i++) {
                         doingDownFileCounts = i;
-                        String mGetFileName = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + mSelectedLists.get(i).getName();
+                        String mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + mSelectedLists.get(i).getName();
                         final String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
                                 + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
                         final File file = new File(fileName);
@@ -921,7 +921,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             String url = null;
             if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
 //                "http://192.168.42.1/SD0/PHOTO/2017-12-20-23-14-0100.JPG"
-                url = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" +
+                url = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" +
                         model.getName();
                 Glide.with(mContext).load(url).thumbnail(0.1f).into(imageView);
 
@@ -929,11 +929,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
 //                /tmp/SD0/NORMAL/2018-01-03-17-58-13.MP4
                     url = "/tmp/SD0/NORMAL/" + model.getName();
-//                    url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+//                    url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
 //                            model.getName();
                 } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                     url = "/tmp/SD0/EVENT/" + model.getName();
-//                    url = "http://" + ServerConfig.HOST + "/SD0/EVENT/" +
+//                    url = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" +
 //                            model.getName();
                 }
                 imageView.setTag(url);

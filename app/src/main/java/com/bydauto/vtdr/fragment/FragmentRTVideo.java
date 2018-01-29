@@ -65,7 +65,7 @@ public class FragmentRTVideo extends Fragment {
     @BindView(R.id.LoadingView)
     ProgressBar LoadingView;
 
-    private String url = "rtsp://" + ServerConfig.HOST + "/live";
+    private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
 //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;

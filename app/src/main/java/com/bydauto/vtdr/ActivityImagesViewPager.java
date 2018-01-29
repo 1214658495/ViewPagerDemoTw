@@ -227,9 +227,9 @@ public class ActivityImagesViewPager extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
 //            String url = imageUrls.get(position);
-//            String url = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" +
+//            String url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
 //            model.getName();
-            String url  = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + mPhotoLists.get(position).getName();
+            String url  = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + mPhotoLists.get(position).getName();
             PhotoView photoView = new PhotoView(activity);
             Glide.with(activity)
                     .load(url)

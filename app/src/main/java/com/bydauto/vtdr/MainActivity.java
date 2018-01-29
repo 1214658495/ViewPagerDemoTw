@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -39,6 +40,7 @@ import com.bydauto.vtdr.fragment.FragmentRTVideo;
 import com.bydauto.vtdr.fragment.FragmentSetting;
 import com.bydauto.vtdr.utils.Config;
 import com.bydauto.vtdr.utils.DownloadUtil;
+import com.bydauto.vtdr.utils.NetworkUtils;
 import com.bydauto.vtdr.utils.Utility;
 import com.bydauto.vtdr.view.MyDialog;
 import com.bydauto.vtdr.view.ProgressDialogFragment;
@@ -126,12 +128,14 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature();
         setContentView(R.layout.activity_main);
         requestPermission();
         checkUpdateThread();
         ButterKnife.bind(this);
 //        Aria.download(this).register();
 //        FileDownloader.setup(getApplicationContext());
+
         mPref = getPreferences(MODE_PRIVATE);
         getPrefs(mPref);
 //        initView();
@@ -215,10 +219,17 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private String getWifiIpAddr() {
-        WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        int ip = mgr.getConnectionInfo().getIpAddress();
-        return String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
-                >> 24);
+        int type = NetworkUtils.getAPNType(getApplicationContext());
+        if (type == ConnectivityManager.TYPE_WIFI) {
+            WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            int ip = mgr.getConnectionInfo().getIpAddress();
+            return String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
+                    >> 24);
+        } else if (type == ConnectivityManager.TYPE_ETHERNET) {
+//            得到自己的ip
+            return ServerConfig.PADIP;
+        }
+        return null;
     }
 
     @Override
@@ -573,13 +584,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         for (int i = 0; i < selectedCounts; i++) {
             if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
 //                mGetFileName = "/tmp/SD0/NORMAL/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/NORMAL/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" + selectedLists.get(i).getName();
             } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
 //                mGetFileName = "/tmp/SD0/EVENT/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/EVENT/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" + selectedLists.get(i).getName();
             } else {
 //                mGetFileName = "/tmp/SD0/PHOTO/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.HOST + "/SD0/PHOTO/" + selectedLists.get(i).getName();
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + selectedLists.get(i).getName();
             }
 //            doingDownFileCounts++;
             doingDownFileCounts = i;

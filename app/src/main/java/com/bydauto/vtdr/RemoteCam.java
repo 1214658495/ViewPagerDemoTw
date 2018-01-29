@@ -101,7 +101,7 @@ public class RemoteCam
         if (mCmdChannelWIFI == null) {
             mCmdChannelWIFI = new CmdChannelWIFI(this);
             mDataChannelWIFI = new DataChannelWIFI(this);
-            setWifiIP(ServerConfig.HOST, 7878, 8787);
+            setWifiIP(ServerConfig.VTDRIP, 7878, 8787);
 
             if (mContext.getPackageManager().
                     hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
