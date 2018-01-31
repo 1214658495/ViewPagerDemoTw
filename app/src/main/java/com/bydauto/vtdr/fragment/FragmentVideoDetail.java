@@ -359,8 +359,8 @@ public class FragmentVideoDetail extends Fragment {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
 //                当未添加到返回栈时使用如下
-                getFragmentManager().beginTransaction().remove(this).commit();
-//                getFragmentManager().popBackStack();
+//                getFragmentManager().beginTransaction().remove(this).commit();
+                getFragmentManager().popBackStack();
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();

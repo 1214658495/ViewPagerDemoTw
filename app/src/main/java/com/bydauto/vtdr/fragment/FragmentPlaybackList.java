@@ -363,7 +363,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
     }
 
-    private void cancelMultiChoose() {
+    public void cancelMultiChoose() {
         isMultiChoose = false;
         llEditItemBar.setVisibility(View.INVISIBLE);
         rgGroupDetail.setVisibility(View.VISIBLE);
@@ -474,10 +474,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
 //                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
 
-                fragmentTransaction.replace(flVideoPlayPreview.getId(), fragmentVideoDetail, "fragmentVideoDetail");
-//                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commitAllowingStateLoss();
-                listFragment = fragmentVideoDetail;
+                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoDetail, "fragmentVideoDetail").addToBackStack(null).commitAllowingStateLoss();
 //                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
 //                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
@@ -489,7 +486,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 String url = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" +
                         model.getName();
                 fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
-                getFragmentManager().beginTransaction().replace(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoDetail).addToBackStack(null).commitAllowingStateLoss();
             } else {
                 intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
                 intent.putExtra("mPhotoList", mPlayLists);

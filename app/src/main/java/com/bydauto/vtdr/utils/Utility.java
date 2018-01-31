@@ -26,7 +26,8 @@ public class Utility {
 	public static SimpleDateFormat sdf = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss");
 	/**************************************************/
-	public static final String UPDATE_DIR = "http://i.byd.com.cn:8099/BYDi/";// i.byd.com.cn
+//	public static final String UPDATE_DIR = "http://i.byd.com.cn:8099/BYDi/";// 正式版地址i.byd.com.cn
+	public static final String UPDATE_DIR = "http://121.15.172.125:8080/BYDi/";// 测试版地址
 	// 下载服务器根目录http://i.byd.com.cn:8099/BYDi/
 //	public static final String UPDATE_JSONVER = "bluetoothkey.json";
 	public static final String UPDATE_JSONVER = "vtdr.json";

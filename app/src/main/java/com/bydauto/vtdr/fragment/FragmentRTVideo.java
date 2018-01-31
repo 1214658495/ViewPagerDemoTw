@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -64,6 +65,8 @@ public class FragmentRTVideo extends Fragment {
 //    TextView tvTimeOfSv;
     @BindView(R.id.LoadingView)
     ProgressBar LoadingView;
+
+    private Chronometer chronometer;
 
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
@@ -123,6 +126,8 @@ public class FragmentRTVideo extends Fragment {
 //        tvTimeOfSv.setText("xiaobo");
         ivIcRecord = view.findViewById(R.id.iv_icRecord);
 //        ivIcRecord.setVisibility(View.VISIBLE);//test
+        chronometer = view.findViewById(R.id.time_count);
+//
 
         initData();
 
@@ -152,7 +157,7 @@ public class FragmentRTVideo extends Fragment {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                releaseWithoutStop();
             }
         });
 
@@ -393,6 +398,12 @@ public class FragmentRTVideo extends Fragment {
         audioManager.abandonAudioFocus(null);
     }
 
+    public void releaseWithoutStop() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setDisplay(null);
+        }
+    }
+
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -407,15 +418,16 @@ public class FragmentRTVideo extends Fragment {
             case R.id.iv_rt_record_video:
                 if (isRecord) {
                     showToastTips("关闭录像！");
-                    if (mMediaPlayer != null) {
+                    /*if (mMediaPlayer != null) {
                         mMediaPlayer.stop();
                         mMediaPlayer.reset();
                     }
-                    mMediaPlayer = null;
+                    mMediaPlayer = null;*/
 //                    tvTimeOfSv.setVisibility(View.INVISIBLE);
                 } else {
                     showToastTips("开启录像！");
                     prepare();
+//                    mMediaPlayer.start();
 //                    tvTimeOfSv.setVisibility(View.VISIBLE);
                 }
                 if (mListener != null) {
@@ -458,7 +470,28 @@ public class FragmentRTVideo extends Fragment {
 
     public void updateRecordTime(String time) {
 
-        int second = Integer.parseInt(time);
+        final int second = Integer.parseInt(time);
+
+      /*  chronometer.setBase(SystemClock.elapsedRealtime());//计时器清零
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer cArg) {
+                long time = SystemClock.elapsedRealtime() - cArg.getBase() + second;
+                int h   = (int)(time /3600000);
+                int m = (int)(time - h*3600000)/60000;
+                int s= (int)(time - h*3600000- m*60000)/1000 ;
+//               *//* int minute = (int) (time / 60);
+//                int hour = minute / 60;
+//                time -= minute * 60;
+//                minute -= hour * 60;
+//                cArg.setText(String.format("%02d:%02d:%02d", hour, minute, time));*//*
+                String hh = h < 10 ? "0"+h: h+"";
+                String mm = m < 10 ? "0"+m: m+"";
+                String ss = s < 10 ? "0"+s: s+"";
+                cArg.setText(hh+":"+mm+":"+ss);
+            }
+        });
+        chronometer.start();*/
         getTime(second);
 
         tvTimeOfSv.setVisibility(View.VISIBLE);
@@ -475,6 +508,7 @@ public class FragmentRTVideo extends Fragment {
 
     public String getTime(int second) {
         seconds = second;
+
         int minute = second / 60;
         int hour = minute / 60;
         second -= minute * 60;

@@ -83,6 +83,20 @@
         android:gravity="center"
         android:textSize="@dimen/sp_8"/>
 
+    <Chronometer
+        android:id="@+id/time_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="@id/iv_icRecord"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
+        app:layout_constraintLeft_toRightOf="@id/tv_timeOfSv"
+        android:format="00:00:00"
+        android:visibility="gone"
+        android:textColor="#f00"
+        android:gravity="center"
+        android:textSize="@dimen/sp_8"/>
+
     <ProgressBar
         android:id="@+id/LoadingView"
         app:layout_constraintTop_toTopOf="@id/sv_recordVideo"

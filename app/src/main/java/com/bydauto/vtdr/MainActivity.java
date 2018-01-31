@@ -301,16 +301,23 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     @Override
     public void onBackPressed() {
-        int count = getFragmentManager().getBackStackEntryCount();
+//        如下只有为getSupportFragmentManager时才能弹出
+        int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count == 0) {
-            super.onBackPressed();
-            mRemoteCam.stopSession();
-            finish();
-            Log.e(TAG, "kill the process to force fresh launch next time");
-            Process.killProcess(Process.myPid());
+            if (fragment == fragmentPlaybackList && fragmentPlaybackList.isMultiChoose) {
+                fragmentPlaybackList.cancelMultiChoose();
+            } else {
+                super.onBackPressed();
+                mRemoteCam.stopSession();
+                finish();
+                Log.e(TAG, "kill the process to force fresh launch next time");
+                Process.killProcess(Process.myPid());
+            }
         } else {
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         }
+
+
     }
 
     @Override
@@ -784,6 +791,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     private boolean getUpdateServer() {
         try {
+//            得到json地址的json文件，里面包含了下载地址
             String url = Utility.UPDATE_DIR + Utility.UPDATE_JSONVER;
 //            String verjson = Utility.getContent(url);
             String verjson = DownloadUtil.get().getStringContent(url);

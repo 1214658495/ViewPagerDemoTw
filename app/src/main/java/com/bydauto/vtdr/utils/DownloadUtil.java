@@ -111,7 +111,8 @@ public class DownloadUtil {
         try {
 //            String jsonData = response.body().string();
             byte[] b = response.body().bytes();     //获取数据的bytes
-            String info = new String(b, "GB2312");
+//            String info = new String(b, "GB2312");//正式系统文件转码方式
+            String info = new String(b, "UTF-8");//测试系统文件转码方式
             if (info != null) {
                 return info;
             }
