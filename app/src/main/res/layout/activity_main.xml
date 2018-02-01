@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_all_port"
-    tools:context="com.bydauto.vtdr.MainActivity">
+    tools:context="com.byd.vtdr.MainActivity">
     <!--android:background="@mipbg_all_port_ver"-->
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_back"

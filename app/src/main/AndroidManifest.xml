@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bydauto.vtdr">
+    package="com.byd.vtdr">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,21 +19,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.bydauto.vtdr.ActivityWelcome">
+        <activity android:name="com.byd.vtdr.ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.bydauto.vtdr.MainActivity"
+        <activity android:name="com.byd.vtdr.MainActivity"
             />
-        <activity android:name="com.bydauto.vtdr.ActivityImagesViewPager" />
-        <activity android:name="com.bydauto.vtdr.ActivityVideoViewPager" />
+        <activity android:name="com.byd.vtdr.ActivityImagesViewPager" />
+        <activity android:name="com.byd.vtdr.ActivityVideoViewPager" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.bydauto.vtdr.fileProvider"
+            android:authorities="com.byd.vtdr.fileProvider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data
