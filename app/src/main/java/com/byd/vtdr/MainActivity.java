@@ -6,12 +6,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -64,7 +67,6 @@ import butterknife.OnClick;
  */
 public class MainActivity extends AppCompatActivity implements IChannelListener, IFragmentListener {
     private static final String TAG = "MainActivity";
-
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
     @BindView(R.id.fl_main)
     FrameLayout flMain;
@@ -87,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @BindView(R.id.btn_back)
     LightButton btnBack;
 
-    //    @BindView(R.id.vp)
-//    ViewPager vp;
-//    private ArrayList<ImageView> imageLists;
-//    private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private List<Fragment> fragments;
     private static FragmentRTVideo fragmentRTVideo = FragmentRTVideo.newInstance();
     private static FragmentPlaybackList fragmentPlaybackList = FragmentPlaybackList.newInstance();
@@ -114,6 +112,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private ProgressDialogFragment progressDialogFragment;
     private Fragment mainCurrentFragment;
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
+    public static final int VTDR_WIFI = 1;
+    public static final int VTDR_ETHERNET = 9;
+    public static final int NETWORK_WIFI = 2;
+    public static final int NETWORK_4G = 3;
+    public static final int NO_NETWORK = 4;
 
     private int newVerCode;
     private String newVerName = "", downloadURL = "", newVerDetail = "";
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private String connect_err = " ", lastCar = "";
     private long fileSize, nDownloaded;
     private Handler handlerUpdate = new Handler();
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +135,29 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        requestWindowFeature();
         setContentView(R.layout.activity_main);
         requestPermission();
-        checkUpdateThread();
         ButterKnife.bind(this);
-//        Aria.download(this).register();
-//        FileDownloader.setup(getApplicationContext());
+        receiverNetworkBroadcast();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION); //网络连接消息
+//        filter.addAction(EthernetManager.ETHERNET_STATE_CHANGED_ACTION); //以太网消息
+        this.registerReceiver(receiver, filter);
 
+        /*switch (judgeNetwork()) {
+            case VTDR_ETHERNET:
+            case VTDR_WIFI:
+// TODO: 2018/2/2 做逻辑
+                break;
+            case NETWORK_WIFI:
+            case NETWORK_4G:
+                checkUpdateThread();
+                break;
+            case NO_NETWORK:
+
+                break;
+            default:
+                break;
+
+        }*/
         mPref = getPreferences(MODE_PRIVATE);
         getPrefs(mPref);
 //        initView();
@@ -189,19 +211,87 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
             }
         });
+    }
 
-//        vpMain.setOffscreenPageLimit(2);
-//        initData();
-//        vp.setAdapter(new MyPagerAdapter());
+    private void receiverNetworkBroadcast() {
+        if (receiver == null) {
+            receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    //得到广播意图
+                    final String action = intent.getAction();
+                    //检查网络状态
+                    if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
+                        Log.e(TAG, "ConnectivityManager.CONNECTIVITY_ACTION ");
+                        //NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+                        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+                        if (info == null) {
+                            Toast.makeText(context, " no Network connection !", Toast.LENGTH_LONG).show();
+                        } else {
+                            int type = info.getType();
+                            NetworkInfo.State st;
+                            android.net.NetworkInfo.State state = info.getState(); //得到此时的连接状态
+                            if (type == ConnectivityManager.TYPE_MOBILE) {    //判断网络类型
+                                Log.e(TAG, "TYPE_MOBILE ");
+                                Toast.makeText(context, "TYPE_MOBILE!", Toast.LENGTH_SHORT).show();
+                                if (state == android.net.NetworkInfo.State.CONNECTED) {   //判断网络状态
+                                    Log.e(TAG, "MOBILE！CONNECTED");
+                                    Toast.makeText(context, "MOBILE！ connection successfully!", Toast.LENGTH_SHORT).show();
+                                } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
+                                    Log.e(TAG, "MOBILE！DISCONNECTED");
+                                    Toast.makeText(context, "MOBILE！DISCONNECTED", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (type == ConnectivityManager.TYPE_WIFI) { //WiFi
+                                Log.e(TAG, "TYPE_WIFI ");
+                                Toast.makeText(context, "TYPE_WIFI ", Toast.LENGTH_SHORT).show();
+                                if (state == android.net.NetworkInfo.State.CONNECTED) {   //判断网络状态
+                                    Log.e(TAG, "WIFI！CONNECTED");
+                                    Toast.makeText(context, "WIFI！ connection successfully!", Toast.LENGTH_SHORT).show();
+                                } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
+                                    Log.e(TAG, "WIFI！DISCONNECTED");
+                                    Toast.makeText(context, "WIFI！ DISCONNECTED!", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (type == ConnectivityManager.TYPE_ETHERNET) {
+                                Log.e(TAG, "TYPE_ETHERNET ");
+                                Toast.makeText(context, "TYPE_ETHERNET", Toast.LENGTH_SHORT).show();
+                                if (state == android.net.NetworkInfo.State.CONNECTED) {   //判断网络状态
+                                    Log.e(TAG, "以太网！CONNECTED");
+                                    Toast.makeText(context, "以太网！ connection successfully!", Toast.LENGTH_SHORT).show();
+                                } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
+                                    Log.e(TAG, "以太网！DISCONNECTED");
+                                    Toast.makeText(context, "以太网！DISCONNECTED", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "other android.net.NetworkInfo.State");
+                    }
+                }
+            };
+        }
+    }
 
-//        runnable = new Runnable( ) {
-//            @Override
-//            public void run ( ) {
-//                fragmentRTVideo.getTime(++seconds);
-//                mHandler.postDelayed(this,1000);
-//                //postDelayed(this,2000)方法安排一个Runnable对象到主线程队列中
-//            }
-//        };
+    private int judgeNetwork() {
+        int type = NetworkUtils.getAPNType(getApplicationContext());
+        if (type == ConnectivityManager.TYPE_WIFI) {
+            WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            int ip = mgr.getConnectionInfo().getIpAddress();
+            if ((ip & 0xFF) == 192 && (ip >> 8 & 0xFF) == 168 && (ip >> 16 & 0xFF) == 42) {
+                String stringIP = String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
+                        >> 24);
+                return VTDR_WIFI;
+            } else {
+                return NETWORK_WIFI;
+            }
+        } else if (type == ConnectivityManager.TYPE_ETHERNET) {
+//            得到自己的ip
+//            return ServerConfig.PADIP;
+            return VTDR_ETHERNET;
+        } else {
+            // TODO: 2018/2/2 无网络或4G网络
+            return NO_NETWORK;
+        }
     }
 
 
@@ -783,6 +873,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                             .getVerCode(MainActivity.this);
                     if (newVerCode > verCode) {
                         updateHandler.sendEmptyMessage(99);
+                    } else {
+                        // TODO: 2018/2/2 提示连接记录仪
                     }
                 }
             }

@@ -32,7 +32,8 @@ public class Utility {
 //	public static final String UPDATE_JSONVER = "bluetoothkey.json";
 	public static final String UPDATE_JSONVER = "vtdr.json";
 //	public static final String PACKAGE = "com.byd.mybluetoothkey";
-	public static final String PACKAGE = "com.bydauto.vtdr";
+//	public static final String PACKAGE = "com.bydauto.vtdr";
+	public static final String PACKAGE = "com.byd.vtdr";
 
 	public static void log(final Class<?> classObject, final String logString) {
 		Log.d(LOG_DEBUG,
