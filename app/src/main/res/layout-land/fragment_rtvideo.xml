@@ -73,7 +73,7 @@
         app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
         android:visibility="invisible"/>
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/tv_timeOfSv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,23 +86,34 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
         app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
         app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
-
-    <Chronometer
-        android:id="@+id/time_count"
+-->
+    <TextClock
+        android:id="@+id/tc_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintTop_toTopOf="@id/iv_icRecord"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
-        app:layout_constraintLeft_toRightOf="@id/tv_timeOfSv"
-        android:format="00:00:00"
-        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
+        android:format24Hour="yyyy/MM/dd HH:mm:ss"
+        android:visibility="invisible"
         android:textColor="#f00"
         android:gravity="center"
         android:textSize="@dimen/sp_8"/>
 
+    <TextView
+        android:id="@+id/tv_checkSdCord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/iv_icRecord"
+        app:layout_constraintRight_toRightOf="@id/sv_recordVideo"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
+        android:textColor="#f00"
+        android:visibility="invisible"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:text="请插入存储卡"/>
+
     <ProgressBar
-        android:id="@+id/LoadingView"
+        android:id="@+id/loadingView"
         app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
         app:layout_constraintBottom_toBottomOf="@id/sv_recordVideo"
         app:layout_constraintStart_toStartOf="@id/sv_recordVideo"

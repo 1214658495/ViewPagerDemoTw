@@ -28,7 +28,7 @@ import butterknife.Unbinder;
  * @date 2017/11/13
  */
 
-public class NetworkTipDialog extends DialogFragment {
+public class SingleButtonShowDialog extends DialogFragment {
     @BindView(R.id.btn_closeDialog)
     ImageButton btnCloseDialog;
 
@@ -43,8 +43,8 @@ public class NetworkTipDialog extends DialogFragment {
 
     private OnDialogButtonClickListener buttonClickListener;
 
-    public static NetworkTipDialog newInstance(String message) {
-        NetworkTipDialog newDialog = new NetworkTipDialog();
+    public static SingleButtonShowDialog newInstance(String message) {
+        SingleButtonShowDialog newDialog = new SingleButtonShowDialog();
         Bundle bundle = new Bundle();
         bundle.putString("message", message);
         newDialog.setArguments(bundle);
@@ -64,6 +64,7 @@ public class NetworkTipDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        添加如下则dialog旋转可消失
         setRetainInstance(true);
     }
 
@@ -75,7 +76,7 @@ public class NetworkTipDialog extends DialogFragment {
         getDialog().setCanceledOnTouchOutside(false);
         View view;
         String message = getArguments().getString("message");
-        view = inflater.inflate(R.layout.fragment_network_dialog, container);
+        view = inflater.inflate(R.layout.fragment_singlebuttonshow_dialog, container);
         unbinder = ButterKnife.bind(this, view);
 
         tvDialogContent.setText(message);
@@ -122,7 +123,7 @@ public class NetworkTipDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         // 如下在旋转后重建了
-      /*  Dialog dialog = getDialog();
+       /* Dialog dialog = getDialog();
         // handles https://code.google.com/p/android/issues/detail?id=17423
         if (dialog != null && getRetainInstance()) {
             dialog.setDismissMessage(null);

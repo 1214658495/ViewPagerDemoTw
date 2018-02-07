@@ -5,6 +5,7 @@ package com.byd.vtdr;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -45,9 +46,10 @@ import com.byd.vtdr.utils.Config;
 import com.byd.vtdr.utils.DownloadUtil;
 import com.byd.vtdr.utils.NetworkUtils;
 import com.byd.vtdr.utils.Utility;
+import com.byd.vtdr.view.AddSingleButtonDialog;
 import com.byd.vtdr.view.MyDialog;
-import com.byd.vtdr.view.NetworkTipDialog;
 import com.byd.vtdr.view.ProgressDialogFragment;
+import com.byd.vtdr.view.SingleButtonShowDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private String mGetFileName;
     String dirName = Environment.getExternalStorageDirectory() + "/" + "行车记录仪/";
     private ProgressDialogFragment progressDialogFragment;
-    private NetworkTipDialog networkTipDialog;
+    private SingleButtonShowDialog singleButtonShowDialog;
     private Fragment mainCurrentFragment;
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
     public static final int VTDR_WIFI = 1;
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private Handler handlerUpdate = new Handler();
     private BroadcastReceiver receiver;
     private boolean isNetworkConnected;
+    private AddSingleButtonDialog addSingleButtonDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,11 +172,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         if (info == null) {
                             isNetworkConnected = false;
 //                            rbRealTimeVideo.setClickable(false);
-                            showNetworkTipDialog("请打开网络连接...");
+                            showSingleButtonTipDialog("请打开网络连接...");
 
                             Toast.makeText(context, " no Network connection !", Toast.LENGTH_LONG).show();
                         } else {
-                            isNetworkConnected = true;
+
                             int type = info.getType();
                             NetworkInfo.State st;
                             android.net.NetworkInfo.State state = info.getState(); //得到此时的连接状态
@@ -182,10 +185,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                 if (state == android.net.NetworkInfo.State.CONNECTED) {   //判断网络状态
                                     checkUpdateThread();
                                     Log.e(TAG, "MOBILE！CONNECTED");
-                                    Toast.makeText(context, "MOBILE！ connection successfully!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "MOBILE！ connection successfully!", Toast.LENGTH_SHORT).show();
                                 } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
                                     Log.e(TAG, "MOBILE！DISCONNECTED");
-                                    Toast.makeText(context, "MOBILE！DISCONNECTED", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "MOBILE！DISCONNECTED", Toast.LENGTH_SHORT).show();
                                 }
                             } else if (type == ConnectivityManager.TYPE_WIFI) { //WiFi
                                 Log.e(TAG, "TYPE_WIFI ");
@@ -195,27 +198,27 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                     WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                                     int ip = mgr.getConnectionInfo().getIpAddress();
                                     if ((ip & 0xFF) == 192 && (ip >> 8 & 0xFF) == 168 && (ip >> 16 & 0xFF) == 42) {
-                                        dissmissDialog();
+                                        dismissDialog();
                                         initConnect();
                                     } else {
                                         checkUpdateThread();
                                     }
-                                    Toast.makeText(context, "WIFI！ connection successfully!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "WIFI！ connection successfully!", Toast.LENGTH_SHORT).show();
                                 } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
                                     Log.e(TAG, "WIFI！DISCONNECTED");
-                                    Toast.makeText(context, "WIFI！ DISCONNECTED!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "WIFI！ DISCONNECTED!", Toast.LENGTH_SHORT).show();
                                 }
                             } else if (type == ConnectivityManager.TYPE_ETHERNET) {
                                 Log.e(TAG, "TYPE_ETHERNET ");
-                                Toast.makeText(context, "TYPE_ETHERNET", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context, "TYPE_ETHERNET", Toast.LENGTH_SHORT).show();
                                 if (state == android.net.NetworkInfo.State.CONNECTED) {   //判断网络状态
-                                    dissmissDialog();
+                                    dismissDialog();
                                     initConnect();
                                     Log.e(TAG, "以太网！CONNECTED");
-                                    Toast.makeText(context, "以太网！ connection successfully!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "以太网！ connection successfully!", Toast.LENGTH_SHORT).show();
                                 } else if (state == android.net.NetworkInfo.State.DISCONNECTED) {
                                     Log.e(TAG, "以太网！DISCONNECTED");
-                                    Toast.makeText(context, "以太网！DISCONNECTED", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "以太网！DISCONNECTED", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -228,6 +231,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void initConnect() {
+        isNetworkConnected = true;
+        rbRealTimeVideo.setOnClickListener(null);
+        rbPlaybackList.setOnClickListener(null);
+        rbSetting.setOnClickListener(null);
         mPref = getPreferences(MODE_PRIVATE);
         getPrefs(mPref);
 //        initView();
@@ -311,13 +318,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        putPrefs(mPref);
 //        此处解注册因为app从后台快速切换回来
         unregisterReceiver(receiver);
-        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -326,14 +333,37 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     }
 
-    private void showNetworkTipDialog(String msg) {
-        if (networkTipDialog == null) {
-            networkTipDialog = NetworkTipDialog.newInstance(msg);
-            networkTipDialog.show(getFragmentManager(), "text");
-            networkTipDialog.setOnDialogButtonClickListener(new NetworkTipDialog.OnDialogButtonClickListener() {
+    private void showSingleButtonTipDialog(String msg) {
+        if (singleButtonShowDialog == null) {
+            singleButtonShowDialog = SingleButtonShowDialog.newInstance(msg);
+            singleButtonShowDialog.show(getFragmentManager(), "text");
+            singleButtonShowDialog.setOnDialogButtonClickListener(new SingleButtonShowDialog.OnDialogButtonClickListener() {
                 @Override
                 public void okButtonClick() {
-
+//                    showClickNetworkTipDialog();
+                    if (singleButtonShowDialog != null) {
+                        singleButtonShowDialog = null;
+                    }
+                    if (!isNetworkConnected) {
+                        rbRealTimeVideo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                        rbPlaybackList.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                        rbSetting.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -342,6 +372,44 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
             });
         }
+
+       /* if (addSingleButtonDialog == null) {
+            addSingleButtonDialog = AddSingleButtonDialog.newInstance(msg);
+            addSingleButtonDialog.show(getFragmentManager(), "text");
+            addSingleButtonDialog.setOnDialogButtonClickListener(new AddSingleButtonDialog.OnDialogButtonClickListener() {
+                @Override
+                public void okButtonClick() {
+                    if (addSingleButtonDialog != null) {
+                        addSingleButtonDialog = null;
+                    }
+                    if (!isNetworkConnected) {
+                        rbRealTimeVideo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                        rbPlaybackList.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                        rbSetting.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void cancelButtonClick() {
+
+                }
+            });
+        }*/
     }
 
     private void showClickNetworkTipDialog() {
@@ -352,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     case R.id.rb_realTimeVideo:
                     case R.id.rb_playbackList:
                     case R.id.rb_setting:
-                        showNetworkTipDialog("请连接到行车记录仪的网络！");
+                        showSingleButtonTipDialog("请连接到行车记录仪的网络！");
                     default:
                         break;
                 }
@@ -360,9 +428,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         });
     }
 
-    private void dissmissDialog() {
-        if (networkTipDialog != null) {
-            networkTipDialog.dismiss();
+    private void dismissDialog() {
+        if (singleButtonShowDialog != null) {
+            singleButtonShowDialog.dismiss();
         }
     }
 
@@ -441,25 +509,88 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 String str = (String) param;
                 // TODO: 2018/1/8 旋转屏后dialog触发就闪退
                 if ("CARD_REMOVED".equals(str)) {
-                    str = "存储卡被移除！";
+                    str = "请插入存储卡！";
+                    fragmentRTVideo.showCheckSdCordTag(false);
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    addSingleButtonDialog = AddSingleButtonDialog.newInstance("请插入存储卡！");
+                    if (addSingleButtonDialog != null) {
+//                        DialogFragment dialogFragment = addSingleButtonDialog;
+                        if (!addSingleButtonDialog.isAdded()) {
+                            fragmentTransaction.add(addSingleButtonDialog, AddSingleButtonDialog.class.getName());
+                            if (!isFinishing() && !isDestroyed()) {
+                                fragmentTransaction.commitAllowingStateLoss();
+                            }
+                        }
+                    }
+//                    addSingleButtonDialog.show(getFragmentManager(),"ceui");
+                    addSingleButtonDialog.setOnDialogButtonClickListener(new AddSingleButtonDialog.OnDialogButtonClickListener() {
+                        @Override
+                        public void okButtonClick() {
+
+                        }
+
+                        @Override
+                        public void cancelButtonClick() {
+
+                        }
+                    });
                 } else if ("CARD_INSERTED".equals(str)) {
                     str = "存储卡已插入！";
+//                    if (singleButtonShowDialog != null) {
+//                        singleButtonShowDialog.dismiss();
+//                    }
+//                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(AddSingleButtonDialog.class.getName());
+//                    if (fragment != null) {
+//                        addSingleButtonDialog.dismiss();
+//                        if (!isFinishing() && !isDestroyed()) {
+//                            fragmentTransaction.commitAllowingStateLoss();
+//                        }
+//                    }
+                    if (addSingleButtonDialog != null) {
+                        addSingleButtonDialog.dismiss();
+                    }
+
+                    fragmentRTVideo.showCheckSdCordTag(true);
                     // TODO: 2018/1/8 卡插入后，如何更新文件列表？
                 }
-                if (myDialog != null) {
+               /* if (myDialog != null) {
                     myDialog.dismiss();
                 }
                 myDialog = MyDialog.newInstance(1, str);
-                myDialog.show(getFragmentManager(), "SHOW_ALERT");
-//                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                myDialog.show(getFragmentManager(), "SHOW_ALERT");*/
                 break;
 
             case IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE:
-                if (myDialog != null) {
+                fragmentRTVideo.showCheckSdCordTag(false);
+                // 如下操作不会闪退
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                addSingleButtonDialog = AddSingleButtonDialog.newInstance("请插入存储卡！");
+                if (addSingleButtonDialog != null) {
+//                    DialogFragment dialogFragment = addSingleButtonDialog;
+                    if (!addSingleButtonDialog.isAdded()) {
+                        fragmentTransaction.add(addSingleButtonDialog, AddSingleButtonDialog.class.getName());
+                        if (!isFinishing() && !isDestroyed()) {
+                            fragmentTransaction.commitAllowingStateLoss();
+                        }
+                    }
+                }
+                addSingleButtonDialog.setOnDialogButtonClickListener(new AddSingleButtonDialog.OnDialogButtonClickListener() {
+                    @Override
+                    public void okButtonClick() {
+
+                    }
+
+                    @Override
+                    public void cancelButtonClick() {
+
+                    }
+                });
+                /*if (myDialog != null) {
                     myDialog.dismiss();
                 }
                 myDialog = MyDialog.newInstance(1, "请插入存储卡！");
-                myDialog.show(getFragmentManager(), "SHOW_ALERT1");
+                myDialog.show(getFragmentManager(), "SHOW_ALERT1");*/
                 break;
 
             case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
@@ -873,7 +1004,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         updateHandler.sendEmptyMessage(99);
                     } else {
 
-                        showNetworkTipDialog("请连接到行车记录仪的网络！");
+                        showSingleButtonTipDialog("请连接到行车记录仪的网络！");
                         // TODO: 2018/2/2 不再主线程可能显示不了！！！！！！
                     }
                 }

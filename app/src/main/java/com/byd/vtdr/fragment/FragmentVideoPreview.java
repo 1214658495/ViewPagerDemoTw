@@ -113,7 +113,7 @@ public class FragmentVideoPreview extends Fragment {
         View view = inflater.inflate(R.layout.frament_video_detail, container, false);
         unbinder = ButterKnife.bind(this, view);
         mVideoView = view.findViewById(R.id.sv_videoPlayView);
-        mLoadingView = view.findViewById(R.id.LoadingView);
+        mLoadingView = view.findViewById(R.id.loadingView);
         initData();
         return view;
     }

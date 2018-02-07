@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +31,6 @@ import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,10 +59,12 @@ public class FragmentRTVideo extends Fragment {
 
     //    @BindView(R.id.tv_timeOfSv)
 //    TextView tvTimeOfSv;
-    @BindView(R.id.LoadingView)
-    ProgressBar LoadingView;
+    @BindView(R.id.loadingView)
+    ProgressBar loadingView;
 
     private Chronometer chronometer;
+    private TextClock textClock;
+    private TextView tvCheckSdCard;
 
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
@@ -79,7 +77,7 @@ public class FragmentRTVideo extends Fragment {
     private CheckBox ivRtRecordVideo;
     private CheckBox ivRtRecordVoice;
     private SurfaceView svRecordVideo;
-    private TextView tvTimeOfSv;
+//    private TextView tvTimeOfSv;
     private ImageView ivIcRecord;
 
     private RemoteCam mRemoteCam;
@@ -90,7 +88,7 @@ public class FragmentRTVideo extends Fragment {
     private int seconds;
 
     private Runnable runnable;
-    private Handler mHandler = new Handler();
+//    private Handler mHandler = new Handler();
     // {
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -109,7 +107,6 @@ public class FragmentRTVideo extends Fragment {
 
     public static FragmentRTVideo newInstance() {
         FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
-
         return fragmentRTVideo;
     }
 
@@ -121,25 +118,15 @@ public class FragmentRTVideo extends Fragment {
         ivRtRecordVideo = view.findViewById(R.id.iv_rt_record_video);
         ivRtRecordVoice = view.findViewById(R.id.iv_rt_record_voice);
         svRecordVideo = view.findViewById(R.id.sv_recordVideo);
-        tvTimeOfSv = view.findViewById(R.id.tv_timeOfSv);
+//        tvTimeOfSv = view.findViewById(R.id.tv_timeOfSv);
 //        tvTimeOfSv.setVisibility(View.VISIBLE);//test
 //        tvTimeOfSv.setText("xiaobo");
         ivIcRecord = view.findViewById(R.id.iv_icRecord);
 //        ivIcRecord.setVisibility(View.VISIBLE);//test
-        chronometer = view.findViewById(R.id.time_count);
-//
-
+//        chronometer = view.findViewById(R.id.time_count);
+        textClock = view.findViewById(R.id.tc_count);
+        tvCheckSdCard = view.findViewById(R.id.tv_checkSdCord);
         initData();
-
-      /*  runnable = new Runnable( ) {
-            @Override
-            public void run ( ) {
-                tvTimeOfSv.setText(getTime(++seconds));
-                mHandler.postDelayed(this,1000);
-                //postDelayed(this,2000)方法安排一个Runnable对象到主线程队列中
-            }
-        };
-*/
         return view;
     }
 
@@ -251,14 +238,15 @@ public class FragmentRTVideo extends Fragment {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
-                    LoadingView.setVisibility(View.VISIBLE);
+                    loadingView.setVisibility(View.VISIBLE);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
-                    LoadingView.setVisibility(View.GONE);
+                    loadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
-                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
+//                    showRecordTag(true);
+                    /*mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);*/
 //                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
@@ -358,9 +346,27 @@ public class FragmentRTVideo extends Fragment {
         });
     }
 
+    public void showRecordTag(boolean isRecordOpen) {
+        if (isRecordOpen) {
+            textClock.setVisibility(View.VISIBLE);
+            ivIcRecord.setVisibility(View.VISIBLE);
+        } else {
+            textClock.setVisibility(View.INVISIBLE);
+            ivIcRecord.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void showCheckSdCordTag(boolean isSdInsert) {
+        if (isSdInsert) {
+            tvCheckSdCard.setVisibility(View.INVISIBLE);
+        } else {
+            tvCheckSdCard.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void sendReconnectMessage() {
         showToastTips("正在重连...");
-        LoadingView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.VISIBLE);
 //        mHandler.removeCallbacksAndMessages(null);
 //        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
     }
@@ -424,11 +430,13 @@ public class FragmentRTVideo extends Fragment {
                     }
                     mMediaPlayer = null;*/
 //                    tvTimeOfSv.setVisibility(View.INVISIBLE);
+                    showRecordTag(false);
                 } else {
                     showToastTips("开启录像！");
                     prepare();
 //                    mMediaPlayer.start();
 //                    tvTimeOfSv.setVisibility(View.VISIBLE);
+                    showRecordTag(true);
                 }
                 if (mListener != null) {
                     isRecord = !isRecord;
@@ -461,6 +469,7 @@ public class FragmentRTVideo extends Fragment {
     public void setRecordState(boolean isOn) {
         isRecord = isOn;
         ivRtRecordVideo.setChecked(!isOn);
+        showRecordTag(isOn);
     }
 
     public void setMicState(boolean isOn) {
@@ -492,21 +501,21 @@ public class FragmentRTVideo extends Fragment {
             }
         });
         chronometer.start();*/
-        getTime(second);
+      /*  getTime(second);
 
         tvTimeOfSv.setVisibility(View.VISIBLE);
         ivIcRecord.setVisibility(View.VISIBLE);
 
 //        Timer timer = new Timer();
 //        timer.schedule(new RecordTimeTask(), 1000);
-        /*mHandler.postDelayed(runnable,1000);*/
+        *//*mHandler.postDelayed(runnable,1000);*//*
 
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new RecordTimeTask(),0, 1000, TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(new RecordTimeTask(),0, 1000, TimeUnit.MILLISECONDS);*/
 
     }
 
-    public String getTime(int second) {
+/*    public String getTime(int second) {
         seconds = second;
 
         int minute = second / 60;
@@ -531,10 +540,10 @@ public class FragmentRTVideo extends Fragment {
 //            }
 //        });
 
-    }
+    }*/
 
 
-    private class RecordTimeTask extends TimerTask {
+  /*  private class RecordTimeTask extends TimerTask {
         @Override
         public void run() {
 //            Message msg = new Message();
@@ -556,6 +565,6 @@ public class FragmentRTVideo extends Fragment {
                 }
             });
         }
-    }
+    }*/
 
 }

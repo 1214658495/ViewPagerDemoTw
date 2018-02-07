@@ -53,7 +53,7 @@ public class FragmentVideoDetail extends Fragment {
     ImageButton ibPlayVideo;
     @BindView(R.id.tv_test)
     TextView tvTest;
-    @BindView(R.id.LoadingView)
+    @BindView(R.id.loadingView)
     LinearLayout LoadingView;
     @BindView(R.id.btn_back_to_videoGridview)
     ImageButton btnBackToVideoGridview;
