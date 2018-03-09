@@ -337,7 +337,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onStop() {
         super.onStop();
-//        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
     }
 
     @Override
