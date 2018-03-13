@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="记录视频"
+            android:text="@string/record_video"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightRadioButton
@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="锁定视频"
+            android:text="@string/lock_video"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightRadioButton
@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="抓拍照片"
+            android:text="@string/capture_photo"
             android:textSize="@dimen/sp_9" />
     </RadioGroup>
 
@@ -79,7 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="记录视频"
+            android:text="@string/record_video"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
@@ -91,6 +91,7 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
             android:text="@string/cancel"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
@@ -101,6 +102,7 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_share_selector"
             android:text="@string/share"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
@@ -111,6 +113,7 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_export_selector"
             android:text="@string/export"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
@@ -121,6 +124,7 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_delete_selector"
             android:text="@string/delete"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightCheckBox
@@ -131,6 +135,7 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_selectall_selector"
             android:text="@string/selectall"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
     </LinearLayout>

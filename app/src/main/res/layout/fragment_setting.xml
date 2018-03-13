@@ -36,7 +36,8 @@
         style="@style/ButtonTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="默认值"
+        android:text="@string/restore_defaults"
+        android:textAllCaps="false"
         android:textSize="@dimen/sp_11"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_textSetting"
         app:layout_constraintBottom_toBottomOf="@id/tv_textSetting"
@@ -77,6 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/memoryCard_format"
+        android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/tv_textSetting" />
 
@@ -102,7 +104,7 @@
         android:id="@+id/tv_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="版本"
+        android:text="@string/version"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_11"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
@@ -114,7 +116,8 @@
         android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="固件版本"
+        android:text="@string/firmware_version"
+        android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
@@ -123,7 +126,8 @@
         style="@style/ButtonTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="APP版本"
+        android:text="@string/app_version"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/dp_62"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
@@ -134,7 +138,7 @@
         app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion"
         android:src="@mipmap/line_settingpartdetail" />
 
-    <TextView
+    <Button
         android:id="@+id/tv_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

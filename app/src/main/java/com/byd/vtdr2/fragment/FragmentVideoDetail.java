@@ -51,32 +51,34 @@ public class FragmentVideoDetail extends Fragment {
     SurfaceView svVideoPlayView;
     @BindView(R.id.ib_playVideo)
     ImageButton ibPlayVideo;
-    @BindView(R.id.tv_test)
-    TextView tvTest;
-    @BindView(R.id.loadingView)
-    LinearLayout LoadingView;
+
+    //    @BindView(R.id.loadingView)
+    private LinearLayout LoadingView;
     @BindView(R.id.btn_back_to_videoGridview)
     ImageButton btnBackToVideoGridview;
     @BindView(R.id.tv_title_video)
     TextView tvTitleVideo;
-    @BindView(R.id.tv_vpVideoIndex)
-    TextView tvVpVideoIndex;
-    @BindView(R.id.rl_bar_showVideoTitle)
-    RelativeLayout rlBarShowVideoTitle;
-    @BindView(R.id.btn_stop)
-    ImageButton btnStop;
-    @BindView(R.id.tv_currentTime)
-    TextView tvCurrentTime;
+
+    //    @BindView(R.id.rl_bar_showVideoTitle)
+//    RelativeLayout rlBarShowVideoTitle;
+    private RelativeLayout rlBarShowVideoTitle;
+    //    @BindView(R.id.btn_stop)
+    private ImageButton btnStop;
+    //    @BindView(R.id.tv_currentTime)
+//    TextView tvCurrentTime;
+    private TextView tvCurrentTime;
     @BindView(R.id.sb_mediaCtrlBar)
     SeekBar sbMediaCtrlBar;
-    @BindView(R.id.tv_endTime)
-    TextView tvEndTime;
+    //    @BindView(R.id.tv_endTime)
+//    TextView tvEndTime;
+    private TextView tvEndTime;
     @BindView(R.id.btn_VideoZoom)
     ImageButton btnVideoZoom;
-    @BindView(R.id.ll_bar_editVideo)
-    LinearLayout llBarEditVideo;
-    @BindView(R.id.btn_start)
-    ImageButton btnStart;
+    //    @BindView(R.id.ll_bar_editVideo)
+//    LinearLayout llBarEditVideo;
+    private LinearLayout llBarEditVideo;
+    //    @BindView(R.id.btn_start)
+    private ImageButton btnStart;
 
     private ArrayList<ImageView> imageLists;
     private ArrayList<String> urlsList;
@@ -131,6 +133,13 @@ public class FragmentVideoDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frament_video_detail, container, false);
         unbinder = ButterKnife.bind(this, view);
+        tvCurrentTime = view.findViewById(R.id.tv_currentTime);
+        tvEndTime = view.findViewById(R.id.tv_endTime);
+        rlBarShowVideoTitle = view.findViewById(R.id.rl_bar_showVideoTitle);
+        llBarEditVideo = view.findViewById(R.id.ll_bar_editVideo);
+        LoadingView = view.findViewById(R.id.loadingView);
+        btnStart = view.findViewById(R.id.btn_start);
+        btnStop = view.findViewById(R.id.btn_stop);
         initData();
         return view;
     }
@@ -151,7 +160,7 @@ public class FragmentVideoDetail extends Fragment {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                releaseWithoutStop();
             }
         });
 
@@ -290,7 +299,7 @@ public class FragmentVideoDetail extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        getFragmentManager().beginTransaction().addToBackStack(null);
+        //getFragmentManager().beginTransaction().addToBackStack(null);
     }
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
@@ -312,6 +321,7 @@ public class FragmentVideoDetail extends Fragment {
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                    // TODO: 2018/3/12   java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.LinearLayout.setVisibility(int)' on a null object reference
                     LoadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
@@ -396,14 +406,15 @@ public class FragmentVideoDetail extends Fragment {
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
         long duration = mMediaPlayer.getDuration();
-        tvCurrentTime.setText(generateTime(currentPosition));
-        tvEndTime.setText(generateTime(duration));
-        if (sbMediaCtrlBar != null) {
+        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
+            tvCurrentTime.setText(generateTime(currentPosition));
+            tvEndTime.setText(generateTime(duration));
             if (duration > 0) {
                 long pos = 1000L * currentPosition / duration;
                 sbMediaCtrlBar.setProgress((int) pos);
             }
         }
+
         return currentPosition;
     }
 
@@ -428,10 +439,22 @@ public class FragmentVideoDetail extends Fragment {
         unbinder.unbind();
     }
 
+
+    public void releaseWithoutStop() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setDisplay(null);
+            System.gc();
+            Runtime.getRuntime().runFinalization();
+            System.gc();
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        release();
+//        替换为如下一行
+//        release();
+//        new MyTheard().start();
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
     }
@@ -439,11 +462,21 @@ public class FragmentVideoDetail extends Fragment {
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
+//            如下被屏蔽，改为了在onDestroy中单线程执行
+// TODO: 2018/3/12 导致内存越来越大
+//            mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
+            System.gc();
         }
     }
 
+//    private class MyTheard extends Thread {
+//        @Override
+//        public void run() {
+//            release();
+//        }
+//    }
 
     //    private void initData() {
 //        tvTest.setText(url);

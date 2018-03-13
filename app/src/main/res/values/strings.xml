@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">行车记录仪</string>
+    <string name="back">后退</string>
+    <string name="live_video">实时影像</string>
+    <string name="playback_list">回放列表</string>
     <string name="setting">设置</string>
+
+
+
     <string name="system">系统</string>
     <string name="memoryCard_format">存储卡格式化</string>
     <string name="cancel">取消</string>
@@ -16,4 +22,11 @@
     <string name="updateNow">升级</string>
     <string name="isDownLoading">正在更新...</string>
     <string name="downloadlater">取消</string>
+    <string name="record_video">记录视频</string>
+    <string name="lock_video">锁定视频</string>
+    <string name="capture_photo">抓拍照片</string>
+    <string name="restore_defaults">默认值</string>
+    <string name="version">版本</string>
+    <string name="firmware_version">固件版本</string>
+    <string name="app_version">APP版本</string>
 </resources>

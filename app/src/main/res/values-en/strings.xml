@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">VTDR</string>
+    <string name="back">back</string>
+    <string name="live_video">live_video</string>
+    <string name="playback_list">playback_list</string>
     <string name="setting">setting</string>
+
+    <string name="record_video">record_video</string>
+    <string name="lock_video">lock_video</string>
+    <string name="capture_photo">capture_photo</string>
+
     <string name="system">system</string>
     <string name="memoryCard_format">memoryCard_format</string>
+
+    <string name="cancel">cancel</string>
+    <string name="share">share</string>
+    <string name="export">export</string>
+    <string name="delete">delete</string>
+    <string name="selectall">selectall</string>
+
+    <string name="restore_defaults">restore_defaults</string>
+    <string name="version">version</string>
+    <string name="firmware_version">firmware_version</string>
+    <string name="app_version">app_version</string>
+
 </resources>

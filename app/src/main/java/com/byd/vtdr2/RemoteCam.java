@@ -496,6 +496,16 @@ public class RemoteCam
             }
         });
     }
+//    madd
+    public void lockPhoto() {
+        worker.execute(new Runnable() {
+            public void run() {
+                if (!connectToCmdChannel())
+                    return;
+                mCmdChannel.lockVideo();
+            }
+        });
+    }
 
     public void startRecord() {
         worker.execute(new Runnable() {

@@ -11,8 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
@@ -45,7 +45,7 @@ public class FragmentSetting extends Fragment {
     LightButton btnDefaultSetting;
     Unbinder unbinder;
     @BindView(R.id.tv_test)
-    TextView tvTest;
+    Button tvTest;
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
@@ -159,4 +159,7 @@ public class FragmentSetting extends Fragment {
         return "";
     }
 
+    @OnClick(R.id.tv_test)
+    public void onViewClicked() {
+    }
 }

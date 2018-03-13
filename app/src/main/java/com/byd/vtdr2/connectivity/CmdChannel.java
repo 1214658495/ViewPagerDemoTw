@@ -67,6 +67,9 @@ public abstract class CmdChannel {
     private static final int AMBA_FORCE_SPLIT = 0x204;
     private static final int AMBA_TAKE_PHOTO = 0x301;
     private static final int AMBA_STOP_PHOTO = 0x302;
+    //madd
+    private static final int AMBA_LOCK_VIDEO = 0x303;
+
     private static final int AMBA_GET_THUMB = 0x401;
     private static final int AMBA_GET_MEDIAINFO = 0x402;
     private static final int AMBA_SET_ATTRIBUTE = 0x403;
@@ -202,9 +205,9 @@ public abstract class CmdChannel {
 
         writeToChannel(req.getBytes());
 
-        timer = new Timer();
-        initTimerTask();
-        timer.schedule(timerTask, 30000);//,30000);//timertask will run after every 30 secs
+//        timer = new Timer();
+//        initTimerTask();
+//        timer.schedule(timerTask, 30000);//,30000);//timertask will run after every 30 secs
         timerFlag = true;
         fetchFlag = true;
 
@@ -387,6 +390,12 @@ public abstract class CmdChannel {
     public synchronized boolean stopPhoto() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_STOP_PHOTO + "}");
+    }
+
+    //    madd
+    public synchronized boolean lockVideo() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_LOCK_VIDEO + "}");
     }
 
     public synchronized boolean startRecord() {
@@ -603,7 +612,7 @@ public abstract class CmdChannel {
                         if (rval == 0) {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL, null);
                         } else {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL_FAIL,null);
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_DEL_FAIL, null);
                         }
                         break;
                     case AMBA_GET_THUMB:
@@ -682,14 +691,17 @@ public abstract class CmdChannel {
                     case AMBA_TAKE_PHOTO:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, null);
                         break;
+                    case AMBA_LOCK_VIDEO:
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, null);
+                        break;
                     case AMBA_RECORD_START:
                         if (rval != 0) {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL,null);
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL, null);
                         }
                         break;
                     case AMBA_RECORD_STOP:
                         if (rval != 0) {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL,null);
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL, null);
                         }
                         break;
                     default:
@@ -739,51 +751,51 @@ public abstract class CmdChannel {
                         }
                     }
 //                    if (timerFlag) {
-                        addLog("<font color=#cc0029>" + msg + "<br ></font>");
+                    addLog("<font color=#cc0029>" + msg + "<br ></font>");
 
-                        if (msg.contains("}{")) {
-                            Log.e(TAG, "警报！！！！！出现了粘包");
-                            //处理粘包第一段数据
-                            String tmpOne = msg.substring(0, msg.indexOf("}{") + 1);
-                            Log.e(TAG, tmpOne);
-                            if (tmpOne.contains("rval")) {
-                                handleResponse(tmpOne);
-                            } else {
-                                handleNotification(tmpOne);
-                            }
-                            //处理粘包第二段数据
-                            String tmpTwo = msg.substring(msg.indexOf("}{") + 1);
-                            Log.e(TAG, tmpTwo);
-                            if (tmpTwo.contains("rval")) {
-                                handleResponse(tmpTwo);
-                            } else {
-                                handleNotification(tmpTwo);
-                            }
+                    if (msg.contains("}{")) {
+                        Log.e(TAG, "警报！！！！！出现了粘包");
+                        //处理粘包第一段数据
+                        String tmpOne = msg.substring(0, msg.indexOf("}{") + 1);
+                        Log.e(TAG, tmpOne);
+                        if (tmpOne.contains("rval")) {
+                            handleResponse(tmpOne);
+                        } else {
+                            handleNotification(tmpOne);
+                        }
+                        //处理粘包第二段数据
+                        String tmpTwo = msg.substring(msg.indexOf("}{") + 1);
+                        Log.e(TAG, tmpTwo);
+                        if (tmpTwo.contains("rval")) {
+                            handleResponse(tmpTwo);
+                        } else {
+                            handleNotification(tmpTwo);
+                        }
 
+                        mReplyReceived = true;
+                        stopTimerTask();
+                        synchronized (mRxLock) {
+                            mRxLock.notify();
+                        }
+                    } else {
+                        Log.e(TAG, msg);
+                        if (msg.contains("rval")) {
+                            handleResponse(msg);
                             mReplyReceived = true;
+                            //msg = msg.replaceAll(".*", msg);
                             stopTimerTask();
                             synchronized (mRxLock) {
                                 mRxLock.notify();
+                                //reset the msg to nothing
+                                ////if (timerFlag == false) {
+                                ////    msg = "";
+                                ////}
                             }
                         } else {
-                            Log.e(TAG, msg);
-                            if (msg.contains("rval")) {
-                                handleResponse(msg);
-                                mReplyReceived = true;
-                                //msg = msg.replaceAll(".*", msg);
-                                stopTimerTask();
-                                synchronized (mRxLock) {
-                                    mRxLock.notify();
-                                    //reset the msg to nothing
-                                    ////if (timerFlag == false) {
-                                    ////    msg = "";
-                                    ////}
-                                }
-                            } else {
-                                handleNotification(msg);
-                                stopTimerTask();
-                            }
+                            handleNotification(msg);
+                            stopTimerTask();
                         }
+                    }
 //                    }
                     ////else {
                     ////msgRecv = msgRecv.replaceAll(".*", "");

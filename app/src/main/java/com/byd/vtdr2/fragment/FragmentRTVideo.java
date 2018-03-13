@@ -36,6 +36,7 @@ import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -94,6 +95,8 @@ public class FragmentRTVideo extends Fragment {
     private Toast mToast;
     private boolean mIsStopped;
     private int seconds;
+    private static final int MINI_CLICK_DELAY = 2000;
+    private long lastClickTime = 0;
 
     public static FragmentRTVideo newInstance() {
         FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
@@ -419,12 +422,12 @@ public class FragmentRTVideo extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
     public void releaseWithoutStop() {
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(null);
         }
     }
+
 
     public void release() {
         if (mMediaPlayer != null) {
@@ -447,16 +450,23 @@ public class FragmentRTVideo extends Fragment {
                     mMediaPlayer = null;*/
 //                    tvTimeOfSv.setVisibility(View.INVISIBLE);
                     showRecordTag(false);
+                    ivRtRecordVideo.setChecked(true);
                 } else {
 //                    showToastTips("开启录像！");
-                    prepare();
+//                    prepare();
 //                    mMediaPlayer.start();
 //                    tvTimeOfSv.setVisibility(View.VISIBLE);
                     showRecordTag(true);
+                    ivRtRecordVideo.setChecked(false);
                 }
                 if (mListener != null) {
-                    isRecord = !isRecord;
-                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
+//                        ivRtRecordVideo.setClickable(true);
+                        lastClickTime = currentTime;
+                        isRecord = !isRecord;
+                        mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
+                    }
                 }
                 break;
             case R.id.btn_rt_capture_photo:
@@ -485,6 +495,13 @@ public class FragmentRTVideo extends Fragment {
                 }
                 break;
             case R.id.iv_rt_lock_video:
+                if (mListener != null) {
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
+                        lastClickTime = currentTime;
+                        mListener.onFragmentAction(IFragmentListener.ACTION_LOCK_VIDEO_START, null);
+                    }
+                }
                 break;
             case R.id.iv_rt_record_voice:
                 if (isMicOn) {

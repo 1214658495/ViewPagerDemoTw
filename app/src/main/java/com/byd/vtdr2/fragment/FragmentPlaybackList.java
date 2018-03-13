@@ -281,7 +281,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     default:
                         break;
                 }
-                mAdapter.notifyDataSetChanged();
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
 //                mGridViewList.invalidateViews();
                 mGridViewList.setAdapter(mAdapter);
 
@@ -426,7 +428,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onPause() {
         Log.e(TAG, "onPause: ");
         super.onPause();
-        mAdapter.fluchCache();
+        if (mAdapter != null) {
+            mAdapter.fluchCache();
+        }
     }
 
     @Override
@@ -442,7 +446,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         super.onDestroyView();
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
-        mAdapter.cancelAllTasks();
+        if (mAdapter != null) {
+            mAdapter.cancelAllTasks();
+        }
 
     }
 
@@ -524,13 +530,13 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
             switch (currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
-                    tvEditNav.setText("记录视频");
+                    tvEditNav.setText(R.string.record_video);
                     break;
                 case ServerConfig.RB_LOCK_VIDEO:
-                    tvEditNav.setText("锁定视频");
+                    tvEditNav.setText(R.string.lock_video);
                     break;
                 case ServerConfig.RB_CAPTURE_PHOTO:
-                    tvEditNav.setText("抓拍照片");
+                    tvEditNav.setText(R.string.capture_photo);
                     break;
                 default:
                     break;
@@ -950,7 +956,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
             } else {
-                imageView.setImageResource(R.drawable.empty_photo);
+                imageView.setImageResource(R.drawable.defualt_thm);
             }
         }
 
@@ -1315,12 +1321,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     timecount++;
                     if (timecount == 3) {
 //                        break;
+                        isYuvDownload = false;
                         return false;
                     }
                 }
                 isYuvDownload = false;
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
-                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
+                if (mRemoteCam != null && mRemoteCam.getDataChannel() != null) {
+                    bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
+                }
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
                 in = new BufferedInputStream(inputimage, 8 * 1024);

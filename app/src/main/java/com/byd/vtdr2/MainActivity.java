@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                             Toast.makeText(context, " no Network connection !", Toast.LENGTH_LONG).show();
                         } else {
                             int type = info.getType();
-                            Log.e(TAG, "onReceive: type"+ type);
+                            Log.e(TAG, "onReceive: type" + type);
                             NetworkInfo.State st;
                             android.net.NetworkInfo.State state = info.getState(); //得到此时的连接状态
                             if (type == ConnectivityManager.TYPE_MOBILE) {    //判断网络类型
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private String getWifiIpAddr() {
-     /*   int type = NetworkUtils.getAPNType(getApplicationContext());
+      /*  int type = NetworkUtils.getAPNType(getApplicationContext());
         if (type == ConnectivityManager.TYPE_WIFI) {
             WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int ip = mgr.getConnectionInfo().getIpAddress();
@@ -321,7 +321,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //            return Settings.System.getString(getContentResolver(),Settings.System.);
         }
         return null;*/
-     return ServerConfig.PADIP;
+
+        return ServerConfig.PADIP;
     }
 
     @Override
@@ -601,6 +602,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO:
                 Toast.makeText(getApplicationContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
                 break;
+            case IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO:
+                Toast.makeText(getApplicationContext(), "锁定视频成功！", Toast.LENGTH_SHORT).show();
+                break;
             case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
 //                boolean isRecord = (boolean) param;
 //                Log.e(TAG, "handleCmdChannelEvent: isRecord = " + isRecord);
@@ -700,11 +704,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL:
-                showMydialog(1,"开启录像失败！");
+                showMydialog(1, "开启录像失败！");
                 fragmentRTVideo.setRecordState(false);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL:
-                showMydialog(1,"关闭录像失败！");
+                showMydialog(1, "关闭录像失败！");
                 fragmentRTVideo.setRecordState(true);
                 break;
             default:
@@ -741,6 +745,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         switch (type) {
             case IFragmentListener.ACTION_PHOTO_START:
                 mRemoteCam.takePhoto();
+                break;
+            case IFragmentListener.ACTION_LOCK_VIDEO_START:
+                mRemoteCam.lockPhoto();
                 break;
             case IFragmentListener.ACTION_RECORD_START:
                 boolean isRecord = (boolean) param;
