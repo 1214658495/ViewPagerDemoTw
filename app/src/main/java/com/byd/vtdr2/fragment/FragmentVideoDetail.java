@@ -161,6 +161,8 @@ public class FragmentVideoDetail extends Fragment {
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 releaseWithoutStop();
+//                使用如下多次点击视频会有闪退
+//                new MyTheard().start();
             }
         });
 
@@ -370,9 +372,11 @@ public class FragmentVideoDetail extends Fragment {
             case R.id.btn_back_to_videoGridview:
 //                当未添加到返回栈时使用如下
 //                getFragmentManager().beginTransaction().remove(this).commit();
-                if (mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.stop();
+                if (mMediaPlayer != null) {
+                    if (mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.stop();
 //                    release();
+                    }
                 }
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
@@ -454,7 +458,7 @@ public class FragmentVideoDetail extends Fragment {
         super.onDestroy();
 //        替换为如下一行
 //        release();
-//        new MyTheard().start();
+        new MyTheard().start();
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
     }
@@ -464,19 +468,18 @@ public class FragmentVideoDetail extends Fragment {
             mMediaPlayer.stop();
 //            如下被屏蔽，改为了在onDestroy中单线程执行
 // TODO: 2018/3/12 导致内存越来越大
-//            mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
             System.gc();
         }
     }
 
-//    private class MyTheard extends Thread {
-//        @Override
-//        public void run() {
-//            release();
-//        }
-//    }
+    private class MyTheard extends Thread {
+        @Override
+        public void run() {
+            release();
+        }
+    }
 
     //    private void initData() {
 //        tvTest.setText(url);

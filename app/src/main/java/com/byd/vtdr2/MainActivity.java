@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private String getWifiIpAddr() {
-      /*  int type = NetworkUtils.getAPNType(getApplicationContext());
+       /* int type = NetworkUtils.getAPNType(getApplicationContext());
         if (type == ConnectivityManager.TYPE_WIFI) {
             WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int ip = mgr.getConnectionInfo().getIpAddress();
@@ -457,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showMydialog(int style, String msg) {
+        // TODO: 2018/3/13 旋转后，再弹会闪退
         myDialog = MyDialog.newInstance(style, msg);
         // TODO: 2018/1/5 失败如何处理
         myDialog.show(getFragmentManager(), MyDialog.class.getName());
@@ -471,6 +472,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
             }
         });
+    }
+
+    private void showToastTips( String tips) {
+        Toast.makeText(getApplicationContext(), tips, Toast.LENGTH_SHORT).show();
+
+
     }
 
 //    @Override
@@ -704,11 +711,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL:
-                showMydialog(1, "开启录像失败！");
+//                showMydialog(1, "开启录像失败！");
+                showTipDialog("开启录像失败！");
                 fragmentRTVideo.setRecordState(false);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL:
-                showMydialog(1, "关闭录像失败！");
+//                showMydialog(1, "关闭录像失败！");
+                showTipDialog("关闭录像失败！");
                 fragmentRTVideo.setRecordState(true);
                 break;
             default:

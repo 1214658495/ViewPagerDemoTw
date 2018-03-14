@@ -956,7 +956,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
             } else {
-                imageView.setImageResource(R.drawable.defualt_thm);
+                imageView.setImageResource(R.drawable.empty_photo);
             }
         }
 
@@ -1329,6 +1329,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
                 if (mRemoteCam != null && mRemoteCam.getDataChannel() != null) {
                     bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
+                } else {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
                 }
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
