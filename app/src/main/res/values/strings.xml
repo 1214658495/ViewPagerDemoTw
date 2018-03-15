@@ -13,7 +13,7 @@
     <string name="share">分享</string>
     <string name="export">导出</string>
     <string name="delete">删除</string>
-    <string name="selectall">全选</string>
+    <string name="selectAll">全选</string>
     <string name="exit">再按一次退出程序</string>
 
     <string name="appname_tag">程序名称: 行车记录仪</string>
@@ -29,4 +29,30 @@
     <string name="version">版本</string>
     <string name="firmware_version">固件版本</string>
     <string name="app_version">APP版本</string>
+    <string name="Pictures_success">拍照成功</string>
+    <string name="Pictures_fail">拍照失败</string>
+    <string name="LockVideo_success">锁定视频成功</string>
+    <string name="LockVideo_fail">锁定视频失败</string>
+    <string name="OpenVideo_success">开启录像失败！</string>
+    <string name="OpenVideo_fail">关闭录像失败！</string>
+    <string name="connect_fail">无法连接到记录仪，请检查网络</string>
+    <string name="ok">确认</string>
+    <string name="logo_text">比亚迪行车记录仪</string>
+    <string name="card_removed">请插入存储卡！</string>
+    <string name="card_inserted">存储卡已插入！</string>
+    <string name="reboot_drivingReorder">请重启记录仪！</string>
+    <string name="format_ok">存储卡格式化完成！</string>
+    <string name="format_fail">存储卡格式化失败！</string>
+    <string name="downloading">正在下载...</string>
+    <string name="Download_completed">下载完成！</string>
+    <string name="Download_fail">下载失败</string>
+    <string name="File_downloaded">文件已下载</string>
+    <string name="open_permissions">请打开app的存储权限</string>
+    <string name="share_to">分享到</string>
+    <string name="video_cannot_share">视频暂时无法分享！</string>
+    <string name="select_to_download">请选择要下载的文件</string>
+    <string name="confirm_delete">确定删除？</string>
+    <string name="Reconnecting">正在重连...</string>
+    <string name="restore_settings">是否恢复默认设置？</string>
+    <string name="confirm_format_memory_card">是否格式化存储卡？</string>
 </resources>

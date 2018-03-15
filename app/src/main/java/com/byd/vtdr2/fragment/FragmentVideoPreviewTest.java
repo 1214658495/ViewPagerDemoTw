@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.utils.Utils;
-import com.byd.vtdr2.widget.VideoMediaController;
+import com.byd.vtdr2.widget.MyMediaController;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
@@ -28,11 +29,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by byd_tw on 2017/11/1.
  */
 
-public class FragmentVideoPlay extends Fragment {
+public class FragmentVideoPreviewTest extends Fragment {
 
 
     Unbinder unbinder;
@@ -51,14 +54,12 @@ public class FragmentVideoPlay extends Fragment {
 
     //    private MediaController mMediaController;
 //    private ImediaController mMediaController;
-//    private MyMediaController mMediaController;
-    private VideoMediaController mMediaController;
+    private MyMediaController mMediaController;
     private PLVideoTextureView mVideoView;
     private Toast mToast = null;
     private String mVideoPath = null;
     private int mRotation = 0;
     private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_FIT_PARENT; //default
-//    private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_16_9; //default
     private View mLoadingView;
     private View mCoverView = null;
     private boolean mIsActivityPaused = true;
@@ -66,13 +67,13 @@ public class FragmentVideoPlay extends Fragment {
     private int mIsLiveStreaming = 0;
 
 
-    public static FragmentVideoPlay newInstance(ArrayList<String> urlsList, String url) {
-        FragmentVideoPlay fragmentVideoPreview = new FragmentVideoPlay();
+    public static FragmentVideoPreviewTest newInstance(ArrayList<String> urlsList, String url) {
+        FragmentVideoPreviewTest fragmentVideoPreviewTest = new FragmentVideoPreviewTest();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("urlsList", urlsList);
         bundle.putString("url", url);
-        fragmentVideoPreview.setArguments(bundle);
-        return fragmentVideoPreview;
+        fragmentVideoPreviewTest.setArguments(bundle);
+        return fragmentVideoPreviewTest;
     }
 
     private void setOptions(int codecType) {
@@ -83,11 +84,11 @@ public class FragmentVideoPlay extends Fragment {
         options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
         options.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
-        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming);
-//        options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
-        if (mIsLiveStreaming == 1) {
-            options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
-        }
+//        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming);
+        options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
+//        if (mIsLiveStreaming == 1) {
+            options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 0);
+//        }
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codecType);
@@ -126,8 +127,7 @@ public class FragmentVideoPlay extends Fragment {
 //        int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
         setOptions(AVOptions.MEDIA_CODEC_SW_DECODE);
 //        mMediaController = new MediaController(this, false, mIsLiveStreaming==1);
-//        mMediaController = new MyMediaController(getActivity(), false, mIsLiveStreaming==1);
-        mMediaController = new VideoMediaController(getActivity(), false, mIsLiveStreaming==1);
+        mMediaController = new MyMediaController(getActivity(), false, mIsLiveStreaming==1);
 //        mMediaController = new ImediaController(this, false);
         mVideoView.setMediaController(mMediaController);
 
@@ -285,31 +285,31 @@ public class FragmentVideoPlay extends Fragment {
     };
 
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        Log.e(TAG, "setUserVisibleHint: 11111");
-//        if (this.isVisible())
-//        {
-//            if (!isVisibleToUser)   // If we are becoming invisible, then...
-//            {
-//                Log.e(TAG, "setUserVisibleHint: !!!isVisibleToUser");
-//                //pause or stop video
-////                如果使用stop则视频再次可见时点击无反应
-////                mVideoView.stopPlayback();
-//                if (mVideoView.isPlaying()){
-//                    mVideoView.pause();
-//
-//                }
-////                mVideoView.releaseSurfactexture();
-//            }
-//
-//            if (isVisibleToUser) // If we are becoming visible, then...
-//            {
-//                Log.e(TAG, "setUserVisibleHint: isVisibleToUser");
-//                //play your video
-//                mVideoView.start();
-//            }
-//        }
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.e(TAG, "setUserVisibleHint: 11111");
+        if (this.isVisible())
+        {
+            if (!isVisibleToUser)   // If we are becoming invisible, then...
+            {
+                Log.e(TAG, "setUserVisibleHint: !!!isVisibleToUser");
+                //pause or stop video
+//                如果使用stop则视频再次可见时点击无反应
+//                mVideoView.stopPlayback();
+                if (mVideoView.isPlaying()){
+                    mVideoView.pause();
+
+                }
+//                mVideoView.releaseSurfactexture();
+            }
+
+            if (isVisibleToUser) // If we are becoming visible, then...
+            {
+                Log.e(TAG, "setUserVisibleHint: isVisibleToUser");
+                //play your video
+                mVideoView.start();
+            }
+        }
+    }
 }

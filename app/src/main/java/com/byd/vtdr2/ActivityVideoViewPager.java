@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.byd.vtdr2.fragment.FragmentVideoPreview;
+import com.byd.vtdr2.fragment.FragmentVideoPreviewTest;
 import com.byd.vtdr2.view.MyViewPager;
 
 import java.lang.ref.WeakReference;
@@ -144,8 +144,8 @@ public class ActivityVideoViewPager extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-//            return FragmentVideoDetail.newInstance(urlsList, urlsList.get(position));
-            return FragmentVideoPreview.newInstance(urlsList, urlsList.get(position));
+//            return FragmentVideoPreview.newInstance(urlsList, urlsList.get(position));
+            return FragmentVideoPreviewTest.newInstance(urlsList, urlsList.get(position));
         }
 
         @Override

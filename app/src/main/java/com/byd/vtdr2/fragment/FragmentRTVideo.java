@@ -366,7 +366,7 @@ public class FragmentRTVideo extends Fragment {
     }
 
     private void sendReconnectMessage() {
-        showToastTips("正在重连...");
+        showToastTips(getString(R.string.Reconnecting));
         loadingView.setVisibility(View.VISIBLE);
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
@@ -462,7 +462,6 @@ public class FragmentRTVideo extends Fragment {
                 if (mListener != null) {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
                     if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
-//                        ivRtRecordVideo.setClickable(true);
                         lastClickTime = currentTime;
                         isRecord = !isRecord;
                         mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
@@ -510,8 +509,13 @@ public class FragmentRTVideo extends Fragment {
 //                    showToastTips("开启录音！");
                 }
                 if (mListener != null) {
-                    isMicOn = !isMicOn;
-                    mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
+//                        ivRtRecordVideo.setClickable(true);
+                        lastClickTime = currentTime;
+                        isMicOn = !isMicOn;
+                        mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+                    }
                 }
                 break;
             default:

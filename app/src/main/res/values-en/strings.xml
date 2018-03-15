@@ -1,26 +1,53 @@
 <resources>
     <string name="app_name">VTDR</string>
-    <string name="back">back</string>
-    <string name="live_video">live_video</string>
-    <string name="playback_list">playback_list</string>
-    <string name="setting">setting</string>
+    <string name="back">Back</string>
+    <string name="live_video">Live Video</string>
+    <string name="playback_list">Playback List</string>
+    <string name="setting">Setting</string>
 
-    <string name="record_video">record_video</string>
-    <string name="lock_video">lock_video</string>
-    <string name="capture_photo">capture_photo</string>
+    <string name="record_video">Record Video</string>
+    <string name="lock_video">Lock Video</string>
+    <string name="capture_photo">Capture Photo</string>
 
-    <string name="system">system</string>
-    <string name="memoryCard_format">memoryCard_format</string>
+    <string name="system">System</string>
+    <string name="memoryCard_format">Memory Card Format</string>
 
-    <string name="cancel">cancel</string>
-    <string name="share">share</string>
-    <string name="export">export</string>
-    <string name="delete">delete</string>
-    <string name="selectall">selectall</string>
+    <string name="cancel">Cancel</string>
+    <string name="share">Share</string>
+    <string name="export">Export</string>
+    <string name="delete">Delete</string>
+    <string name="selectAll">SelectAll</string>
 
-    <string name="restore_defaults">restore_defaults</string>
-    <string name="version">version</string>
-    <string name="firmware_version">firmware_version</string>
-    <string name="app_version">app_version</string>
+    <string name="restore_defaults">Restore Defaults</string>
+    <string name="version">Version</string>
+    <string name="firmware_version">Firmware Version</string>
+    <string name="app_version">App Version</string>
+
+    <string name="Pictures_success">Pictures success</string>
+    <string name="Pictures_fail">Pictures fail</string>
+    <string name="LockVideo_success">LockVideo success</string>
+    <string name="LockVideo_fail">LockVideo fail</string>
+    <string name="OpenVideo_success">OpenVideo success</string>
+    <string name="OpenVideo_fail">OpenVideo fail</string>
+    <string name="connect_fail">Connect fail ! Please check the network</string>
+    <string name="ok">OK</string>
+    <string name="logo_text">BYD Driving Recorder</string>
+    <string name="card_removed">Please inserted memory card</string>
+    <string name="card_inserted">Memory card inserted</string>
+    <string name="reboot_drivingReorder">Reboot driving reorder</string>
+    <string name="format_ok">Memory card formatting completed</string>
+    <string name="format_fail">Memory card formatting fail</string>
+    <string name="downloading">Downloading</string>
+    <string name="Download_completed">Download completed</string>
+    <string name="Download_fail">Download fail</string>
+    <string name="File_downloaded">File downloaded</string>
+    <string name="open_permissions">Please open the app\'s storage permissions</string>
+    <string name="share_to">Share to</string>
+    <string name="video_cannot_share">Video can\'t be shared right now!</string>
+    <string name="select_to_download">Please select the file to download</string>
+    <string name="confirm_delete">Confirm delete</string>
+    <string name="Reconnecting">Reconnecting...</string>
+    <string name="restore_settings">Sure to restore the default settings?</string>
+    <string name="confirm_format_memory_card">是否格式化存储卡？</string>
 
 </resources>

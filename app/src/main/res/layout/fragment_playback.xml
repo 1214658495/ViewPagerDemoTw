@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_selectall_selector"
-            android:text="@string/selectall"
+            android:text="@string/selectAll"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 

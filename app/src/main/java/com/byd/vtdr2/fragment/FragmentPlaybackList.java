@@ -43,7 +43,6 @@ import com.byd.lighttextview.LightButton;
 import com.byd.lighttextview.LightCheckBox;
 import com.byd.lighttextview.LightRadioButton;
 import com.byd.lighttextview.LightTextView;
-import com.byd.vtdr2.ActivityImagesViewPager;
 import com.byd.vtdr2.Model;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
@@ -129,8 +128,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.fl_videoPlayPreview)
     FrameLayout flVideoPlayPreview;
 
-    //    FragmentVideoPlay fragmentVideoDetail;
-    FragmentVideoDetail fragmentVideoDetail;
+    //    FragmentVideoPlay fragmentVideoPreview;
+    FragmentVideoPreview fragmentVideoPreview;
+    FragmentPhotoPreview fragmentPhotoPreview;
 
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
@@ -476,12 +476,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Model model = (Model) adapterView.getItemAtPosition(i);
                 String url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
                         model.getName();
-//                fragmentVideoDetail = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
-                fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
-//                fragmentVideoDetail.show(getFragmentManager(),"videoPlay");
+//                fragmentVideoPreview = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
+                fragmentVideoPreview = FragmentVideoPreview.newInstance(url);
+//                fragmentVideoPreview.show(getFragmentManager(),"videoPlay");
 
-                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoDetail, "fragmentVideoDetail").addToBackStack("fragmentVideoDetail").commitAllowingStateLoss();
-//                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoDetail).commitAllowingStateLoss();
+                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoPreview, "fragmentVideoPreview").addToBackStack("fragmentVideoPreview").commitAllowingStateLoss();
+//                getFragmentManager().beginTransaction().hide(this).add(flVideoPlayPreview.getId(), fragmentVideoPreview).commitAllowingStateLoss();
 //                flVideoPlayPreview.setClickable(true);
 //                intent = new Intent(view.getContext(), ActivityVideoViewPager.class);
 //                intent.putStringArrayListExtra("mUrlsList", urlVideosList);
@@ -491,13 +491,23 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                http://192.169.42.1/SD0/EVENT/
                 String url = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" +
                         model.getName();
-                fragmentVideoDetail = FragmentVideoDetail.newInstance(url);
-                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoDetail).addToBackStack(null).commitAllowingStateLoss();
+                fragmentVideoPreview = FragmentVideoPreview.newInstance(url);
+                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentVideoPreview).addToBackStack(null).commitAllowingStateLoss();
             } else {
-                intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
-                intent.putExtra("mPhotoList", mPlayLists);
-                intent.putExtra("position", i);
-                startActivity(intent);
+//                intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
+//                intent.putExtra("mPhotoList", mPlayLists);
+//                intent.putExtra("position", i);
+//                startActivity(intent);
+
+                fragmentPhotoPreview = new FragmentPhotoPreview();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mPhotoList", mPlayLists);
+                bundle.putInt("position", i);
+                fragmentPhotoPreview.setArguments(bundle);
+
+                fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentPhotoPreview,
+                        "fragmentVideoDetail")
+                        .addToBackStack(null).commitAllowingStateLoss();
             }
         } else {
 //            checkbox初始状态默认为false。
@@ -589,7 +599,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                                 shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
                                                 shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
                                                 shareIntent.setType("image/*");
-                                                startActivity(Intent.createChooser(shareIntent, "分享到"));
+                                                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
                                             }
                                         }
                                     }
@@ -616,7 +626,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 public void onDownloadStart() {
                                     synchronized (this) {
                                         if (progressDialogFragment == null) {
-                                            progressDialogFragment = ProgressDialogFragment.newInstance("正在下载...");
+                                            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
                                             progressDialogFragment.show(getActivity().getFragmentManager(), "text");
                                             progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
                                                 @Override
@@ -642,7 +652,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                     shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
                                     shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
                                     shareIntent.setType("image/*");
-                                    startActivity(Intent.createChooser(shareIntent, "分享到"));
+                                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
                                 }
                             }
 //                            }
@@ -651,7 +661,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
 
                 } else {
-                    showTipDialog("视频暂时无法分享！");
+                    showTipDialog(getString(R.string.video_cannot_share));
                 }
                 break;
             case R.id.btn_export:
@@ -660,7 +670,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     mListener.onFragmentAction(IFragmentListener.ACTION_FS_DOWNLOAD, null);
                 } else {
                     // TODO: 2018/1/12 后续调用主函数的showdialog方法
-                    myDialogTest = MyDialog.newInstance(1, "请选择要下载的文件");
+                    myDialogTest = MyDialog.newInstance(1, getString(R.string.select_to_download));
                     myDialogTest.show(getActivity().getFragmentManager(), "selected_delete");
                 }
 
@@ -674,7 +684,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 break;
             case R.id.btn_delete:
                 if (mSelectedLists.size() > 0) {
-                    myDialogTest = MyDialog.newInstance(0, "确定删除？");
+                    myDialogTest = MyDialog.newInstance(0, getString(R.string.confirm_delete));
                     myDialogTest.show(getActivity().getFragmentManager(), "delete");
                     myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                         @Override
@@ -701,7 +711,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         }
                     });
                 } else {
-                    myDialogTest = MyDialog.newInstance(1, "请选择要删除的文件");
+                    myDialogTest = MyDialog.newInstance(1, getString(R.string.select_to_download));
                     myDialogTest.show(getActivity().getFragmentManager(), "selected_delete");
                 }
                 break;

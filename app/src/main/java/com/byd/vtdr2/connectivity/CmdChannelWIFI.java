@@ -65,7 +65,11 @@ public class CmdChannelWIFI extends CmdChannel {
             return true;
         } catch (IOException e) {
             Log.e(CommonUtility.LOG_TAG, e.getMessage());
-            String message = "Can't connect to " + mHostName + "/" + mPortNum;
+//            String message = "Can't connect to " + mHostName + "/" + mPortNum;
+//            String message = "无法连接到记录仪，请检查网络";
+            String message = "CONNECT_FAIL";
+//            Resources res = getResources();
+//            String message = getString(R.string.connect_fail);
             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT, message);
         }
         return false;

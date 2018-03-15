@@ -206,6 +206,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_zoom:
+                finish();
                 break;
             default:
                 break;

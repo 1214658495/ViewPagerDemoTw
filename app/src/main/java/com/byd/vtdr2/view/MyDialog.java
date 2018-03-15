@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,6 +156,10 @@ public class MyDialog extends DialogFragment {
     @OnClick(R.id.btn_closeDialog)
     public void onViewClicked(View view) {
                 dismiss();
+    }
+
+
+    public void show(FragmentManager fragmentManager, String delete) {
     }
 
     @Override

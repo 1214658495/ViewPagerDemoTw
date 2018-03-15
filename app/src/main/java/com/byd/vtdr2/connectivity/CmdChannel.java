@@ -689,10 +689,18 @@ public abstract class CmdChannel {
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_WIFI_SETTING, str);
                         break;
                     case AMBA_TAKE_PHOTO:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, null);
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, true);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, false);
+                        }
                         break;
                     case AMBA_LOCK_VIDEO:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, null);
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, true);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, false);
+                        }
                         break;
                     case AMBA_RECORD_START:
                         if (rval != 0) {

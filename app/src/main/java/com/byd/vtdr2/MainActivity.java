@@ -43,6 +43,7 @@ import com.byd.vtdr2.fragment.FragmentRTVideo;
 import com.byd.vtdr2.fragment.FragmentSetting;
 import com.byd.vtdr2.utils.Config;
 import com.byd.vtdr2.utils.DownloadUtil;
+import com.byd.vtdr2.utils.NetworkUtils;
 import com.byd.vtdr2.utils.Utility;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         if (info == null) {
                             isNetworkConnected = false;
 //                            rbRealTimeVideo.setClickable(false);
-                            showSingleButtonTipDialog("请打开网络连接...");
+                            showSingleButtonTipDialog(getString(R.string.connect_fail));
 
                             Toast.makeText(context, " no Network connection !", Toast.LENGTH_LONG).show();
                         } else {
@@ -309,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private String getWifiIpAddr() {
-       /* int type = NetworkUtils.getAPNType(getApplicationContext());
+        int type = NetworkUtils.getAPNType(getApplicationContext());
         if (type == ConnectivityManager.TYPE_WIFI) {
             WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int ip = mgr.getConnectionInfo().getIpAddress();
@@ -320,9 +321,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             return ServerConfig.PADIP;
 //            return Settings.System.getString(getContentResolver(),Settings.System.);
         }
-        return null;*/
+        return null;
 
-        return ServerConfig.PADIP;
+//        return ServerConfig.PADIP;
     }
 
     @Override
@@ -361,19 +362,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         rbRealTimeVideo.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                                showSingleButtonTipDialog(getString(R.string.connect_fail));
                             }
                         });
                         rbPlaybackList.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                                showSingleButtonTipDialog(getString(R.string.connect_fail));
                             }
                         });
                         rbSetting.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                showSingleButtonTipDialog("请连接到行车记录仪的网络");
+                                showSingleButtonTipDialog(getString(R.string.connect_fail));
                             }
                         });
                     }
@@ -474,8 +475,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         });
     }
 
-    private void showToastTips( String tips) {
-        Toast.makeText(getApplicationContext(), tips, Toast.LENGTH_SHORT).show();
+    private void showToastTips(String tips) {
+        Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
 
 
     }
@@ -556,11 +557,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 // TODO: 2018/1/8 旋转屏后dialog触发就闪退
                 // TODO: 2018/3/9 当是其他提醒时没有提示了
                 if ("CARD_REMOVED".equals(str)) {
-                    str = "请插入存储卡！";
+                    str = getString(R.string.card_removed);
                     fragmentRTVideo.showCheckSdCordTag(false);
                     addSingleButtonDialog(str);
                 } else if ("CARD_INSERTED".equals(str)) {
-                    str = "存储卡已插入！";
+                    str = getString(R.string.card_inserted);
 //                    if (singleButtonShowDialog != null) {
 //                        singleButtonShowDialog.dismiss();
 //                    }
@@ -578,6 +579,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
                     fragmentRTVideo.showCheckSdCordTag(true);
                     // TODO: 2018/1/8 卡插入后，如何更新文件列表？
+                } else if ("CONNECT_FAIL".equals(str)){
+                    addSingleButtonDialog(getString(R.string.connect_fail));
                 } else {
                     addSingleButtonDialog(str);
                 }
@@ -591,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE:
                 fragmentRTVideo.showCheckSdCordTag(false);
                 // 如下操作不会闪退
-                addSingleButtonDialog("请插入存储卡！");
+                addSingleButtonDialog(getString(R.string.card_removed));
                 /*if (myDialog != null) {
                     myDialog.dismiss();
                 }
@@ -607,10 +610,20 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 mRemoteCam.getTotalFileCount();
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO:
-                Toast.makeText(getApplicationContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
+                boolean isCapturePhoto = (boolean) param;
+                if (isCapturePhoto) {
+                    showToastTips(getString(R.string.Pictures_success));
+                } else {
+                    showToastTips(getString(R.string.Pictures_fail));
+                }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO:
-                Toast.makeText(getApplicationContext(), "锁定视频成功！", Toast.LENGTH_SHORT).show();
+                boolean isLockPhoto = (boolean) param;
+                if (isLockPhoto) {
+                    showToastTips(getString(R.string.LockVideo_success));
+                } else {
+                    showToastTips(getString(R.string.LockVideo_fail));
+                }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
 //                boolean isRecord = (boolean) param;
@@ -627,7 +640,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     fragmentRTVideo.setRecordState(false);
                 } else if (Objects.equals(appStateStr, "idle")) {
 //                    Toast.makeText(getApplicationContext(), "请重启记录仪！", Toast.LENGTH_LONG).show();
-                    addSingleButtonDialog("请重启记录仪！");
+                    addSingleButtonDialog(getString(R.string.reboot_drivingReorder));
                     // TODO: 2018/1/4 如下显示弹窗，旋转就闪退。
                 }
                 break;
@@ -673,14 +686,14 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_FORMAT_SD:
                 boolean isFormatSD = (boolean) param;
                 if (isFormatSD) {
-                    myDialog = MyDialog.newInstance(1, "存储卡格式化完成！");
+                    myDialog = MyDialog.newInstance(1, getString(R.string.format_ok));
                     myDialog.show(getFragmentManager(), "FormatDone");
                     // TODO: 2018/1/5 如下发送后记录仪来不及反应，答复
 //                    mRemoteCam.appStatus();
 //                    mRemoteCam.startRecord();
 //                                    fragmentPlaybackList.showSD();
                 } else {
-                    myDialog = MyDialog.newInstance(0, "存储卡格式化失败！");
+                    myDialog = MyDialog.newInstance(0, getString(R.string.format_fail));
                     // TODO: 2018/1/5 失败如何处理
                     myDialog.show(getFragmentManager(), "back");
                     myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
@@ -712,12 +725,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL:
 //                showMydialog(1, "开启录像失败！");
-                showTipDialog("开启录像失败！");
+                showToastTips(getString(R.string.OpenVideo_success));
                 fragmentRTVideo.setRecordState(false);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL:
 //                showMydialog(1, "关闭录像失败！");
-                showTipDialog("关闭录像失败！");
+                showToastTips(getString(R.string.OpenVideo_fail));
                 fragmentRTVideo.setRecordState(true);
                 break;
             default:
@@ -729,7 +742,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private void handleDataChannelEvent(int type, Object param) {
         switch (type) {
             case IChannelListener.DATA_CHANNEL_EVENT_GET_START:
-                myDialog = MyDialog.newInstance(2, "正在下载...");
+                myDialog = MyDialog.newInstance(2, getString(R.string.downloading));
                 myDialog.show(getFragmentManager(), "doingDownload");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -847,7 +860,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                 || fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                             synchronized (this) {
                                 if (progressDialogFragment == null) {
-                                    progressDialogFragment = ProgressDialogFragment.newInstance("正在下载...");
+                                    progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
                                     progressDialogFragment.show(getFragmentManager(), "text");
                                     progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
                                         @Override
@@ -872,7 +885,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showTipDialog("下载完成！");
+                                    showTipDialog(getString(R.string.Download_completed));
                                     doingDownFileCounts = 0;
                                 }
                             });
@@ -899,7 +912,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showTipDialog("下载失败");
+                                showTipDialog(getString(R.string.Download_fail));
                             }
                         });
                         Log.e(TAG, "onDownloadFailed: 下载失败");
@@ -907,7 +920,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 });
             } else {
                 if (doingDownFileCounts == (selectedCounts - 1)) {
-                    Toast.makeText(MainActivity.this, "文件已下载", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -995,7 +1008,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 //                Toast.makeText(this,"please give me the permission",Toast.LENGTH_SHORT).show();
-                showTipDialog("请打开app的存储权限");
+                showTipDialog(getString(R.string.open_permissions));
             } else {
                 //进行权限请求
                 ActivityCompat.requestPermissions(this,
@@ -1021,7 +1034,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showSingleButtonTipDialog("请连接到行车记录仪的网络！");
+                                showSingleButtonTipDialog(getString(R.string.connect_fail));
                                 // TODO: 2018/2/2 不再主线程可能显示不了！！！！！！
                             }
                         });
@@ -1192,7 +1205,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     myDialog.dismiss();
                 }
                 if (progressDialogFragment == null) {
-                    progressDialogFragment = ProgressDialogFragment.newInstance("正在下载...");
+                    progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
                     progressDialogFragment.show(getFragmentManager(), "text");
                     progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
                         @Override

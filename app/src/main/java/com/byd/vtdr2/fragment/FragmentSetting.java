@@ -104,7 +104,7 @@ public class FragmentSetting extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_default_setting:
-                myDialog = MyDialog.newInstance(0, "是否恢复默认设置？");
+                myDialog = MyDialog.newInstance(0, getString(R.string.restore_settings));
                 myDialog.show(getActivity().getFragmentManager(), "default_setting");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -119,7 +119,7 @@ public class FragmentSetting extends Fragment {
                 });
                 break;
             case R.id.btn_memoryCard_format:
-                myDialog = MyDialog.newInstance(0, "是否格式化存储卡？");
+                myDialog = MyDialog.newInstance(0, getString(R.string.confirm_format_memory_card));
                 myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -137,7 +137,7 @@ public class FragmentSetting extends Fragment {
                 break;
             case R.id.btn_appVersion:
                 String ver = getAppVersion(getContext());
-                myDialog = MyDialog.newInstance(1, "App版本" + ver);
+                myDialog = MyDialog.newInstance(1, "App" + getString(R.string.version) + ver);
                 myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 break;
             default:

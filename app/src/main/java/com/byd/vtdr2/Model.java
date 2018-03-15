@@ -37,6 +37,13 @@ public class Model implements Serializable {
         }
     }
 
+    public Model(String name1,String time1,int size1) {
+        name = name1;
+        time =time1;
+        size =size1;
+        isDirectory = false;
+    }
+
     public String getName() {
         return name;
     }
