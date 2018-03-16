@@ -15,16 +15,16 @@
         android:background="#00f"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:id="@+id/iv_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
-        app:layout_constraintLeft_toLeftOf="@id/iv_videoPhoto"
-        app:layout_constraintRight_toRightOf="@id/iv_videoPhoto"
-        app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
-        android:src="@mipmap/ic_play"
-        android:visibility="visible"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_play"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"-->
+        <!--app:layout_constraintLeft_toLeftOf="@id/iv_videoPhoto"-->
+        <!--app:layout_constraintRight_toRightOf="@id/iv_videoPhoto"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"-->
+        <!--android:src="@mipmap/ic_play"-->
+        <!--android:visibility="invisible"/>-->
 
 
     <TextView

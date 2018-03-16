@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_5"
-        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_20"
         android:drawableTop="@drawable/btn_tab_back_selector"
         android:text="@string/back"
         android:textAllCaps="false"

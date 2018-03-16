@@ -541,12 +541,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             switch (currentRadioButton) {
                 case ServerConfig.RB_RECORD_VIDEO:
                     tvEditNav.setText(R.string.record_video);
+                    btnShare.setVisibility(View.GONE);
                     break;
                 case ServerConfig.RB_LOCK_VIDEO:
                     tvEditNav.setText(R.string.lock_video);
+                    btnShare.setVisibility(View.GONE);
                     break;
                 case ServerConfig.RB_CAPTURE_PHOTO:
                     tvEditNav.setText(R.string.capture_photo);
+                    btnShare.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;
