@@ -43,7 +43,6 @@ import com.byd.vtdr2.fragment.FragmentRTVideo;
 import com.byd.vtdr2.fragment.FragmentSetting;
 import com.byd.vtdr2.utils.Config;
 import com.byd.vtdr2.utils.DownloadUtil;
-import com.byd.vtdr2.utils.NetworkUtils;
 import com.byd.vtdr2.utils.Utility;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private String appStateStr;
     private MyDialog myDialog;
     private ArrayList<Model> selectedLists;
-    private int selectedCounts;
+    private static int selectedCounts;
     private int hadDelete;
     private int doingDownFileCounts = 0;
     private String mGetFileName;
@@ -310,20 +309,20 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private String getWifiIpAddr() {
-        int type = NetworkUtils.getAPNType(getApplicationContext());
-        if (type == ConnectivityManager.TYPE_WIFI) {
-            WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            int ip = mgr.getConnectionInfo().getIpAddress();
-            return String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
-                    >> 24);
-        } else if (type == ConnectivityManager.TYPE_ETHERNET) {
-//            得到自己的ip
-            return ServerConfig.PADIP;
-//            return Settings.System.getString(getContentResolver(),Settings.System.);
-        }
-        return null;
+//        int type = NetworkUtils.getAPNType(getApplicationContext());
+//        if (type == ConnectivityManager.TYPE_WIFI) {
+//            WifiManager mgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//            int ip = mgr.getConnectionInfo().getIpAddress();
+//            return String.format("%d.%d.%d.%d", (ip & 0xFF), (ip >> 8 & 0xFF), (ip >> 16 & 0xFF), ip
+//                    >> 24);
+//        } else if (type == ConnectivityManager.TYPE_ETHERNET) {
+////            得到自己的ip
+//            return ServerConfig.PADIP;
+////            return Settings.System.getString(getContentResolver(),Settings.System.);
+//        }
+//        return null;
 
-//        return ServerConfig.PADIP;
+        return ServerConfig.PADIP;
     }
 
     @Override

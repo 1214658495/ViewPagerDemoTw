@@ -1,6 +1,7 @@
 package com.byd.vtdr2;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -119,6 +120,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.layout_images_viewpager);
         ButterKnife.bind(this);
@@ -188,7 +190,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
             case R.id.btn_share_preview:
                 break;
             case R.id.btn_delete_preview:
-                MyDialog myDialog = MyDialog.newInstance(0,"确认删除？");
+                MyDialog myDialog = MyDialog.newInstance(0,getString(R.string.confirm_delete));
                 myDialog.show(getFragmentManager(), "delete");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -206,6 +208,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_zoom:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 finish();
                 break;
             default:

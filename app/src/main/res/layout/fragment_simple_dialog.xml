@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="确认"
+            android:text="@string/ok"
             android:textSize="@dimen/sp_11" />
 
         <ImageView
@@ -65,7 +65,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textSize="@dimen/sp_11" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

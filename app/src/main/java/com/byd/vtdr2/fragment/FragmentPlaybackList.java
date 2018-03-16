@@ -689,9 +689,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                         @Override
                         public void okButtonClick() {
-                            for (Model model :
-                                    mSelectedLists) {
-                                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE_MULTI, mSelectedLists);
+                            mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE_MULTI, mSelectedLists);
+                            for (Model model : mSelectedLists) {
                                 String fileHead;
                                 if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
                                     fileHead = "/tmp/SD0/NORMAL/";
@@ -1179,66 +1178,66 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
 
 
-        class YuvBitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
-
-            private String imageUrl;
-
-            @Override
-            protected Bitmap doInBackground(String... params) {
-                Log.e(TAG, "----YuvBitmapWorkerTaskdoInBackground: ");
-                imageUrl = params[0];
-
-
-                Bitmap bitmap = downloadYuvBitmap(params[0]);
-                if (bitmap != null) {
-                    addBitmapToMemoryCache(params[0], bitmap);
-                }
-                return bitmap;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-                ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
-                if (imageView != null && bitmap != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-                taskCollection1.remove(this);
-            }
-
-            private Bitmap downloadYuvBitmap(String param) {
-                int timecount = 0;
-                Log.e(TAG, "downloadYuvBitmap: 开始");
-                Bitmap bitmap = null;
-                mRemoteCam.getThumb(param);
-                // TODO: 2018/1/26 加判断已获得了数据
-                while (!isYuvDownload) {
-                    if (isThumbGetFail) {
-                        // TODO: 2017/10/26 loadfail how to deal
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
-                        isThumbGetFail = false;
-                        return bitmap;
-//                        break;
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    timecount++;
-                    if (timecount == 3) {
-//                        break;
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.defualt_thm);
-                        return bitmap;
-                    }
-                }
-
-                isYuvDownload = false;
-                Log.e(TAG, "downloadYuvBitmap: 接收到数据");
-                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
-                return bitmap;
-            }
-        }
+//        class YuvBitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+//
+//            private String imageUrl;
+//
+//            @Override
+//            protected Bitmap doInBackground(String... params) {
+//                Log.e(TAG, "----YuvBitmapWorkerTaskdoInBackground: ");
+//                imageUrl = params[0];
+//
+//
+//                Bitmap bitmap = downloadYuvBitmap(params[0]);
+//                if (bitmap != null) {
+//                    addBitmapToMemoryCache(params[0], bitmap);
+//                }
+//                return bitmap;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                super.onPostExecute(bitmap);
+//                ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
+//                if (imageView != null && bitmap != null) {
+//                    imageView.setImageBitmap(bitmap);
+//                }
+//                taskCollection1.remove(this);
+//            }
+//
+//            private Bitmap downloadYuvBitmap(String param) {
+//                int timecount = 0;
+//                Log.e(TAG, "downloadYuvBitmap: 开始");
+//                Bitmap bitmap = null;
+//                mRemoteCam.getThumb(param);
+//                // TODO: 2018/1/26 加判断已获得了数据
+//                while (!isYuvDownload) {
+//                    if (isThumbGetFail) {
+//                        // TODO: 2017/10/26 loadfail how to deal
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
+//                        isThumbGetFail = false;
+//                        return bitmap;
+////                        break;
+//                    }
+//                    try {
+//                        Thread.sleep(200);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    timecount++;
+//                    if (timecount == 3) {
+////                        break;
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
+//                        return bitmap;
+//                    }
+//                }
+//
+//                isYuvDownload = false;
+//                Log.e(TAG, "downloadYuvBitmap: 接收到数据");
+//                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
+//                return bitmap;
+//            }
+//        }
 
         class YuvBitmapWorkerTaskCashe extends AsyncTask<String, Void, Bitmap> {
 
