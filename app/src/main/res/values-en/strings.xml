@@ -7,7 +7,7 @@
 
     <string name="record_video">Record Video</string>
     <string name="lock_video">Lock Video</string>
-    <string name="capture_photo">Capture Photo</string>
+    <string name="photo">Capture Photo</string>
 
     <string name="system">System</string>
     <string name="memoryCard_format">Memory Card Format</string>
@@ -29,7 +29,7 @@
     <string name="LockVideo_fail">LockVideo fail</string>
     <string name="OpenVideo_success">OpenVideo success</string>
     <string name="OpenVideo_fail">OpenVideo fail</string>
-    <string name="connect_fail">Connect fail ! Please check the network</string>
+    <string name="connect_fail">Connect fail ! Please check network</string>
     <string name="ok">OK</string>
     <string name="logo_text">BYD Driving Recorder</string>
     <string name="card_removed">Please inserted memory card</string>
@@ -47,7 +47,7 @@
     <string name="select_to_download">Please select the file to download</string>
     <string name="confirm_delete">Confirm delete</string>
     <string name="Reconnecting">Reconnecting...</string>
-    <string name="restore_settings">Sure to restore the default settings?</string>
-    <string name="confirm_format_memory_card">是否格式化存储卡？</string>
+    <string name="restore_settings">Confirm restore the default settings?</string>
+    <string name="confirm_format_memory_card">Confirm format memory card?</string>
 
 </resources>

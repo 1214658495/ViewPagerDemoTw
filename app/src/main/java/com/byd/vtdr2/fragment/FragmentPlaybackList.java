@@ -548,7 +548,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     btnShare.setVisibility(View.GONE);
                     break;
                 case ServerConfig.RB_CAPTURE_PHOTO:
-                    tvEditNav.setText(R.string.capture_photo);
+                    tvEditNav.setText(R.string.photo);
                     btnShare.setVisibility(View.VISIBLE);
                     break;
                 default:
@@ -900,7 +900,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                     view = LayoutInflater.from(getContext()).inflate(R.layout.layout_lock_video_item, null);
                 } else {
-                    view = LayoutInflater.from(getContext()).inflate(R.layout.layout_capture_photo_item, null);
+                    view = LayoutInflater.from(getContext()).inflate(R.layout.layout_photo_item, null);
                 }
             } else {
                 view = convertView;

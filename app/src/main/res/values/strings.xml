@@ -22,9 +22,9 @@
     <string name="updateNow">升级</string>
     <string name="isDownLoading">正在更新...</string>
     <string name="downloadlater">取消</string>
-    <string name="record_video">记录视频</string>
+    <string name="record_video">行车视频</string>
     <string name="lock_video">锁定视频</string>
-    <string name="capture_photo">抓拍照片</string>
+    <string name="photo">照片</string>
     <string name="restore_defaults">默认值</string>
     <string name="version">版本</string>
     <string name="firmware_version">固件版本</string>

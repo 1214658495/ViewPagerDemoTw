@@ -106,7 +106,7 @@
         android:textColor="#f00"
         android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_8"
-        android:text="请插入存储卡"/>
+        android:text="@string/card_removed"/>
 
     <ProgressBar
         android:id="@+id/loadingView"
