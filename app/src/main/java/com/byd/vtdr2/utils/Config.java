@@ -11,7 +11,7 @@ package com.byd.vtdr2.utils;
 import java.util.UUID;
 
 /**
- * @author jjj1134446
+ * @author
  * 
  */
 public class Config {
