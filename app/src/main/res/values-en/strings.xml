@@ -29,7 +29,7 @@
     <string name="LockVideo_fail">LockVideo fail</string>
     <string name="OpenVideo_success">OpenVideo success</string>
     <string name="OpenVideo_fail">OpenVideo fail</string>
-    <string name="connect_fail">Connect fail ! Please check network</string>
+    <string name="connect_fail">Car DVR connecting fail</string>
     <string name="ok">OK</string>
     <string name="logo_text">BYD Driving Recorder</string>
     <string name="card_removed">Please inserted memory card</string>

@@ -5,8 +5,6 @@
     <string name="playback_list">回放列表</string>
     <string name="setting">设置</string>
 
-
-
     <string name="system">系统</string>
     <string name="memoryCard_format">存储卡格式化</string>
     <string name="cancel">取消</string>
@@ -35,7 +33,7 @@
     <string name="LockVideo_fail">锁定视频失败</string>
     <string name="OpenVideo_success">开启录像失败！</string>
     <string name="OpenVideo_fail">关闭录像失败！</string>
-    <string name="connect_fail">无法连接到记录仪，请检查网络</string>
+    <string name="connect_fail">无法连接到行车记录仪</string>
     <string name="ok">确认</string>
     <string name="logo_text">比亚迪行车记录仪</string>
     <string name="card_removed">请插入存储卡！</string>
@@ -49,10 +47,11 @@
     <string name="File_downloaded">文件已下载</string>
     <string name="open_permissions">请打开app的存储权限</string>
     <string name="share_to">分享到</string>
-    <string name="video_cannot_share">视频暂时无法分享！</string>
+    <string name="video_cannot_share">视频暂时无法分享</string>
     <string name="select_to_download">请选择要下载的文件</string>
     <string name="confirm_delete">确定删除？</string>
     <string name="Reconnecting">正在重连...</string>
     <string name="restore_settings">是否恢复默认设置？</string>
     <string name="confirm_format_memory_card">是否格式化存储卡？</string>
+    <string name="connecting">正在重连...</string>
 </resources>

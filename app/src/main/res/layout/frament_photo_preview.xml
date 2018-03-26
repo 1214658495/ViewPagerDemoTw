@@ -6,7 +6,7 @@
     android:focusable="true"
     android:background="#000">
 
-    <com.byd.vtdr2.view.MyViewPager
+    <com.byd.vtdr.view.MyViewPager
         android:id="@+id/vp_viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.byd.vtdr2.view.MyViewPager>
+    </com.byd.vtdr.view.MyViewPager>
 
     <RelativeLayout
         android:layout_width="match_parent"
