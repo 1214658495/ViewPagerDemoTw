@@ -36,7 +36,7 @@
     <string name="card_inserted">Memory card inserted</string>
     <string name="reboot_drivingReorder">Reboot driving reorder</string>
     <string name="format_ok">Memory card formatting completed</string>
-    <string name="format_fail">Memory card formatting fail</string>
+    <string name="format_fail">Memory card formatting fail,confirm to reformat?</string>
     <string name="downloading">Downloading</string>
     <string name="Download_completed">Download completed</string>
     <string name="Download_fail">Download fail</string>
