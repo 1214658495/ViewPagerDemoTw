@@ -193,7 +193,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         Log.e(TAG, "onCreate: ");
         // retain this fragment
         setRetainInstance(true);
-        lastPosition = -1;
+//        lastPosition = -1;
     }
 
     @Nullable
@@ -454,7 +454,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (mAdapter != null) {
             mAdapter.cancelAllTasks();
 //            添加
-            mAdapter.isClickedMap.clear();
+//            mAdapter.isClickedMap.clear();
         }
 
     }

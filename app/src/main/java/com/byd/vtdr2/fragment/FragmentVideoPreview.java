@@ -145,7 +145,11 @@ public class FragmentVideoPreview extends Fragment {
         super.onCreate(savedInstanceState);
 //        urlsList = getArguments().getStringArrayList("urlsList");
         url = getArguments().getString("url");
-        fileName = url.substring(30);
+        if (url.contains("LOCK")) {
+            fileName = url.substring(31);
+        } else {
+            fileName = url.substring(32);
+        }
     }
 
     @Override

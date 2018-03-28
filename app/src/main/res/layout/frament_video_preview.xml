@@ -52,6 +52,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/btn_back_to_videoGridview"
             android:text="2017-09-90-09-09-10.MP4"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_9" />
 
     </RelativeLayout>
@@ -100,6 +101,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center"
+            android:text="/"
+            android:textColor="@color/white"
             android:textSize="11sp" />
 
         <TextView
@@ -110,7 +121,8 @@
             android:gravity="center"
             android:text="02:00"
             android:textSize="11sp"
-            android:visibility="gone"/>
+            android:textColor="@color/white"
+            android:visibility="visible"/>
 
         <ImageButton
             android:id="@+id/btn_VideoZoom"

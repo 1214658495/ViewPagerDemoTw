@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     //控制弹出框的显示，页面切换网络错误时，弹出一次控制
     public static boolean isDialogShow = false;
+    private static Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -445,7 +446,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }*/
 
     private void showToastTips(String tips) {
-        Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
+        if (toast == null) {
+            toast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
+        } else {
+            toast.setText(tips);
+        }
+        toast.show();
     }
 
     private void showConfirmDialog(String tips) {
