@@ -471,9 +471,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showCrossDialog(String tips) {
-        if (customDialog != null && !isFinishing()) {
-            customDialog.dismiss();
-        }
+//        if (customDialog != null && !isFinishing()) {
+//            customDialog.dismiss();
+//        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         customDialog = builder.cancelTouchOut(true)
                 .view(R.layout.fragment_cross_dialog)
@@ -1040,10 +1040,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                showTipDialog("此文件已下载！");
 //            }
 
-        /*} else {
-            doingDownFileCounts = 0;
-            showTipDialog("下载完成！");
-        }*/
     }
 
     public void showTipDialog(String msg) {
