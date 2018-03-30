@@ -130,11 +130,11 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         // 如下在旋转后重建了
-       /* Dialog dialog = getDialog();
+        Dialog dialog = getDialog();
         // handles https://code.google.com/p/android/issues/detail?id=17423
         if (dialog != null && getRetainInstance()) {
             dialog.setDismissMessage(null);
-        }*/
+        }
         super.onDestroyView();
         unbinder.unbind();
     }

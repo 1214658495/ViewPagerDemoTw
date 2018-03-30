@@ -80,10 +80,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_preview_play_big_selector"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/sv_videoPlayView"
+        app:layout_constraintEnd_toEndOf="@id/sv_videoPlayView"
+        app:layout_constraintStart_toStartOf="@id/sv_videoPlayView"
+        app:layout_constraintTop_toTopOf="@id/sv_videoPlayView" />
 
     <LinearLayout
         android:id="@+id/ll_bar_editVideo"

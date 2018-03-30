@@ -39,6 +39,7 @@
             android:layout_toEndOf="@id/btn_back_to_gridview"
             android:layout_centerVertical="true"
             android:textSize="@dimen/sp_9"
+            android:textColor="@color/white"
             android:text="2017-09-90-09-09-09.jpg" />
 
         <TextView
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="test"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:textSize="11sp"
             app:layout_constraintTop_toTopOf="parent" />
 

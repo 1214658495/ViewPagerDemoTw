@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,28 +21,29 @@
 
     <TextView
         android:id="@+id/tv_dialogContent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toLeftOf="@id/pb_downloadProgressBar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.35"
+        android:layout_width="189dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="8dp"
         android:gravity="center"
         android:text="@string/downloading"
         android:textColor="#fff"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/pb_downloadProgressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
 
     <ProgressBar
         android:id="@+id/pb_downloadProgressBar"
-        android:layout_width="0dp"
+        android:layout_width="154dp"
         android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tv_dialogContent"
-        app:layout_constraintTop_toTopOf="@id/tv_dialogContent"
-        app:layout_constraintBottom_toBottomOf="@id/tv_dialogContent"
         android:max="100"
-        />
+        app:layout_constraintBottom_toBottomOf="@id/tv_dialogContent"
+        app:layout_constraintLeft_toRightOf="@id/tv_dialogContent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_dialogContent" />
 
     <TextView
         android:id="@+id/tv_progressPercent"

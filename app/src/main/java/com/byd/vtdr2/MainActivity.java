@@ -5,14 +5,18 @@ package com.byd.vtdr2;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -54,6 +58,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -121,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     //控制弹出框的显示，页面切换网络错误时，弹出一次控制
     public static boolean isDialogShow = false;
-    private static Toast toast;
+    //    private static Toast toast;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,11 +143,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onResume() {
         super.onResume();
-        /*receiverNetworkBroadcast();
+        receiverNetworkBroadcast();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION); //网络连接消息
 //        filter.addAction(EthernetManager.ETHERNET_STATE_CHANGED_ACTION); //以太网消息
-        this.registerReceiver(receiver, filter);*/
+        this.registerReceiver(receiver, filter);
     }
 
     private void receiverNetworkBroadcast() {
@@ -186,6 +192,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                        NetworkInfo info = connectivityManager.getNetworkInfo(network);
                         NetworkInfo info = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
                         if (info == null) {
+                        } else {
+                            if (!info.isConnected()) {
+
+                            }
+                        }
+                       /* if (info == null) {
                             isNetworkConnected = false;
 //                            rbRealTimeVideo.setClickable(false);
                             showSingleButtonTipDialog(getString(R.string.connect_fail));
@@ -238,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                                    Toast.makeText(context, "以太网！DISCONNECTED", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }
+                        }*/
                     } else {
                         Log.e(TAG, "other android.net.NetworkInfo.State");
                     }
@@ -446,12 +458,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }*/
 
     private void showToastTips(String tips) {
-        if (toast == null) {
+        /*if (toast == null) {
             toast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
         } else {
             toast.setText(tips);
         }
-        toast.show();
+        toast.show();*/
+
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
     private void showConfirmDialog(String tips) {
@@ -634,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     customDialog.show();
                     customDialog.setTitle(getString(R.string.connect_fail));*/
                     if (!isDialogShow) {
-                       showConfirmDialog(str);
+                        showConfirmDialog(str);
                         isDialogShow = true;
                     }
                 } else {
@@ -888,157 +906,188 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
         }
     }
+/*
+*
+*
+*3.30 add
+* */
+// 查询下载进度，文件总大小多少，已经下载多少？
+private long[] Id;
+    public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
+    private int newsize = 0, totalsize = 0;
+    //获取下载管理器
+    private DownloadManager downloadManager;
 
-    private void downloadFiles() {
-        if (progressDialogFragment != null) {
-            progressDialogFragment = null;
+    class DownloadChangeObserver extends ContentObserver {
+
+        public DownloadChangeObserver(Handler handler) {
+            super(handler);
+            // TODO Auto-generated constructor stub
         }
-        for (int i = 0; i < selectedCounts; i++) {
-            if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
-//                mGetFileName = "/tmp/SD0/NORMAL/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" + selectedLists.get(i).getName();
-            } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-//                mGetFileName = "/tmp/SD0/EVENT/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" + selectedLists.get(i).getName();
-            } else {
-//                mGetFileName = "/tmp/SD0/PHOTO/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + selectedLists.get(i).getName();
-            }
-//            doingDownFileCounts++;
-            doingDownFileCounts = i;
-            String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
-                    + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
-            File file = new File(fileName);
-            if (!file.exists()) {
-                final DownloadUtil downloadUtil = DownloadUtil.get();
-                downloadUtil.download(mGetFileName, "行车记录仪", new DownloadUtil.OnDownloadListener() {
-                    @Override
-                    public void onDownloadStart() {
-                        Log.e(TAG, "onDownloadStart: " + mGetFileName);
-                        if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO
-                                || fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-                            synchronized (this) {
-                                if (progressDialogFragment == null) {
-                                    progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
-                                    progressDialogFragment.show(getFragmentManager(), "text");
-                                    progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
-                                        @Override
-                                        public void okButtonClick() {
 
-                                        }
+        @Override
+        public void onChange(boolean selfChange) {
+            queryDownloadStatus();
+        }
+    }
 
-                                        @Override
-                                        public void cancelButtonClick() {
-                                            downloadUtil.cancelDownload();
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
+    public static double div(double v1, double v2, int scale) {
+        if (scale < 0) {
+            throw new IllegalArgumentException("The scale must be a positive integer or zero");
+        }
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
 
-                    @Override
-                    public void onDownloadSuccess() {
-                        Log.e(TAG, "onDownloadSuccess: 下载完成" + mGetFileName);
-                        if (doingDownFileCounts == (selectedCounts - 1)) {
+    private void queryDownloadStatus() {
+        DownloadManager.Query query = new DownloadManager.Query();
+        for (int i = 0; i < Id.length; i++) {
+            query.setFilterById(Id[i]);
+            try {
+                Cursor c = downloadManager.query(query);
+                if (c != null && c.moveToFirst()) {
+                    int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+
+                    int reasonIdx = c.getColumnIndex(DownloadManager.COLUMN_REASON);
+                    int titleIdx = c.getColumnIndex(DownloadManager.COLUMN_TITLE);
+                    int fileSizeIdx = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                    int bytesDLIdx = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                    String title = c.getString(titleIdx);
+                    int fileSize = c.getInt(fileSizeIdx);
+                    int bytesDL = c.getInt(bytesDLIdx);
+                    newsize = bytesDL;
+                    totalsize = fileSize;
+                    // Translate the pause reason to friendly text.
+                    int reason = c.getInt(reasonIdx);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(title).append("\n");
+                    sb.append("Downloaded ").append(bytesDL).append(" / ").append(fileSize);
+
+                    // Display the status
+                    Log.d("tag", sb.toString());
+                    switch (status) {
+                        case DownloadManager.STATUS_PAUSED:
+                            Log.v("tag", "STATUS_PAUSED");
+                        case DownloadManager.STATUS_PENDING:
+                            Log.v("tag", "STATUS_PENDING");
+                        case DownloadManager.STATUS_RUNNING:
+                            // 正在下载，不做任何事情
+                            final int finalI = i;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showTipDialog(getString(R.string.Download_completed));
-                                    doingDownFileCounts = 0;
+                                    //更新UI
+                                    double temp = div((double) newsize, (double) totalsize, 3);
+                                    if (finalI == (Id.length - 1)) {
+                                        progressDialogFragment.setProgressText((int) (temp * 100.00));
+                                    }
                                 }
                             });
-
-                        }
-                    }
-
-                    @Override
-                    public void onDownloading(final int progress) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (progressDialogFragment != null) {
-                                    progressDialogFragment.setProgressText(progress);
-                                }
+                            Log.v("tag", "STATUS_RUNNING");
+                            break;
+                        case DownloadManager.STATUS_SUCCESSFUL:
+                            // 完成
+                            Log.v("tag", "下载完成");
+                            // dowanloadmanager.remove(lastDownloadId);
+                            if (i == (Id.length - 1)) {
+                                progressDialogFragment.dismissAllowingStateLoss();
                             }
-                        });
-                        Log.e(TAG, "onDownloading: 下载中" + progress);
+                            break;
+                        case DownloadManager.STATUS_FAILED:
+                            // 清除已下载的内容，重新下载
+                            Log.v("tag", "STATUS_FAILED");
+                            downloadManager.remove(Id[i]);
+                            break;
                     }
+                }
+            } catch (Exception e ) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-                    @Override
-                    public void onDownloadFailed() {
-//                        Utils.showToast(MainActivity.this, "下载失败");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showTipDialog(getString(R.string.Download_fail));
-                            }
-                        });
-                        Log.e(TAG, "onDownloadFailed: 下载失败");
-                    }
-                });
+    private void downloadFiles()
+    {
+        if (selectedCounts>5)
+        {
+            progressDialogFragment = ProgressDialogFragment.newInstance("请选择少与5个文件下载");
+            progressDialogFragment.show(getFragmentManager(), "text");
+            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
+                    .OnDialogButtonClickListener() {
+                @Override
+                public void okButtonClick() {
+
+                }
+                @Override
+                public void cancelButtonClick() {
+
+                }
+            });
+            return;
+        }
+        Id = new long[selectedCounts];
+        boolean showdialog = false;
+        downloadManager = (DownloadManager) getApplicationContext().getSystemService(Context
+                .DOWNLOAD_SERVICE);
+        ContentObserver mObserver;
+        mObserver = new DownloadChangeObserver(null);
+        getContentResolver().registerContentObserver(CONTENT_URI, true, mObserver);
+
+        for (int i = 0; i < selectedCounts; i++) {
+            if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" + selectedLists
+                        .get(i).getName();
+            } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" + selectedLists
+                        .get(i).getName();
+            } else {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + selectedLists
+                        .get(i).getName();
+            }
+            String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪" + mGetFileName
+                    .substring(mGetFileName.lastIndexOf('/'));
+            File file = new File(fileName);
+            if (!file.exists()) {
+                //创建下载任务,downloadUrl就是下载链接
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse
+                        (mGetFileName));
+                //指定下载路径和下载文件名
+                request.setDestinationInExternalPublicDir("/行车记录仪/", selectedLists.get(i).getName
+                        ());
+                //不显示下载界面
+                request.setVisibleInDownloadsUi(true);
+                //将下载任务加入下载队列，否则不会进行下载
+                Id[i] = downloadManager.enqueue(request);
+                showdialog = true;
+
             } else {
                 if (doingDownFileCounts == (selectedCounts - 1)) {
-                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
+                            .LENGTH_SHORT).show();
+                    // getContentResolver().unregisterContentObserver(mObserver);
                 }
             }
         }
-
-       /* if (doingDownFileCounts < selectedCounts) {
-            if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
-//                mGetFileName = "/tmp/SD0/NORMAL/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/NORMAL/" + selectedLists.get(doingDownFileCounts).getName();
-            } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-//                mGetFileName = "/tmp/SD0/EVENT/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/EVENT/" + selectedLists.get(doingDownFileCounts).getName();
-            } else {
-//                mGetFileName = "/tmp/SD0/PHOTO/" + selectedLists.get(doingDownFileCounts).getName();
-                mGetFileName = "http://192.168.42.1/SD0/PHOTO/" + selectedLists.get(doingDownFileCounts).getName();
-            }
-            // TODO: 2018/1/17 做下载
-            DownloadUtil.get().download(mGetFileName, "行车记录仪", new DownloadUtil.OnDownloadListener() {
+        if (showdialog) {
+            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string
+                    .downloading));
+            progressDialogFragment.show(getFragmentManager(), "text");
+            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
+                    .OnDialogButtonClickListener() {
                 @Override
-                public void onDownloadSuccess() {
-//                        Utils.showToast(MainActivity.this, "下载完成");
-//                    showTipDialog("下载完成");
-
-                    Log.e(TAG, "onDownloadSuccess: 下载完成");
-                    downloadFiles();
+                public void okButtonClick() {
 
                 }
-                @Override
-                public void onDownloading(int progress) {
-//                        progressBar.setProgress(progress);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                showTip("下载中");
-//                            }
-//                        });
-                    Log.e(TAG, "onDownloadSuccess: 下载中");
-                }
-                @Override
-                public void onDownloadFailed() {
-//                        Utils.showToast(MainActivity.this, "下载失败");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showTipDialog("下载失败");
-                        }
-                    });
-                    Log.e(TAG, "onDownloadSuccess: 下载失败");
-                }
-            });*/
 
-//            String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
-//                    + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
-//            File file = new File(fileName);
-//            if (!file.exists()) {
-//                mRemoteCam.getFile(mGetFileName);
-//            } else {
-//                doingDownFileCounts++;
-//                showTipDialog("此文件已下载！");
-//            }
+                @Override
+                public void cancelButtonClick() {
+                    for (int j = 0; j < Id.length; j++) {
+                        downloadManager.remove(Id[j]);
+                    }
+                }
+            });
+        }
 
     }
 

@@ -2,8 +2,6 @@ package com.byd.vtdr2.fragment;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -167,8 +165,9 @@ public class FragmentRTVideo extends Fragment {
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
 
-        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        // TODO: 2018/3/30 声音是否取消？
+//        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+//        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
     }
 
@@ -442,8 +441,8 @@ public class FragmentRTVideo extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         release();
-        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        audioManager.abandonAudioFocus(null);
+//        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+//        audioManager.abandonAudioFocus(null);
     }
 
     @Override
