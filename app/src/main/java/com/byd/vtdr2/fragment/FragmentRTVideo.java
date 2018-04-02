@@ -320,7 +320,7 @@ public class FragmentRTVideo extends Fragment {
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     break;
                 default:
-//                    showToastTips("unknown error !");
+                    showToastTips("unknown error !");
                     break;
             }
             // Todo pls handle the error status here, reconnect or call finish()

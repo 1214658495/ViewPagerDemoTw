@@ -34,12 +34,14 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.byd.lighttextview.LightButton;
+import com.byd.lighttextview.LightRadioButton;
 import com.byd.vtdr2.connectivity.IChannelListener;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.fragment.FragmentPlaybackList;
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private static FragmentRTVideo fragmentRTVideo = FragmentRTVideo.newInstance();
     private static FragmentPlaybackList fragmentPlaybackList = FragmentPlaybackList.newInstance();
     private static FragmentSetting fragmentSetting = FragmentSetting.newInstance();
-    private Fragment fragment;
+    private static Fragment fragment;
     private String appStateStr;
     private MyDialog myDialog;
     private ArrayList<Model> selectedLists;
@@ -193,9 +195,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         NetworkInfo info = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
                         if (info == null) {
                         } else {
-                            if (!info.isConnected()) {
+                          /*  if (!info.isConnected()) {
+//                                showToastTips("以太网断开");
+                                showConfirmDialog("以太网断开");
+                                isDialogShow = true;
+//                                Toast.makeText(this,Toast.LENGTH_SHORT,"以太网断开").show();
+                            } else {
+//                                showToastTips("以太网已连接");
+                                showConfirmDialog("以太网已连接");
 
-                            }
+                            }*/
                         }
                        /* if (info == null) {
                             isNetworkConnected = false;
@@ -285,30 +294,49 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
 //
 //        vpMain.setAdapter(myFragmentPagerAdapter);
-        rgGroup.check(R.id.rb_realTimeVideo);
         if (fragment == null) {
             fragment = fragmentRTVideo;
-            getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment)
+                    .commitAllowingStateLoss();
+            rgGroup.check(R.id.rb_realTimeVideo);
         }
-//        switchFragment(0);
-        rgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        rbRealTimeVideo.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch (i) {
-                    case R.id.rb_realTimeVideo:
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (fragment != fragmentRTVideo) {
                         fragment = fragmentRTVideo;
-                        break;
-                    case R.id.rb_playbackList:
-                        fragment = fragmentPlaybackList;
-                        break;
-                    case R.id.rb_setting:
-                        fragment = fragmentSetting;
-                        break;
-                    default:
-                        break;
+                        getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                    }
                 }
-                if (fragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+            }
+        });
+        rbPlaybackList.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
+        {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if ( fragment != fragmentPlaybackList)
+                    {
+                        fragment = fragmentPlaybackList;
+                        getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                    }
+
+                }
+            }
+        });
+        rbSetting.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (fragment != fragmentSetting) {
+                        fragment = fragmentSetting;
+                        getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                    }
                 }
             }
         });
@@ -349,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         // TODO: 2018/2/3 如下的作用不知
 //        putPrefs(mPref);
 //        此处解注册因为app从后台快速切换回来
-//        unregisterReceiver(receiver);
+        unregisterReceiver(receiver);
 //        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
     }
 
@@ -598,10 +626,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void handleCmdChannelEvent(int type, Object param, String... array) {
-//        if (type >= 80) {
-//            handleCmdChannelError(type, param);
-//            return;
-//        }
+        if (type >= 80) {
+            handleCmdChannelError(type, param);
+            return;
+        }
 
         switch (type) {
             case IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT:
@@ -838,6 +866,43 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
     }
 
+    private void handleCmdChannelError(int type, Object param) {
+        switch (type) {
+            case IChannelListener.CMD_CHANNEL_ERROR_INVALID_TOKEN:
+//                isConnected = false;
+//                if (mCurrentFrag == mRecordFrag) {
+//                    mRecordFrag.hideTimer();
+//                }
+//                showAlertDialog("Error", "Invalid Session! Please start session first!");
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT:
+//                isConnected = false;
+//                showAlertDialog("Error", "Timeout! No response from Remote Camera!");
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_BLE_INVALID_ADDR:
+//                showAlertDialog("Error", "Invalid bluetooth device");
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_BLE_DISABLED:
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_BROKEN_CHANNEL:
+//                isConnected = false;
+//                showAlertDialog("Error", "Lost connection with Remote Camera!");
+//                resetRemoteCamera();
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_CONNECT:
+//                isConnected = false;
+//                showAlertDialog("Error", "Cannot connect to the Camera. \n" + "Please make sure " +
+//                        "the selected camera is on. \n" + "If problem persists, please reboot " +
+//                        "both camera and this device.");
+                break;
+            case IChannelListener.CMD_CHANNEL_ERROR_WAKEUP:
+//                showAlertDialog("Error", "Cannot wakeup the Remote Camera");
+                break;
+            default:
+                break;
+        }
+    }
+
 
     @Override
     public void onFragmentAction(int type, Object param, Integer... array) {
@@ -1063,8 +1128,8 @@ private long[] Id;
 
             } else {
                 if (doingDownFileCounts == (selectedCounts - 1)) {
-                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
-                            .LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
+//                            .LENGTH_SHORT).show();
                     // getContentResolver().unregisterContentObserver(mObserver);
                 }
             }

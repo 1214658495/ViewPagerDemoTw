@@ -186,7 +186,7 @@ public abstract class CmdChannel {
                         break;
                     }
                 }
-                // mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT, null);
+                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT, null);
                 Log.e(TAG, "RX_TIMEOUT" + "response longer then 30 sec");// Add Json Segment to logView
                 addLog("TimerOut Debug Dump msg buffer: " + msg + "<br >");
                 msg = "";
