@@ -51,7 +51,7 @@ public class FragmentSetting extends Fragment {
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
-
+    public boolean reload = false;
     public static FragmentSetting newInstance() {
         FragmentSetting fragmentSetting = new FragmentSetting();
 

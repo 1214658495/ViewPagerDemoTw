@@ -35,6 +35,7 @@
     <string name="OpenVideo_fail">关闭录像失败</string>
     <string name="connect_fail">无法连接到行车记录仪</string>
     <string name="ok">确认</string>
+    <string name="close">关闭</string>
     <string name="logo_text">比亚迪行车记录仪</string>
     <string name="card_removed">请插入存储卡</string>
     <string name="card_inserted">存储卡已插入</string>
@@ -54,4 +55,5 @@
     <string name="restore_settings">是否恢复默认设置？</string>
     <string name="confirm_format_memory_card">是否格式化存储卡？</string>
     <string name="connecting">正在重连...</string>
+    <string name="time_out">连接超时，记录仪无应答</string>
 </resources>

@@ -103,6 +103,7 @@ public class FragmentVideoPreview extends Fragment {
     private MyThreadTimecount myThreadTimecount;
     private  boolean ouTthread = false ;
     private AudioManager audioManager;
+    public boolean reload = false;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -168,6 +169,7 @@ public class FragmentVideoPreview extends Fragment {
         btnStart = view.findViewById(R.id.btn_start);
         btnStop = view.findViewById(R.id.btn_stop);
         initData();
+        reload = true;
         return view;
     }
 
@@ -438,6 +440,7 @@ public class FragmentVideoPreview extends Fragment {
 //                    release();
                     }
                 }
+                reload = false;
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.btn_stop:

@@ -31,6 +31,7 @@
     <string name="OpenVideo_fail">OpenVideo fail</string>
     <string name="connect_fail">Car DVR connecting fail</string>
     <string name="ok">OK</string>
+    <string name="close">Close</string>
     <string name="logo_text">BYD Driving Recorder</string>
     <string name="card_removed">Please inserted memory card</string>
     <string name="card_inserted">Memory card inserted</string>
@@ -49,5 +50,6 @@
     <string name="Reconnecting">Reconnecting...</string>
     <string name="restore_settings">Confirm restore the default settings?</string>
     <string name="confirm_format_memory_card">Confirm format memory card?</string>
+    <string name="time_out">Time out connected</string>
 
 </resources>

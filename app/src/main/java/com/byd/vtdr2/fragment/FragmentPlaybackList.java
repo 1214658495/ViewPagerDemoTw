@@ -131,8 +131,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     FrameLayout flVideoPlayPreview;
 
     //    FragmentVideoPlay fragmentVideoPreview;
-    FragmentVideoPreview fragmentVideoPreview;
-    FragmentPhotoPreview fragmentPhotoPreview;
+    public static FragmentVideoPreview fragmentVideoPreview;
+    public static FragmentPhotoPreview fragmentPhotoPreview;
 
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
@@ -243,54 +243,39 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.rb_recordvideo:
-                        currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
-                        mGridViewList.setNumColumns(1);
-                        showRecordList();
-//                        mAdapter.notifyDataSetChanged();
-//                        if (mAdapter != null) {
-//                            mAdapter.clear();
-//                            mAdapter.cancelAllTasks();
-//                        }
-//                        Toast.makeText(getContext(), "recordvideo", Toast.LENGTH_SHORT).show();
-//                        vpItemPreview.setCurrentItem(0, false);
+                        if (rbRecordvideo.isChecked()) {
+                            currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
+                            mGridViewList.setNumColumns(1);
+                            showRecordList();
+                            if (mAdapter != null) {
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
                         break;
                     case R.id.rb_lockvideo:
                         currentRadioButton = ServerConfig.RB_LOCK_VIDEO;
                         mGridViewList.setNumColumns(1);
                         showLockVideoList();
-//                        mAdapter.notifyDataSetChanged();
-//                        if (mAdapter != null) {
-//                            mAdapter.clear();
-//                            mAdapter.cancelAllTasks();
-//                        }
-//                        Toast.makeText(getContext(), "lockvideo", Toast.LENGTH_SHORT).show();
-//                        vpItemPreview.setCurrentItem(1, false);
+                        if (mAdapter != null) {
+                            mAdapter.notifyDataSetChanged();
+                        }
                         break;
                     case R.id.rb_capturephoto:
                         currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
-//                        mGridViewList.setNumColumns(3);
 
                         ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 300, 12);
                         int rowNum = mGridViewList.getCount() % colInfo.countInRow == 0 ? mGridViewList.getCount() / colInfo.countInRow : mGridViewList.getCount() / colInfo.countInRow + 1;
-//                        mGridViewList.setLayoutParams(new ConstraintLayout.LayoutParams(screenWidth,rowNum*colInfo.width+(rowNum-1)*2));
                         mGridViewList.setNumColumns(colInfo.countInRow);
                         showCapturePhotoList();
-//                        mGridViewList.setHorizontalSpacing();
-//                        if (mAdapter != null) {
-//                            mAdapter.clear();
-//                            mAdapter.cancelAllTasks();
-//                        }
-//                        mAdapter.notifyDataSetChanged();
-//                        vpItemPreview.setCurrentItem(2, false);
+                        if (mAdapter != null) {
+                            mAdapter.notifyDataSetChanged();
+                        }
                         break;
                     default:
                         break;
                 }
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
-                }
-//                mGridViewList.invalidateViews();
-                mGridViewList.setAdapter(mAdapter);
+
+//                mGridViewList.setAdapter(mAdapter);
 
             }
         });

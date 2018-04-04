@@ -78,6 +78,7 @@ public class FragmentPhotoPreview extends Fragment {
 
     private static final int FADE_OUT = 1;
     private IFragmentListener mListener;
+    public boolean reload = false;
 
     public FragmentPhotoPreview() {
         // Required empty public constructor
@@ -117,6 +118,7 @@ public class FragmentPhotoPreview extends Fragment {
         if (photoLists.size() != 0) {
             initData();
         }
+        reload = true;
         return view;
     }
 
@@ -186,6 +188,7 @@ public class FragmentPhotoPreview extends Fragment {
         switch (view.getId()) {
             case R.id.btn_back_to_gridview:
                 // TODO: 2017/11/29 删除完成了，需要去更新gridview
+                reload = false;
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.btn_share_preview:

@@ -177,7 +177,7 @@ public abstract class CmdChannel {
             }
 
             if (!mReplyReceived) {
-                for (tmpLoop = 1; tmpLoop < 10; tmpLoop++) {
+                for (tmpLoop = 1; tmpLoop < 3; tmpLoop++) {
                     synchronized (mRxLock) {
                         mRxLock.wait(RX_TIMEOUT);
                     }
@@ -662,7 +662,7 @@ public abstract class CmdChannel {
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_STOP_VF, null);
                         break;
                     case AMBA_RECORD_TIME:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_TIME, parser.getString("param"));
+//                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_TIME, parser.getString("param"));
                         break;
                     case AMBA_FORMAT_SD:
 //madd

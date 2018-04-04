@@ -128,7 +128,7 @@ public class FragmentRTVideo extends Fragment {
     }
 
     private void initData() {
-        ((MainActivity)getActivity()).isDialogShow = false;
+        ((MainActivity) getActivity()).isDialogShow = false;
         svRecordVideo.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -184,7 +184,7 @@ public class FragmentRTVideo extends Fragment {
 
         try {
             mMediaPlayer = new PLMediaPlayer(getActivity(), mAVOptions);
-
+            mMediaPlayer.setDebugLoggingEnabled(false);
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
 //            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
 //            mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
@@ -215,16 +215,27 @@ public class FragmentRTVideo extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        prepare();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.start();
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.reset();
+        }
+        mMediaPlayer = null;
     }
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
@@ -252,7 +263,7 @@ public class FragmentRTVideo extends Fragment {
                     if (isRecord) {
                         showRecordTag(true);
                     }
-                    /*mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);*/
+                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
@@ -279,38 +290,38 @@ public class FragmentRTVideo extends Fragment {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("Invalid URL !");
+//                    showToastTips("Invalid URL !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("404 resource not found !");
+//                    showToastTips("404 resource not found !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    showToastTips("Connection refused !");
+//                    showToastTips("Connection refused !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showToastTips("Connection timeout !");
+//                    showToastTips("Connection timeout !");
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
+//                    showToastTips("Empty playlist !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
+//                    showToastTips("Stream disconnected !");
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("Network IO Error !");
+//                    showToastTips("Network IO Error !");
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
-                    showToastTips("Unauthorized Error !");
+//                    showToastTips("Unauthorized Error !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
+//                    showToastTips("Prepare timeout !");
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    showToastTips("Read frame timeout !");
+//                    showToastTips("Read frame timeout !");
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_HW_DECODE_FAILURE:
@@ -320,7 +331,7 @@ public class FragmentRTVideo extends Fragment {
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     break;
                 default:
-                    showToastTips("unknown error !");
+//                    showToastTips("unknown error !");
                     break;
             }
             // Todo pls handle the error status here, reconnect or call finish()

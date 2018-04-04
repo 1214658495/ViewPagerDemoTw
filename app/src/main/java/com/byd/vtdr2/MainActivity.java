@@ -11,7 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -64,6 +63,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,8 +131,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     //控制弹出框的显示，页面切换网络错误时，弹出一次控制
     public static boolean isDialogShow = false;
-    //    private static Toast toast;
-    private Toast mToast;
+    private static Toast toast;
+    //    private Toast mToast;
+    private final ScheduledExecutorService worker =
+            Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledFuture<?> mScheduledTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,11 +151,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onResume() {
         super.onResume();
-        receiverNetworkBroadcast();
+      /*  receiverNetworkBroadcast();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION); //网络连接消息
 //        filter.addAction(EthernetManager.ETHERNET_STATE_CHANGED_ACTION); //以太网消息
-        this.registerReceiver(receiver, filter);
+        this.registerReceiver(receiver, filter);*/
     }
 
     private void receiverNetworkBroadcast() {
@@ -301,26 +307,38 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             rgGroup.check(R.id.rb_realTimeVideo);
         }
 
-        rbRealTimeVideo.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
-        {
+
+        rbRealTimeVideo.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (fragment != fragmentRTVideo) {
+                        if (fragmentPlaybackList.fragmentVideoPreview != null) {
+                            if (fragmentPlaybackList.fragmentVideoPreview.isVisible() ||
+                                    fragmentPlaybackList.fragmentVideoPreview.reload) {
+                                //getSupportFragmentManager().popBackStack();
+                                fragmentPlaybackList.fragmentVideoPreview.reload = false;
+                                fragmentPlaybackList.getFragmentManager().popBackStack();
+                            }
+                        } else if (fragmentPlaybackList.fragmentPhotoPreview != null) {
+                            if (fragmentPlaybackList.fragmentPhotoPreview.isVisible()
+                                    || fragmentPlaybackList.fragmentPhotoPreview.reload) {
+                                fragmentPlaybackList.fragmentPhotoPreview.reload = false;
+                                fragmentPlaybackList.getFragmentManager().popBackStack();
+                            }
+                        }
                         fragment = fragmentRTVideo;
                         getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
                     }
                 }
             }
         });
-        rbPlaybackList.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
-        {
+        rbPlaybackList.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if ( fragment != fragmentPlaybackList)
-                    {
+                    if (fragment != fragmentPlaybackList) {
                         fragment = fragmentPlaybackList;
                         getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
                     }
@@ -328,18 +346,33 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
             }
         });
-        rbSetting.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener()
-        {
+        rbSetting.setOnCheckedChangeListener(new LightRadioButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (fragment != fragmentSetting) {
+                        if (fragmentPlaybackList.fragmentVideoPreview != null) {
+                            if (fragmentPlaybackList.fragmentVideoPreview.isVisible() ||
+                                    fragmentPlaybackList.fragmentVideoPreview.reload) {
+                                // getSupportFragmentManager().popBackStack();
+                                fragmentPlaybackList.fragmentVideoPreview.reload = false;
+                                fragmentPlaybackList.getFragmentManager().popBackStack();
+                            }
+
+                        } else if (fragmentPlaybackList.fragmentPhotoPreview != null) {
+                            if (fragmentPlaybackList.fragmentPhotoPreview.isVisible()
+                                    || fragmentPlaybackList.fragmentPhotoPreview.reload) {
+                                fragmentPlaybackList.fragmentPhotoPreview.reload = false;
+                                fragmentPlaybackList.getFragmentManager().popBackStack();
+                            }
+                        }
                         fragment = fragmentSetting;
                         getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
                     }
                 }
             }
         });
+
     }
 
     private void getPrefs(SharedPreferences preferences) {
@@ -377,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         // TODO: 2018/2/3 如下的作用不知
 //        putPrefs(mPref);
 //        此处解注册因为app从后台快速切换回来
-        unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
 //        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
     }
 
@@ -391,6 +424,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         super.onDestroy();
         if (customDialog != null) {
             customDialog = null;
+        }
+        if (mScheduledTask != null) {
+            mScheduledTask.cancel(false);
         }
 
     }
@@ -486,21 +522,24 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }*/
 
     private void showToastTips(String tips) {
-        /*if (toast == null) {
+        if (toast == null) {
             toast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
         } else {
             toast.setText(tips);
         }
-        toast.show();*/
+        toast.show();
 
-        if (mToast != null) {
+       /* if (mToast != null) {
             mToast.cancel();
         }
         mToast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
-        mToast.show();
+        mToast.show();*/
     }
 
     private void showConfirmDialog(String tips) {
+//        if (customDialog != null && !isFinishing()) {
+//            customDialog.dismiss();
+//        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         customDialog = builder.cancelTouchOut(false)
                 .view(R.layout.fragment_custom_dialog)
@@ -510,6 +549,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     @Override
                     public void onClick(View view) {
                         customDialog.dismiss();
+                        isDialogShow = false;
                     }
                 })
                 .build();
@@ -536,11 +576,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showDoubleButtonDialog(String tips) {
-        if (customDialog != null && !isFinishing()) {
-            customDialog.dismiss();
-        }
+//        if (customDialog != null && !isFinishing()) {
+//            customDialog.dismiss();
+//        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
-        customDialog = builder.cancelTouchOut(true)
+        customDialog = builder.cancelTouchOut(false)
                 .view(R.layout.fragment_doublebutton_dialog)
                 .style(R.style.CustomDialog)
                 .setTitle(tips)
@@ -838,6 +878,17 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 showToastTips(getString(R.string.OpenVideo_fail));
                 fragmentRTVideo.setRecordState(true);
                 break;
+
+            case IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_START:
+//                showToastTips("Waking up the Remote Camera START");
+                Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera START");
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_CONNECTED:
+            case IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK:
+//                dismissDialog();
+//                showToastTips("Waking up the Remote Camera OK");
+                Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera OK");
+                break;
             default:
                 break;
 
@@ -878,6 +929,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT:
 //                isConnected = false;
 //                showAlertDialog("Error", "Timeout! No response from Remote Camera!");
+                if (!isDialogShow) {
+                    showConfirmDialog("连接超时，记录仪无应答");
+                    isDialogShow = true;
+                }
+//                if (mScheduledTask != null) {
+//                    mScheduledTask.cancel(false);
+//                }
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_BLE_INVALID_ADDR:
 //                showAlertDialog("Error", "Invalid bluetooth device");
@@ -897,6 +955,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_WAKEUP:
 //                showAlertDialog("Error", "Cannot wakeup the Remote Camera");
+                showToastTips(getString(R.string.time_out));
+//                showConfirmDialog(getString(R.string.time_out));
+                if (mScheduledTask != null) {
+                    mScheduledTask.cancel(true);
+                }
+                Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera ERROR");
                 break;
             default:
                 break;
@@ -930,7 +994,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IFragmentListener.ACTION_RECORD_TIME:
-                mRemoteCam.getRecordTime();
+                // TODO: 2018/4/3
+//                getTimeTestNet();
+//                mRemoteCam.getRecordTime();
                 break;
             case IFragmentListener.ACTION_FS_LS:
                 mRemoteCam.listDir((String) param);
@@ -971,13 +1037,23 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
         }
     }
-/*
-*
-*
-*3.30 add
-* */
+
+    private void getTimeTestNet() {
+        mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                mRemoteCam.wakeUp();
+            }
+        }, 0, 6, TimeUnit.SECONDS);
+    }
+
+    /*
+    *
+    *
+    *3.30 add
+    * */
 // 查询下载进度，文件总大小多少，已经下载多少？
-private long[] Id;
+    private long[] Id;
     public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
     private int newsize = 0, totalsize = 0;
     //获取下载管理器
@@ -1066,16 +1142,14 @@ private long[] Id;
                             break;
                     }
                 }
-            } catch (Exception e ) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void downloadFiles()
-    {
-        if (selectedCounts>5)
-        {
+    private void downloadFiles() {
+        if (selectedCounts > 5) {
             progressDialogFragment = ProgressDialogFragment.newInstance("请选择少与5个文件下载");
             progressDialogFragment.show(getFragmentManager(), "text");
             progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
@@ -1084,6 +1158,7 @@ private long[] Id;
                 public void okButtonClick() {
 
                 }
+
                 @Override
                 public void cancelButtonClick() {
 

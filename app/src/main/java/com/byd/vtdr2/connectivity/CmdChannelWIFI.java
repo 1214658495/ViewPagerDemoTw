@@ -83,7 +83,8 @@ public class CmdChannelWIFI extends CmdChannel {
         try {
 //            如下俩行被我反向注释了
 //            bcAddr = getBroadcastAddress(mgr);
-            bcAddr = InetAddress.getByName("192.168.42.1");
+//            bcAddr = InetAddress.getByName("192.168.42.1");
+            bcAddr = InetAddress.getByName("192.168.195.6");
         } catch (IOException e) {
             Log.e(TAG, "Can't get broadcast address!!!");
             e.printStackTrace();
@@ -91,7 +92,7 @@ public class CmdChannelWIFI extends CmdChannel {
             return false;
         }
 
-        for (int i = 0;  i < WAKEUP_MAX_TRY; i++)
+        for (int i = 0;  i < WAKEUP_MAX_TRY; i++) {
             try {
                 Log.e(TAG, "bcAddr is " + bcAddr.toString());
                 DatagramSocket socket = new DatagramSocket(srcPort);
@@ -114,6 +115,7 @@ public class CmdChannelWIFI extends CmdChannel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
 
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);
         return false;
@@ -123,20 +125,24 @@ public class CmdChannelWIFI extends CmdChannel {
         DhcpInfo dhcp = mgr.getDhcpInfo();
         int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
         byte[] quads = new byte[4];
-        for (int k = 0; k < 4; k++)
-            quads[k] = (byte) ((broadcast >> k*8) & 0xFF);
+        for (int k = 0; k < 4; k++) {
+            quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
+        }
         return InetAddress.getByAddress(quads);
     }
 
+    @Override
     protected void writeToChannel(byte[] buffer) {
         try {
-            if (mOutputStream != null)
+            if (mOutputStream != null) {
                 mOutputStream.write(buffer);
+            }
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
+    @Override
     protected String readFromChannel() {
         try {
             if (mInputStream != null) {
