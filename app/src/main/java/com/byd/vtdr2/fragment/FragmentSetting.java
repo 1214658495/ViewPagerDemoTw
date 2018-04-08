@@ -18,7 +18,6 @@ import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
-import com.byd.vtdr2.view.TestDialog;
 import com.byd.vtdr2.view.MyDialog;
 
 import butterknife.BindView;
@@ -136,6 +135,7 @@ public class FragmentSetting extends Fragment {
                 });
                 break;
             case R.id.btn_firmwareVersion:
+                mListener.onFragmentAction(IFragmentListener.ACTION_FRIMWORK_VERSION, null);
                 break;
             case R.id.btn_appVersion:
                 String ver = getAppVersion(getContext());
@@ -143,9 +143,6 @@ public class FragmentSetting extends Fragment {
                 myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 break;
             case R.id.tv_test:
-                TestDialog testDialog = new TestDialog(getActivity(),R.style.CustomDialog);
-                testDialog.show();
-                testDialog.setTitle("ceui");
                 break;
             default:
                 break;
@@ -155,6 +152,11 @@ public class FragmentSetting extends Fragment {
     /**
      * 获取当前应用程序的版本号。
      */
+    public void getfirmwareVersion(String str) {
+        myDialog = MyDialog.newInstance(1, getString(R.string.firmware_version) + str);
+        myDialog.show(getActivity().getFragmentManager(), "memoryCard");
+    }
+
     public String getAppVersion(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -166,9 +168,6 @@ public class FragmentSetting extends Fragment {
         return "";
     }
 
-    @OnClick(R.id.tv_test)
-    public void onViewClicked() {
-    }
 
     public void showAddSingleButtonDialogFrgSET(String msg) {
         android.app.FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();

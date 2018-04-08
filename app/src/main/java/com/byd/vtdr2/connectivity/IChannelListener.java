@@ -56,6 +56,7 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_RECORD_START_FAIL = 0x35;
     final static int CMD_CHANNEL_EVENT_RECORD_STOP_FAIL = 0x36;
     final static int CMD_CHANNEL_EVENT_LOCK_VIDEO = 0x37;
+    final static int CMD_CHANNEL_EVENT_FRIMWORK_VERSION = 0x38;
 
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;

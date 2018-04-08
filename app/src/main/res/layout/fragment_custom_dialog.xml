@@ -6,6 +6,7 @@
     android:background="@mipmap/bg_dialog">
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_dialogContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -14,9 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.35"
-        android:gravity="center"
         android:text="@string/exit"
-        android:textColor="#fff"
         android:textSize="@dimen/sp_16" />
 
     <ImageView
@@ -38,7 +37,7 @@
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_dialogSure"
-            style="@style/ButtonTextStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -55,7 +54,7 @@
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_dialogCancel"
-            style="@style/ButtonTextStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

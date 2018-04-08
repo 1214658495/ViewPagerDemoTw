@@ -30,7 +30,7 @@
             />
         <activity android:name="com.byd.vtdr2.ActivityImagesViewPager" />
         <activity android:name="com.byd.vtdr2.ActivityVideoViewPager" />
-        <activity android:name=".ActivityRTVideo"
+        <activity android:name="com.byd.vtdr2.ActivityRTVideo"
             android:screenOrientation="landscape"
             />
         <provider

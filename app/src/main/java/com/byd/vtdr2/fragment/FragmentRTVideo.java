@@ -31,7 +31,6 @@ import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
-import com.byd.vtdr2.utils.Utils;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
@@ -398,10 +397,16 @@ public class FragmentRTVideo extends Fragment {
 //                finish();
 //                return;
 //            }
-            if (!Utils.isNetworkAvailable(getActivity())) {
-                sendReconnectMessage();
-                return;
-            }
+//            madd
+//            if (!Utils.isSocketAvailable(getActivity())) {
+//                sendReconnectMessage();
+//                return;
+//            }
+
+//            if (!Utils.isNetworkAvailable(getActivity())) {
+//                sendReconnectMessage();
+//                return;
+//            }
             prepare();
         }
     };

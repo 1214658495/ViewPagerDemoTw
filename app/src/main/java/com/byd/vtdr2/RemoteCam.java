@@ -174,6 +174,15 @@ public class RemoteCam
             }
         });
     }
+//madd
+    public void socketTest() {
+//        worker.execute(new Runnable() {
+//            @Override
+//            public void run() {
+                        CmdChannelWIFI.isSocketAvailable();
+//            }
+//        });
+    }
 
     public void standBy() {
         worker.execute(new Runnable() {
@@ -503,6 +512,17 @@ public class RemoteCam
                 if (!connectToCmdChannel())
                     return;
                 mCmdChannel.lockVideo();
+            }
+        });
+    }
+
+    //    madd
+    public void frimworkVersion() {
+        worker.execute(new Runnable() {
+            public void run() {
+                if (!connectToCmdChannel())
+                    return;
+                mCmdChannel.frimworkVersion();
             }
         });
     }

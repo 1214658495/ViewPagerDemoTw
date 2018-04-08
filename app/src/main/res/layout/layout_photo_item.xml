@@ -19,21 +19,22 @@
          />
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@mipmap/bg_text_item"
-        android:gravity="center"
         android:text="20170621-211520-01.jpg"
         android:textSize="@dimen/sp_7"
-        android:textColor="#fff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto" />
 
     <com.byd.lighttextview.LightCheckBox
         android:id="@+id/cb_cbx"
-        style="@style/CheckboxStyle"
+        style="@style/ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:button="@drawable/btn_edit_selected_item_selector"

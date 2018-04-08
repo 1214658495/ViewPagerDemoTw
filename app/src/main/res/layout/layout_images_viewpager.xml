@@ -33,22 +33,22 @@
             android:background="@drawable/btn_preview_back_selector" />
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_title_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/btn_back_to_gridview"
             android:layout_centerVertical="true"
             android:textSize="@dimen/sp_9"
-            android:textColor="@color/white"
             android:text="2017-09-90-09-09-09.jpg" />
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_vpIndex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="test"
-            android:textColor="@color/white"
             android:textSize="11sp"
             app:layout_constraintTop_toTopOf="parent" />
 

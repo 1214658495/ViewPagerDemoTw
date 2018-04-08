@@ -402,6 +402,11 @@ public abstract class CmdChannel {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_LOCK_VIDEO + "}");
     }
+    //    madd
+    public synchronized boolean frimworkVersion() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_FRIMWORK_VERSION + "}");
+    }
 
     public synchronized boolean startRecord() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
@@ -705,6 +710,14 @@ public abstract class CmdChannel {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, true);
                         } else {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, false);
+                        }
+                        break;
+                    case AMBA_FRIMWORK_VERSION:
+                        if (rval == 0) {
+                            str = parser.getString("bydver");
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FRIMWORK_VERSION, str);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FRIMWORK_VERSION, "null");
                         }
                         break;
                     case AMBA_RECORD_START:

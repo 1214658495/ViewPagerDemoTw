@@ -49,13 +49,13 @@
             android:background="@drawable/btn_preview_back_selector"/>
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_title_video_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/btn_back_to_videoGridview"
             android:text="2017-09-90-09-09-10.MP4"
-            android:textColor="@color/white"
             android:textSize="@dimen/sp_9"/>
 
     </RelativeLayout>
@@ -104,23 +104,21 @@
             android:layout_weight="6"/>
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_currentTime_activity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             android:text="00:00"
-            android:textColor="@color/white"
             android:textSize="11sp"/>
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_endTime_activity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             android:text="02:00"
-            android:textColor="@color/white"
             android:textSize="11sp"
             android:visibility="gone"/>
 

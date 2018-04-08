@@ -53,7 +53,6 @@ import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.CustomDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
-import com.byd.vtdr2.view.SingleButtonShowDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private String mGetFileName;
     String dirName = Environment.getExternalStorageDirectory() + "/" + "行车记录仪/";
     private ProgressDialogFragment progressDialogFragment;
-    private SingleButtonShowDialog singleButtonShowDialog;
     public static final int EXTERNAL_STORAGE_REQ_CODE = 10;
     public static final int VERSION_IS_NEWEST = 11;
     private volatile boolean isVersionNewest;
@@ -127,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private BroadcastReceiver receiver;
     private boolean isNetworkConnected;
     private AddSingleButtonDialog addSingleButtonDialog;
-    private CustomDialog customDialog = null;
+    private static CustomDialog customDialog = null;
 
     //控制弹出框的显示，页面切换网络错误时，弹出一次控制
     public static boolean isDialogShow = false;
@@ -136,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private final ScheduledExecutorService worker =
             Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> mScheduledTask;
+    private boolean isReconnecting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -431,52 +430,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     }
 
-    private void showSingleButtonTipDialog(String msg) {
-        if (singleButtonShowDialog == null) {
-            singleButtonShowDialog = SingleButtonShowDialog.newInstance(msg);
-            singleButtonShowDialog.show(getFragmentManager(), "text");
-            singleButtonShowDialog.setOnDialogButtonClickListener(new SingleButtonShowDialog.OnDialogButtonClickListener() {
-                @Override
-                public void okButtonClick() {
-//                    showClickNetworkTipDialog();
-                    if (singleButtonShowDialog != null) {
-                        singleButtonShowDialog = null;
-                    }
-                    if (!isNetworkConnected) {
-                        rbRealTimeVideo.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showSingleButtonTipDialog(getString(R.string.connect_fail));
-                            }
-                        });
-                        rbPlaybackList.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showSingleButtonTipDialog(getString(R.string.connect_fail));
-                            }
-                        });
-                        rbSetting.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showSingleButtonTipDialog(getString(R.string.connect_fail));
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void cancelButtonClick() {
-
-                }
-            });
-        }
-    }
-
-    private void dismissDialog() {
-        if (singleButtonShowDialog != null) {
-            singleButtonShowDialog.dismiss();
-        }
-    }
 
 /*    private void showAddSingleButtonDialog(String msg) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -537,9 +490,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showConfirmDialog(String tips) {
-//        if (customDialog != null && !isFinishing()) {
-//            customDialog.dismiss();
-//        }
+        if (customDialog != null && !isFinishing()) {
+            customDialog.dismiss();
+        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         customDialog = builder.cancelTouchOut(false)
                 .view(R.layout.fragment_custom_dialog)
@@ -557,9 +510,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showCrossDialog(String tips) {
-//        if (customDialog != null && !isFinishing()) {
-//            customDialog.dismiss();
-//        }
+        if (customDialog != null && !isFinishing()) {
+            customDialog.dismiss();
+        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         customDialog = builder.cancelTouchOut(true)
                 .view(R.layout.fragment_cross_dialog)
@@ -576,9 +529,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void showDoubleButtonDialog(String tips) {
-//        if (customDialog != null && !isFinishing()) {
-//            customDialog.dismiss();
-//        }
+        if (customDialog != null && !isFinishing()) {
+            customDialog.dismiss();
+        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         customDialog = builder.cancelTouchOut(false)
                 .view(R.layout.fragment_doublebutton_dialog)
@@ -597,6 +550,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         customDialog.dismiss();
                     }
                 })
+                .build();
+        customDialog.show();
+    }
+
+    private void showWaitingDialog(String tips) {
+        if (customDialog != null && !isFinishing()) {
+            customDialog.dismiss();
+        }
+        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        customDialog = builder.cancelTouchOut(false)
+                .view(R.layout.fragment_waiting_dialog)
+                .style(R.style.CustomDialog)
+                .setTitle(tips)
                 .build();
         customDialog.show();
     }
@@ -654,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         return;
                     case IChannelListener.DATA_CHANNEL_MSG:
                         handleDataChannelEvent(type, param);
-//                        return;
+                        return;
 //                    case IChannelListener.STREAM_CHANNEL_MSG:
 //                        handleStreamChannelEvent(type, param);
 //                        return;
@@ -700,7 +666,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     if (customDialog != null && !isFinishing()) {
                         customDialog.dismiss();
                     }
-                    showToastTips(str);
+                    showWaitingDialog(getString(R.string.card_readying));
+//                    showToastTips(str);
 
                     fragmentRTVideo.showCheckSdCordTag(true);
                     // TODO: 2018/1/8 卡插入后，如何更新文件列表？
@@ -767,6 +734,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 } else {
                     showToastTips(getString(R.string.LockVideo_fail));
                 }
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_FRIMWORK_VERSION:
+                String str1 = (String) param;
+                fragmentSetting.getfirmwareVersion(str1);
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
 //                boolean isRecord = (boolean) param;
@@ -885,6 +856,25 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_CONNECTED:
             case IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK:
+                if (isReconnecting) {
+                    if (customDialog != null && !isFinishing()) {
+                        customDialog.dismiss();
+                    }
+                    initConnect();
+//                    if (fragment == fragmentRTVideo) {
+                    rgGroup.check(R.id.rb_realTimeVideo);
+                    fragmentRTVideo = FragmentRTVideo.newInstance();
+                    fragment = fragmentRTVideo;
+                    getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+//                    }
+//                    else if (fragment == fragmentPlaybackList) {
+//                        fragmentPlaybackList = FragmentPlaybackList.newInstance();
+//                        fragment = fragmentPlaybackList;
+//                        getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+//                    }
+
+                }
+                isReconnecting = false;
 //                dismissDialog();
 //                showToastTips("Waking up the Remote Camera OK");
                 Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera OK");
@@ -955,11 +945,15 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_WAKEUP:
 //                showAlertDialog("Error", "Cannot wakeup the Remote Camera");
-                showToastTips(getString(R.string.time_out));
-//                showConfirmDialog(getString(R.string.time_out));
-                if (mScheduledTask != null) {
-                    mScheduledTask.cancel(true);
+//                showToastTips(getString(R.string.time_out));
+                if (!isDialogShow) {
+                    showConfirmDialog(getString(R.string.time_out));
+                    isDialogShow = true;
                 }
+                isReconnecting = true;
+//                if (mScheduledTask != null) {
+//                    mScheduledTask.cancel(true);
+//                }
                 Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera ERROR");
                 break;
             default:
@@ -976,6 +970,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IFragmentListener.ACTION_LOCK_VIDEO_START:
                 mRemoteCam.lockPhoto();
+                break;
+            case IFragmentListener.ACTION_FRIMWORK_VERSION:
+                mRemoteCam.frimworkVersion();
                 break;
             case IFragmentListener.ACTION_RECORD_START:
                 boolean isRecord = (boolean) param;
@@ -995,7 +992,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IFragmentListener.ACTION_RECORD_TIME:
                 // TODO: 2018/4/3
-//                getTimeTestNet();
+                getTimeTestNet();
 //                mRemoteCam.getRecordTime();
                 break;
             case IFragmentListener.ACTION_FS_LS:
@@ -1039,12 +1036,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void getTimeTestNet() {
+//        mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                mRemoteCam.wakeUp();
+//            }
+//        }, 0, 4, TimeUnit.SECONDS);
         mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                mRemoteCam.wakeUp();
+                mRemoteCam.socketTest();
             }
-        }, 0, 6, TimeUnit.SECONDS);
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     /*
@@ -1150,7 +1153,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     private void downloadFiles() {
         if (selectedCounts > 5) {
-            progressDialogFragment = ProgressDialogFragment.newInstance("请选择少与5个文件下载");
+            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.download_num));
             progressDialogFragment.show(getFragmentManager(), "text");
             progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
                     .OnDialogButtonClickListener() {
@@ -1203,8 +1206,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
             } else {
                 if (doingDownFileCounts == (selectedCounts - 1)) {
-//                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
-//                            .LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
+                            .LENGTH_SHORT).show();
                     // getContentResolver().unregisterContentObserver(mObserver);
                 }
             }

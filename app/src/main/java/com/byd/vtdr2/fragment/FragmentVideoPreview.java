@@ -118,8 +118,10 @@ public class FragmentVideoPreview extends Fragment {
                 case SHOW_END:
                     CurrentTime =0;
                     long pos1 = setProgress();
-                    mMediaPlayer.seekTo(CurrentTime * 1000);
-                    mMediaPlayer.pause();
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.seekTo(CurrentTime * 1000);
+                        mMediaPlayer.pause();
+                    }
                     if (myThreadTimecount !=null) {
                         myThreadTimecount.pauseThread();//暂停线程运行
                     }

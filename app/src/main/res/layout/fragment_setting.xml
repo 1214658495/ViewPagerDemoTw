@@ -20,12 +20,12 @@
         app:layout_constraintTop_toTopOf="@+id/iv_line_settingtext" />
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_textSetting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_40"
         android:text="@string/setting"
-        android:textColor="@color/white"
         android:textSize="@dimen/sp_11"
         app:layout_constraintBottom_toBottomOf="@id/iv_bg_settingtext"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
     <!--</RelativeLayout>-->
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_default_setting"
-        style="@style/ButtonTextStyle"
+        style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/restore_defaults"
@@ -74,7 +74,7 @@
 
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_memoryCard_format"
-        style="@style/ButtonTextStyle"
+        style="@style/ButtonStyle"
         android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,30 +102,30 @@
     <!--android:orientation="horizontal">-->
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/version"
-        android:textColor="@color/white"
         android:textSize="@dimen/sp_11"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_firmwareVersion"
-        style="@style/ButtonTextStyle"
+        style="@style/ButtonStyle"
         android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/firmware_version"
         android:textAllCaps="false"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_appVersion"
-        style="@style/ButtonTextStyle"
+        style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_version"
@@ -142,6 +142,7 @@
         android:src="@mipmap/line_settingpartdetail" />
 
     <Button
+        style="@style/ButtonStyle"
         android:id="@+id/tv_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

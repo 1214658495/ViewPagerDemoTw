@@ -89,6 +89,7 @@ public interface IFragmentListener {
 //madd
     final static int ACTION_DEFAULT_SETTING = 0x3C;
     final static int ACTION_LOCK_VIDEO_START = 0x3D;
+    final static int ACTION_FRIMWORK_VERSION = 0x3E;
     /* MISC --getram -- UI related
      */
     final static int ACTION_OPEN_CAMERA_LIVEVIEW = 0x40;

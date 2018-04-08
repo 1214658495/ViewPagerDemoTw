@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -203,6 +204,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
         initData();
+        rueshcontrol = true;
+        new MyTheard().start();
         return view;
 
     }
@@ -441,7 +444,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            添加
 //            mAdapter.isClickedMap.clear();
         }
-
+        rueshcontrol = false;
     }
 
     @Override
@@ -1569,6 +1572,61 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
         }
 */
+    }
+
+
+
+    /*
+    * 定时刷新列表，更新数据
+    * 解决debug，长时间停留不更新，定时十分钟
+    *
+    * rueshcontrol 控制线程停止
+    *
+    * */
+    public boolean rueshcontrol = true;
+    private Handler handlerUpdate = new Handler();
+
+    // TODO: 2018/4/8 后台去刷还有问题！！！！！！！！！！！！！！！！！！！！！！
+    public class MyTheard extends Thread {
+        @Override
+        public void run() {
+            while (rueshcontrol) {
+                try {
+                    Thread.sleep(1000 * 120);
+                    if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                        mPWD = "/tmp/SD0/PHOTO";
+                        if (rueshcontrol && !isMultiChoose) {
+                            listDirContents(mPWD);
+                        }
+
+
+                    } else if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                        mPWD = "/tmp/SD0/NORMAL";
+                        if (rueshcontrol && !isMultiChoose) {
+                            listDirContents(mPWD);
+                        }
+
+                    } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+
+                        mPWD = "/tmp/SD0/EVENT";
+                        if (rueshcontrol && !isMultiChoose) {
+                            listDirContents(mPWD);
+                        }
+                    }
+                    if (mAdapter != null && rueshcontrol) {
+                        handlerUpdate.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 

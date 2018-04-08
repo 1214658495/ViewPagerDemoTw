@@ -5,6 +5,7 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.byd.vtdr2.CommonUtility;
+import com.byd.vtdr2.ServerConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 public class CmdChannelWIFI extends CmdChannel {
     private static final String TAG="CmdChannelWIFI";
     private static final int CONN_TIME_OUT = 3000;
-    private static final int READ_TIME_OUT = 5000;
+    private static final int READ_TIME_OUT = 3000;
     private static final int WAKEUP_MAX_TRY = 1;
 
     private Socket mSocket;
@@ -118,6 +119,26 @@ public class CmdChannelWIFI extends CmdChannel {
         }
 
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);
+        return false;
+    }
+
+    public static boolean isSocketAvailable() {
+        try {
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, 7878), 2000);
+            Log.e(TAG, "isSocketAvailable: ok to socket");
+            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK, null);
+            return true;
+        } catch (IOException e) {
+            Log.e(CommonUtility.LOG_TAG, e.getMessage());
+            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);
+//            String message = "Can't connect to " + mHostName + "/" + mPortNum;
+            Log.e(TAG, "isSocketAvailable: Can't connect to socket");
+//            String message = "无法连接到记录仪，请检查网络";
+            String message = "CONNECT_FAIL";
+//            Resources res = getResources();
+//            String message = getString(R.string.connect_fail);
+        }
         return false;
     }
 

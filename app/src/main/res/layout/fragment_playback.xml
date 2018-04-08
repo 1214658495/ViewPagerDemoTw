@@ -49,11 +49,12 @@
     </RadioGroup>
 
     <ImageButton
+        style="@style/ButtonStyle"
         android:id="@+id/ib_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_30"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:background="@drawable/btn_search_selector"
         app:layout_constraintBottom_toBottomOf="@+id/rg_groupDetail"
         app:layout_constraintLeft_toRightOf="@+id/rg_groupDetail"
@@ -86,57 +87,62 @@
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_cancel"
-            style="@style/ButtonSingleStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
             android:text="@string/cancel"
+            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_share"
-            style="@style/ButtonSingleStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_share_selector"
             android:text="@string/share"
+            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_export"
-            style="@style/ButtonSingleStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_export_selector"
             android:text="@string/export"
+            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightButton
             android:id="@+id/btn_delete"
-            style="@style/ButtonSingleStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_delete_selector"
             android:text="@string/delete"
+            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
         <com.byd.lighttextview.LightCheckBox
             android:id="@+id/btn_selectall"
-            style="@style/ButtonSingleStyle"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_selectall_selector"
             android:text="@string/selectAll"
+            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 

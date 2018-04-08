@@ -30,6 +30,7 @@
 
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,12 +38,11 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
         app:layout_constraintLeft_toRightOf="@id/iv_videoPhoto"
         android:layout_marginStart="@dimen/dp_9"
-        android:gravity="center"
         android:text="2017-09-10-12-13-24.MP4"
-        android:textColor="#ffffff"
         android:textSize="@dimen/sp_8" />
 
     <TextView
+        style="@style/TextStyle"
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,13 +50,14 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
         app:layout_constraintRight_toLeftOf="@id/cb_cbx"
         android:layout_marginEnd="@dimen/dp_20"
-        android:text="02:00"
-        android:textColor="#ffffff"
+        android:text="00:30"
         android:textSize="@dimen/sp_8" />
 
     <com.byd.lighttextview.LightCheckBox
         android:id="@+id/cb_cbx"
-        style="@style/CheckboxStyle"
+        style="@style/ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
         app:layout_constraintRight_toRightOf="parent"

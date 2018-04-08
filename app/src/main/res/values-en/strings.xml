@@ -51,5 +51,7 @@
     <string name="restore_settings">Confirm restore the default settings?</string>
     <string name="confirm_format_memory_card">Confirm format memory card?</string>
     <string name="time_out">Time out connected</string>
+    <string name="download_num">download num can\'t beyond five</string>
+    <string name="card_readying">存储卡准备中</string>
 
 </resources>

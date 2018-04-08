@@ -18,6 +18,7 @@
             android:background="@drawable/btn_preview_back_selector" />
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_title_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,13 +28,12 @@
             android:textSize="@dimen/sp_9" />
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_vpVideoIndex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center"
             android:text="test"
-            android:textColor="#000"
             android:textSize="@dimen/sp_11"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,6 +61,7 @@
 
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_currentTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -76,6 +77,7 @@
             android:layout_weight="6" />
 
         <TextView
+            style="@style/TextStyle"
             android:id="@+id/tv_endTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
