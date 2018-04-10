@@ -82,6 +82,7 @@
             android:id="@+id/btn_zoom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_5"
             android:background="@drawable/btn_preview_zoomin_selector" />
 
     </LinearLayout>

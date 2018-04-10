@@ -170,7 +170,7 @@ public class FragmentRTVideo extends Fragment {
 
     }
 
-    private void prepare() {
+    public void prepare() {
         Log.e(TAG, "prepare: iiii");
 
         if (mMediaPlayer != null) {

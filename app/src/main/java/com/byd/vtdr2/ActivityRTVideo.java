@@ -95,8 +95,11 @@ public class ActivityRTVideo extends AppCompatActivity {
                 case SHOW_END1:
                     CurrentTime =0;
                     long pos1 = setProgress();
-                    mMediaPlayer.seekTo(CurrentTime * 1000);
-                    mMediaPlayer.pause();
+                    // TODO: 2018/4/10 闪退
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.seekTo(CurrentTime * 1000);
+                        mMediaPlayer.pause();
+                    }
                     if (myThreadTimecount !=null) {
                         myThreadTimecount.pauseThread();//暂停线程运行
                     }
@@ -528,7 +531,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     };
 
     @OnClick({R.id.btn_back_to_videoGridview, R.id.btn_stop3_activity, R.id
-            .btn_start3_activity})
+            .btn_start3_activity,R.id.btn_VideoZoom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
@@ -565,6 +568,15 @@ public class ActivityRTVideo extends AppCompatActivity {
                 isVideoStop = false;
                 mHandler.removeMessages(SHOW_CONTROLLER1);
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
+            case R.id.btn_VideoZoom:
+                if (mMediaPlayer != null) {
+                    if (mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.stop();
+                        //release();
+                    }
+                }
+                this.finish();
+                break;
             default:
                 break;
         }

@@ -39,6 +39,7 @@
         android:layout_width="154dp"
         android:layout_height="wrap_content"
         android:max="100"
+        style="@style/ProgressBarStyle"
         app:layout_constraintBottom_toBottomOf="@id/tv_dialogContent"
         app:layout_constraintLeft_toRightOf="@id/tv_dialogContent"
         app:layout_constraintRight_toRightOf="parent"

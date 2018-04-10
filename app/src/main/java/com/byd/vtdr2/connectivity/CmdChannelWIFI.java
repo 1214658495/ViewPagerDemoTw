@@ -126,7 +126,7 @@ public class CmdChannelWIFI extends CmdChannel {
         try {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, 7878), 2000);
-            Log.e(TAG, "isSocketAvailable: ok to socket");
+//            Log.e(TAG, "isSocketAvailable: ok to socket");
             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK, null);
             return true;
         } catch (IOException e) {

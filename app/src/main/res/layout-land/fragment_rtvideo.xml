@@ -97,7 +97,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_icRecord" />
 -->
     <TextClock
-        style="@style/TextStyle"
+        style="@style/TextRobotoStyle"
         android:id="@+id/tc_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -120,7 +120,8 @@ public abstract class CmdChannel {
             "OPERATION_UNSUPPORTED(-23)",
             "INVALID_TYPE(-24)",
             "INVALID_PARAM(-25)",
-            "INVALID_PATH(-26)"
+            "INVALID_PATH(-26)",
+            "PHOTO_NUM_MAX(-30)"
     };
     private static final int ERR_INVALID_TOKEN = -4;
     private static final int ERR_MAX_NUM = 26;

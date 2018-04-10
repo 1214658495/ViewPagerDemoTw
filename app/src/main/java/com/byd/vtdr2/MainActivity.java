@@ -287,6 +287,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         mRemoteCam.setChannelListener(this).setConnectivity(mConnectivityType)
                 .setWifiInfo(wifiManager.getConnectionInfo().getSSID().replace("\"", ""), getWifiIpAddr());
         isDialogShow = false;
+        mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                mRemoteCam.socketTest();
+            }
+        }, 0, 3, TimeUnit.SECONDS);
         mRemoteCam.startSession();
 
 //        fragments = new ArrayList<>();
@@ -668,6 +674,23 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     }
                     showWaitingDialog(getString(R.string.card_readying));
 //                    showToastTips(str);
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    initConnect();
+                                    if (customDialog != null && !isFinishing()) {
+                                        customDialog.dismiss();
+                                    }
+                                    if (fragment == fragmentRTVideo) {
+                                        rgGroup.check(R.id.rb_realTimeVideo);
+                                        fragmentRTVideo = FragmentRTVideo.newInstance();
+                                        fragment = fragmentRTVideo;
+                                        getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                                    }
+//                                    mRemoteCam.appStatus();
+                                }
+                            }, 4000);
 
                     fragmentRTVideo.showCheckSdCordTag(true);
                     // TODO: 2018/1/8 卡插入后，如何更新文件列表？
@@ -877,7 +900,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 isReconnecting = false;
 //                dismissDialog();
 //                showToastTips("Waking up the Remote Camera OK");
-                Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera OK");
+//                Log.e(TAG, "handleCmdChannelEvent: Waking up the Remote Camera OK");
                 break;
             default:
                 break;
@@ -951,6 +974,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     isDialogShow = true;
                 }
                 isReconnecting = true;
+
 //                if (mScheduledTask != null) {
 //                    mScheduledTask.cancel(true);
 //                }
@@ -992,7 +1016,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IFragmentListener.ACTION_RECORD_TIME:
                 // TODO: 2018/4/3
-                getTimeTestNet();
+//                getTimeTestNet();
 //                mRemoteCam.getRecordTime();
                 break;
             case IFragmentListener.ACTION_FS_LS:
@@ -1057,8 +1081,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     * */
 // 查询下载进度，文件总大小多少，已经下载多少？
     private long[] Id;
+
     public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
     private int newsize = 0, totalsize = 0;
+    private int IDcount = 0;
     //获取下载管理器
     private DownloadManager downloadManager;
 
@@ -1086,74 +1112,78 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     private void queryDownloadStatus() {
         DownloadManager.Query query = new DownloadManager.Query();
-        for (int i = 0; i < Id.length; i++) {
-            query.setFilterById(Id[i]);
-            try {
-                Cursor c = downloadManager.query(query);
-                if (c != null && c.moveToFirst()) {
-                    int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+        try {
+            query.setFilterById(Id[IDcount-1]);
+            Cursor c = downloadManager.query(query);
+            if (c != null && c.moveToFirst()) {
+                int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
 
-                    int reasonIdx = c.getColumnIndex(DownloadManager.COLUMN_REASON);
-                    int titleIdx = c.getColumnIndex(DownloadManager.COLUMN_TITLE);
-                    int fileSizeIdx = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
-                    int bytesDLIdx = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
-                    String title = c.getString(titleIdx);
-                    int fileSize = c.getInt(fileSizeIdx);
-                    int bytesDL = c.getInt(bytesDLIdx);
-                    newsize = bytesDL;
-                    totalsize = fileSize;
-                    // Translate the pause reason to friendly text.
-                    int reason = c.getInt(reasonIdx);
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(title).append("\n");
-                    sb.append("Downloaded ").append(bytesDL).append(" / ").append(fileSize);
+                int reasonIdx = c.getColumnIndex(DownloadManager.COLUMN_REASON);
+                int titleIdx = c.getColumnIndex(DownloadManager.COLUMN_TITLE);
+                int fileSizeIdx = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                int bytesDLIdx = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                String title = c.getString(titleIdx);
+                int fileSize = c.getInt(fileSizeIdx);
+                int bytesDL = c.getInt(bytesDLIdx);
+                newsize = bytesDL;
+                totalsize = fileSize;
+                // Translate the pause reason to friendly text.
+                int reason = c.getInt(reasonIdx);
+                StringBuilder sb = new StringBuilder();
+                sb.append(title).append("\n");
+                sb.append("Downloaded ").append(bytesDL).append(" / ").append(fileSize);
 
-                    // Display the status
-                    Log.d("tag", sb.toString());
-                    switch (status) {
-                        case DownloadManager.STATUS_PAUSED:
-                            Log.v("tag", "STATUS_PAUSED");
-                        case DownloadManager.STATUS_PENDING:
-                            Log.v("tag", "STATUS_PENDING");
-                        case DownloadManager.STATUS_RUNNING:
-                            // 正在下载，不做任何事情
-                            final int finalI = i;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //更新UI
-                                    double temp = div((double) newsize, (double) totalsize, 3);
-                                    if (finalI == (Id.length - 1)) {
-                                        progressDialogFragment.setProgressText((int) (temp * 100.00));
-                                    }
-                                }
-                            });
-                            Log.v("tag", "STATUS_RUNNING");
-                            break;
-                        case DownloadManager.STATUS_SUCCESSFUL:
-                            // 完成
-                            Log.v("tag", "下载完成");
-                            // dowanloadmanager.remove(lastDownloadId);
-                            if (i == (Id.length - 1)) {
-                                progressDialogFragment.dismissAllowingStateLoss();
+                // Display the status
+                Log.d("tag", sb.toString());
+                switch (status) {
+                    case DownloadManager.STATUS_PAUSED:
+                        Log.v("tag", "STATUS_PAUSED");
+                        for (int j = 0; j < IDcount; j++) {
+                            downloadManager.remove(Id[j]);
+                        }
+                        progressDialogFragment.dismissAllowingStateLoss();
+                        Toast.makeText(MainActivity.this, "下载失败！", Toast
+                                .LENGTH_SHORT).show();
+
+                    case DownloadManager.STATUS_PENDING:
+                        Log.v("tag", "STATUS_PENDING");
+                    case DownloadManager.STATUS_RUNNING:
+                        // 正在下载，不做任何事情
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //更新UI
+                                double temp = div((double) newsize, (double) totalsize, 3);
+                                progressDialogFragment.setProgressText((int) (temp * 100.00));
+
                             }
-                            break;
-                        case DownloadManager.STATUS_FAILED:
-                            // 清除已下载的内容，重新下载
-                            Log.v("tag", "STATUS_FAILED");
-                            downloadManager.remove(Id[i]);
-                            break;
-                    }
+                        });
+                        Log.v("tag", "STATUS_RUNNING");
+                        break;
+                    case DownloadManager.STATUS_SUCCESSFUL:
+                        // 完成
+                        Log.v("tag", "下载完成");
+                        progressDialogFragment.dismissAllowingStateLoss();
+                        break;
+                    case DownloadManager.STATUS_FAILED:
+                        // 清除已下载的内容，重新下载
+                        Log.v("tag", "STATUS_FAILED");
+                        downloadManager.remove(Id[IDcount-1]);
+                        break;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e ) {
+            e.printStackTrace();
         }
+
     }
 
-    private void downloadFiles() {
-        if (selectedCounts > 5) {
-            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.download_num));
+    private void downloadFiles()
+    {
+        IDcount = 0;
+        if (selectedCounts>5)
+        {
+            progressDialogFragment = ProgressDialogFragment.newInstance("请选择少于5个文件下载");
             progressDialogFragment.show(getFragmentManager(), "text");
             progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
                     .OnDialogButtonClickListener() {
@@ -1161,12 +1191,20 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 public void okButtonClick() {
 
                 }
-
                 @Override
                 public void cancelButtonClick() {
 
                 }
             });
+            return;
+        }
+        else
+        if (selectedCounts == 0)
+        {
+            if (!isDialogShow) {
+                showConfirmDialog("请选择文件！");
+                isDialogShow = true;
+            }
             return;
         }
         Id = new long[selectedCounts];
@@ -1201,15 +1239,15 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 //不显示下载界面
                 request.setVisibleInDownloadsUi(true);
                 //将下载任务加入下载队列，否则不会进行下载
-                Id[i] = downloadManager.enqueue(request);
+                Id[IDcount] = downloadManager.enqueue(request);
+                IDcount++;
                 showdialog = true;
 
             } else {
-                if (doingDownFileCounts == (selectedCounts - 1)) {
-                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
-                            .LENGTH_SHORT).show();
-                    // getContentResolver().unregisterContentObserver(mObserver);
-                }
+                Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
+                        .LENGTH_SHORT).show();
+                // getContentResolver().unregisterContentObserver(mObserver);
+
             }
         }
         if (showdialog) {
@@ -1233,6 +1271,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
 
     }
+
 
     public void showTipDialog(String msg) {
         if (myDialog != null) {

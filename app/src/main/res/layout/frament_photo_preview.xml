@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:background="#000">
+    android:background="@mipmap/bg_all_port_cut">
 
     <com.byd.vtdr2.view.MyViewPager
         android:id="@+id/vp_viewPager"
@@ -52,6 +52,7 @@
                 android:id="@+id/btn_zoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_5"
                 android:background="@drawable/btn_preview_zoomout_selector" />
 
         </LinearLayout>
@@ -78,7 +79,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/btn_back_to_gridview"
             android:text="2017-09-90-09-09-09.jpg"
-            android:textSize="@dimen/sp_9" />
+            android:textSize="@dimen/sp_10" />
 
         <TextView
             style="@style/TextStyle"

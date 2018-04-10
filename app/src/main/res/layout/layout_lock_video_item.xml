@@ -30,7 +30,7 @@
 
 
     <TextView
-        style="@style/TextStyle"
+        style="@style/TextRobotoStyle"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:textSize="@dimen/sp_8" />
 
     <TextView
-        style="@style/TextStyle"
+        style="@style/TextRobotoStyle"
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

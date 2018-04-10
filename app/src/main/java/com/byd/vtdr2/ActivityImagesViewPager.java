@@ -208,7 +208,6 @@ public class ActivityImagesViewPager extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_zoom:
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 finish();
                 break;
             default:
