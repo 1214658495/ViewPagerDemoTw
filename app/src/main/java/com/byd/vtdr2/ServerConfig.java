@@ -16,4 +16,23 @@ public class ServerConfig {
 	public static final int RB_RECORD_VIDEO = 0;
 	public static final int RB_LOCK_VIDEO = 1;
 	public static final int RB_CAPTURE_PHOTO = 2;
+
+	public static final int BYD_CARD_STATE_OK = 0;
+	public static final int BYD_CARD_STATE_NOCARD = -1;
+	public static final int BYD_CARD_STATE_SMALL_NAND = -2;
+	public static final int BYD_CARD_STATE_NOT_MEM = -3;
+	public static final int BYD_CARD_STATE_UNINIT = -4;
+	public static final int BYD_CARD_STATE_NEED_FORMAT = -5;
+	public static final int BYD_CARD_STATE_SETROOT_FAIL = -6;
+	public static final int BYD_CARD_STATE_NOT_ENOUGH = -7;
+	public static final int BYD_CARD_STATE_WP = -8;
+
+	public static final int REC_CAP_STATE_PREVIEW = 0;
+	public static final int REC_CAP_STATE_RECORD = 1;
+	public static final int REC_CAP_STATE_PRE_RECORD = 2;
+	public static final int REC_CAP_STATE_FOCUS = 3;
+	public static final int REC_CAP_STATE_CAPTURE = 4;
+	public static final int REC_CAP_STATE_VF = 5;
+	public static final int REC_CAP_STATE_TRANSIT_TO_VF = 6;
+	public static final int REC_CAP_STATE_RESET = 255;
 }

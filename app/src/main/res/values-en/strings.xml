@@ -51,7 +51,13 @@
     <string name="restore_settings">Confirm restore the default settings?</string>
     <string name="confirm_format_memory_card">Confirm format memory card?</string>
     <string name="time_out">Time out connected</string>
-    <string name="download_num">download num can\'t beyond five</string>
-    <string name="card_readying">存储卡准备中</string>
+    <string name="download_num">Download num can\'t beyond five</string>
+    <string name="card_readying">Card readying</string>
+    <string name="image_max">image max to 300</string>
+    <string name="card_issue">Card issue</string>
+    <string name="card_write_protect">Card write protect</string>
+    <string name="card_not_enough">Card not enough</string>
+    <string name="card_need_format">Card need format</string>
+    <string name="sensor_issue">Sensor issue</string>
 
 </resources>

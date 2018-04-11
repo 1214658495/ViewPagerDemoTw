@@ -58,4 +58,10 @@
     <string name="time_out">连接超时，记录仪无应答</string>
     <string name="download_num">请选择少于5个文件下载</string>
     <string name="card_readying">存储卡准备中</string>
+    <string name="image_max">图片已满300张</string>
+    <string name="card_issue">存储卡异常</string>
+    <string name="card_write_protect">存储卡写保护</string>
+    <string name="card_not_enough">存储卡空间不足</string>
+    <string name="card_need_format">存储卡需格式化</string>
+    <string name="sensor_issue">摄像头异常</string>
 </resources>

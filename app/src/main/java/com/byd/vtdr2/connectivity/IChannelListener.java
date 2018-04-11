@@ -57,6 +57,9 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_RECORD_STOP_FAIL = 0x36;
     final static int CMD_CHANNEL_EVENT_LOCK_VIDEO = 0x37;
     final static int CMD_CHANNEL_EVENT_FRIMWORK_VERSION = 0x38;
+    final static int CMD_CHANNEL_EVENT_BYDSENSOR_ALERT = 0x39;
+    final static int CMD_CHANNEL_EVENT_BYDRECORD_ALERT = 0x40;
+    final static int CMD_CHANNEL_EVENT_BYDSDCARD_ALERT = 0x41;
 
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;

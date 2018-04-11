@@ -98,11 +98,11 @@ public class FragmentVideoPreview extends Fragment {
     private boolean isShowControl;
     private boolean isVideoStop;
 
-    private int durationtime = 0 ;
-    private int CurrentTime = 0;
+    private int durationtime = 0;
+    public static  int CurrentTime = 0;
     private MyThreadTimecount myThreadTimecount;
-    private  boolean ouTthread = false ;
-    private AudioManager audioManager;
+    private boolean ouTthread = false;
+//    private AudioManager audioManager;
     public boolean reload = false;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -116,13 +116,13 @@ public class FragmentVideoPreview extends Fragment {
                     showControlBar();
                     break;
                 case SHOW_END:
-                    CurrentTime =0;
+                    CurrentTime = 0;
                     long pos1 = setProgress();
                     if (mMediaPlayer != null) {
                         mMediaPlayer.seekTo(CurrentTime * 1000);
                         mMediaPlayer.pause();
                     }
-                    if (myThreadTimecount !=null) {
+                    if (myThreadTimecount != null) {
                         myThreadTimecount.pauseThread();//暂停线程运行
                     }
 
@@ -223,9 +223,37 @@ public class FragmentVideoPreview extends Fragment {
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
 
-        audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
+
+//    AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+//        @Override
+//        public void onAudioFocusChange(int focusChange) {
+//            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+//                if (mMediaPlayer.isPlaying()) {
+//                    mMediaPlayer.pause();
+//                }
+//
+//            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+//                if (mMediaPlayer == null) {
+////                    ...
+//                } else if (!mMediaPlayer.isPlaying()) {
+//
+//                    mMediaPlayer.start();
+//
+//                }
+//                // Resume playback
+//            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+//                if (mMediaPlayer.isPlaying()) {
+//
+//                    mMediaPlayer.stop();
+//                }
+//                audioManager.abandonAudioFocus(afChangeListener);
+//            }
+//        }
+//    };
+
 
     private void showControlBar() {
         if (mMediaPlayer == null) {
@@ -290,9 +318,9 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mMediaPlayer!=null && isVideoStop) {
+        if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+//            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             if (myThreadTimecount != null) {
                 myThreadTimecount.resumeThread();//恢复线程运行
             }
@@ -326,7 +354,7 @@ public class FragmentVideoPreview extends Fragment {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
             long duration = mMediaPlayer.getDuration();
-            durationtime = (int)(duration/1000) ;
+            durationtime = (int) (duration / 1000);
             /*
             * 视屏播放后开始进度条初始化
             * */
@@ -338,7 +366,7 @@ public class FragmentVideoPreview extends Fragment {
                         return;
                     }
                     CurrentTime = progress;
-                    long newposition = ( progress) * 1000;
+                    long newposition = (progress) * 1000;
                     String time = generateTime(newposition);
                     tvCurrentTime.setText(time);
                 }
@@ -443,11 +471,12 @@ public class FragmentVideoPreview extends Fragment {
                     }
                 }
                 reload = false;
+                CurrentTime = 0;
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();
-                if (myThreadTimecount !=null) {
+                if (myThreadTimecount != null) {
                     myThreadTimecount.pauseThread();//暂停线程运行
                 }
 
@@ -459,7 +488,7 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_VideoZoom:
                 mMediaPlayer.pause();
-                if (myThreadTimecount !=null) {
+                if (myThreadTimecount != null) {
                     myThreadTimecount.pauseThread();//暂停线程运行
                 }
 
@@ -474,7 +503,7 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_start:
                 mMediaPlayer.start();
-                if (myThreadTimecount !=null) {
+                if (myThreadTimecount != null) {
                     myThreadTimecount.resumeThread();//恢复线程运行
                 }
 
@@ -495,8 +524,8 @@ public class FragmentVideoPreview extends Fragment {
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
         long duration = mMediaPlayer.getDuration();
-        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
-            tvCurrentTime.setText(generateTime(CurrentTime*1000));
+        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null && !isVideoStop) {
+            tvCurrentTime.setText(generateTime(CurrentTime * 1000));
             tvEndTime.setText(generateTime(duration));
             sbMediaCtrlBar.setProgress((int) CurrentTime);
         }
@@ -538,10 +567,10 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ouTthread =true;
+        ouTthread = true;
 //        替换为如下一行
-//        release();
-        new MyTheard().start();
+        release();
+//        new MyTheard().start();
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
     }
@@ -563,6 +592,7 @@ public class FragmentVideoPreview extends Fragment {
             release();
         }
     }
+
     private class MyThreadTimecount extends Thread {
         private final Object lock = new Object();
         private boolean pause = false;
@@ -612,14 +642,13 @@ public class FragmentVideoPreview extends Fragment {
                         Thread.sleep(1000);
                         ++index;
                         ++CurrentTime;
-                        Log.i(TAG, "time count = " + CurrentTime  );
-                        if (CurrentTime>durationtime)
-                        {
-                            CurrentTime =0;
+                        Log.i(TAG, "time count = " + CurrentTime);
+                        if (CurrentTime > durationtime) {
+                            CurrentTime = 0;
                             mHandler.sendEmptyMessage(SHOW_PROGRESS);
                             mHandler.sendEmptyMessage(SHOW_END);
 
-                        }else {
+                        } else {
                             mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
                         }

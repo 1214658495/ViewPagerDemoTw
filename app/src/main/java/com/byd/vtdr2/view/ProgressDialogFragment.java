@@ -42,6 +42,7 @@ public class ProgressDialogFragment extends DialogFragment {
     @BindView(R.id.pb_downloadProgressBar)
     ProgressBar pbDownloadProgressBar;
     private int mHeight;
+    public static String pReccsstext;
 
     private ProgressDialogFragment.OnDialogButtonClickListener buttonClickListener;
 
@@ -94,9 +95,13 @@ public class ProgressDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 buttonClickListener.cancelButtonClick();
+                pReccsstext = "   ";
                 getDialog().cancel();
             }
         });
+        if (tvProgressPercent != null) {
+            tvProgressPercent.setText(pReccsstext);
+        }
         return view;
     }
 
@@ -130,6 +135,7 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         // 如下在旋转后重建了
+        pReccsstext = (String) tvProgressPercent.getText();
         Dialog dialog = getDialog();
         // handles https://code.google.com/p/android/issues/detail?id=17423
         if (dialog != null && getRetainInstance()) {

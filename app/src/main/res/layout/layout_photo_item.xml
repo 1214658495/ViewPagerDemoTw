@@ -19,7 +19,7 @@
          />
 
     <TextView
-        style="@style/TextStyle"
+        style="@style/TextRobotoStyle"
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

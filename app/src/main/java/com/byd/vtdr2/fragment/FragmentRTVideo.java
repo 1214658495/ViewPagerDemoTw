@@ -374,9 +374,13 @@ public class FragmentRTVideo extends Fragment {
 
     public void showCheckSdCordTag(boolean isSdInsert) {
         if (isSdInsert) {
-            tvCheckSdCard.setVisibility(View.INVISIBLE);
+            if (tvCheckSdCard != null) {
+                tvCheckSdCard.setVisibility(View.INVISIBLE);
+            }
         } else {
-            tvCheckSdCard.setVisibility(View.VISIBLE);
+            if (tvCheckSdCard != null) {
+                tvCheckSdCard.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -569,13 +573,17 @@ public class FragmentRTVideo extends Fragment {
 
     public void setRecordState(boolean isOn) {
         isRecord = isOn;
-        ivRtRecordVideo.setChecked(!isOn);
-        showRecordTag(isOn);
+        if (ivRtRecordVideo !=null) {
+            ivRtRecordVideo.setChecked(!isOn);
+            showRecordTag(isOn);
+        }
     }
 
     public void setMicState(boolean isOn) {
         isMicOn = isOn;
-        ivRtRecordVoice.setChecked(!isOn);
+        if (ivRtRecordVoice !=null) {
+            ivRtRecordVoice.setChecked(!isOn);
+        }
     }
 
     public void updateRecordTime(String time) {

@@ -91,6 +91,7 @@ public abstract class CmdChannel {
     private static final int AMBA_LOCK_VIDEO = 0x801;
     private static final int AMBA_FRIMWORK_VERSION = 0x802;
     private static final int AMBA_SD_CARD_STATUS = 0x803;
+    private static final int AMBA_BYDNOTIFICATION = 0x804;
 
 
     private static final String ERR_CODE[] = {
@@ -554,6 +555,21 @@ public abstract class CmdChannel {
                         Log.e(CommonUtility.LOG_TAG, "unhandled notification " + type + "!!!");
                     }
                 }
+                if (parser.getInt("msg_id") == AMBA_BYDNOTIFICATION) {
+//                    String type = parser.getString("type");
+                    if (parser.has("sensor")) {
+                        int value = parser.getInt("sensor");
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSENSOR_ALERT, value);
+                    } else if (parser.has("record")) {
+                        int value = parser.getInt("record");
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDRECORD_ALERT, value);
+                    } else if (parser.has("sdcard")) {
+                        int value = parser.getInt("sdcard");
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSDCARD_ALERT, value);
+                    } else {
+                        Log.e(CommonUtility.LOG_TAG, "unhandled notification " + parser + "!!!");
+                    }
+                }
                 if (parser.getInt("msg_id") == AMBA_QUERY_SESSION_HOLDER) {
                     mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_QUERY_SESSION_HOLDER, null);
                 }
@@ -701,9 +717,11 @@ public abstract class CmdChannel {
                         break;
                     case AMBA_TAKE_PHOTO:
                         if (rval == 0) {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, true);
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, 1);
+                        } else if (rval == -30) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, -30);
                         } else {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, false);
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, -1);
                         }
                         break;
                     case AMBA_LOCK_VIDEO:
@@ -754,7 +772,7 @@ public abstract class CmdChannel {
                     }
 
                     // continue to read until we got a valid JSON message
-                    //while (true) {
+//                    while (true) {
                     while (fetchFlag) {
                         try {
                             new JSONObject(msg);

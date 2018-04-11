@@ -362,7 +362,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         isMultiChoose = false;
         llEditItemBar.setVisibility(View.INVISIBLE);
         rgGroupDetail.setVisibility(View.VISIBLE);
-        ibSearch.setVisibility(View.VISIBLE);
+//        ibSearch.setVisibility(View.VISIBLE);
         btnSelectall.setChecked(false);
         mSelectedLists.clear();
         if (mAdapter != null) {
@@ -554,7 +554,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             isMultiChoose = true;
             llEditItemBar.setVisibility(View.VISIBLE);
             rgGroupDetail.setVisibility(View.INVISIBLE);
-            ibSearch.setVisibility(View.INVISIBLE);
+//            ibSearch.setVisibility(View.INVISIBLE);
 //            如下可能不需要
             mSelectedLists.clear();
 //            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
@@ -585,7 +585,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             case R.id.btn_cancel:
                 llEditItemBar.setVisibility(View.INVISIBLE);
                 rgGroupDetail.setVisibility(View.VISIBLE);
-                ibSearch.setVisibility(View.VISIBLE);
+//                ibSearch.setVisibility(View.VISIBLE);
                 isMultiChoose = false;
                 mAdapter.isSelectedMap.clear();
                 btnSelectall.setChecked(false);
@@ -700,7 +700,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 isMultiChoose = false;
                 llEditItemBar.setVisibility(View.INVISIBLE);
                 rgGroupDetail.setVisibility(View.VISIBLE);
-                ibSearch.setVisibility(View.VISIBLE);
+//                ibSearch.setVisibility(View.VISIBLE);
                 btnSelectall.setChecked(false);
                 mSelectedLists.clear();
                 mAdapter.isSelectedMap.clear();
@@ -1389,6 +1389,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 BufferedInputStream in = null;
                 Bitmap bitmap = null;
                 int timecount = 0;
+                boolean result = false;
                 mRemoteCam.getThumb(param);
                 while (!isYuvDownload) {
                     if (isThumbGetFail) {
@@ -1400,7 +1401,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     }
 
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -1415,8 +1416,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 Log.e(TAG, "downloadYuvBitmap: 接收到数据");
                 if (mRemoteCam != null && mRemoteCam.getDataChannel() != null) {
                     bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
+                    result = true;
                 } else {
                     bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
+                    result = false;
                 }
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 InputStream inputimage = new ByteArrayInputStream(baos.toByteArray());
@@ -1428,6 +1431,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         out.write(b);
                     }
                 } catch (IOException e) {
+                    result =false;
                     e.printStackTrace();
                 } finally {
                     try {
@@ -1441,7 +1445,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         e.printStackTrace();
                     }
                 }
-                return true;
+                return result;
             }
         }
 

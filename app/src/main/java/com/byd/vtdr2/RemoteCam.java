@@ -797,11 +797,12 @@ public class RemoteCam
 
     public void actionQuerySessionHolder() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
                 //
                 //if (!connectToCmdChannel())
                 //    return;
-                if (querySessionHolder_flag)
+               /* if (querySessionHolder_flag)我注销的*/
                      mCmdChannel.replyQuerySessionHolder();
             }
         });

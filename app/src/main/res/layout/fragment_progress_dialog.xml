@@ -46,15 +46,15 @@
         app:layout_constraintTop_toTopOf="@id/tv_dialogContent" />
 
     <TextView
-        style="@style/TextStyle"
         android:id="@+id/tv_progressPercent"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/pb_downloadProgressBar"
+        android:text="       "
+        app:layout_constraintBottom_toBottomOf="@id/pb_downloadProgressBar"
         app:layout_constraintLeft_toLeftOf="@id/pb_downloadProgressBar"
         app:layout_constraintRight_toRightOf="@id/pb_downloadProgressBar"
-        app:layout_constraintBottom_toBottomOf="@id/pb_downloadProgressBar"
-        android:text="0%"/>
+        app:layout_constraintTop_toTopOf="@id/pb_downloadProgressBar" />
 
 
     <ImageView

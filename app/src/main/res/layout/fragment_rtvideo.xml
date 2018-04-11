@@ -118,6 +118,7 @@
 
     <ProgressBar
         android:id="@+id/loadingView"
+        style="@style/ProgressBarStyle"
         app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
         app:layout_constraintBottom_toBottomOf="@id/sv_recordVideo"
         app:layout_constraintStart_toStartOf="@id/sv_recordVideo"

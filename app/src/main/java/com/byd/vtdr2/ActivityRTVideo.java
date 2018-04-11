@@ -353,7 +353,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
         long duration = mMediaPlayer.getDuration();
-        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
+        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null&&!isVideoStop) {
             tvCurrentTime.setText(generateTime(CurrentTime*1000));
             tvEndTime.setText(generateTime(duration));
             sbMediaCtrlBar.setProgress((int) CurrentTime);
@@ -568,6 +568,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                 isVideoStop = false;
                 mHandler.removeMessages(SHOW_CONTROLLER1);
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
+                break;
             case R.id.btn_VideoZoom:
                 if (mMediaPlayer != null) {
                     if (mMediaPlayer.isPlaying()) {

@@ -33,7 +33,7 @@
             android:background="@drawable/btn_preview_back_selector" />
 
         <TextView
-            style="@style/TextStyle"
+            style="@style/TextRobotoStyle"
             android:id="@+id/tv_title_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:text="2017-09-90-09-09-09.jpg" />
 
         <TextView
-            style="@style/TextStyle"
+            style="@style/TextRobotoStyle"
             android:id="@+id/tv_vpIndex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
