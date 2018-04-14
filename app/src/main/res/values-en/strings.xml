@@ -27,8 +27,8 @@
     <string name="Pictures_fail">Pictures fail</string>
     <string name="LockVideo_success">LockVideo success</string>
     <string name="LockVideo_fail">LockVideo fail</string>
-    <string name="OpenVideo_success">OpenVideo success</string>
-    <string name="OpenVideo_fail">OpenVideo fail</string>
+    <string name="openVideo_fail">OpenVideo success</string>
+    <string name="closeVideo_fail">OpenVideo fail</string>
     <string name="connect_fail">Car DVR connecting fail</string>
     <string name="ok">OK</string>
     <string name="close">Close</string>
@@ -58,6 +58,9 @@
     <string name="card_write_protect">Card write protect</string>
     <string name="card_not_enough">Card not enough</string>
     <string name="card_need_format">Card need format</string>
-    <string name="sensor_issue">Sensor issue</string>
+    <string name="sensor_issue">Can\'t get video</string>
+    <string name="video_locking">Video_locking</string>
+    <string name="immediately_format">立刻格式化</string>
+    <string name="later_format">暂不格式化</string>
 
 </resources>

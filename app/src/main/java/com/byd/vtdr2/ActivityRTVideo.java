@@ -80,7 +80,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     private int CurrentTime = 0;
     private MyThreadTimecount myThreadTimecount;
     private  boolean ouTthread = false ;
-    private AudioManager audioManager;
+//    private AudioManager audioManager;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -192,7 +192,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
 
-        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
@@ -225,7 +225,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         super.onResume();
         if (mMediaPlayer!=null && isVideoStop) {
             mMediaPlayer.start();
-            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+//            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             if (myThreadTimecount != null) {
                 myThreadTimecount.resumeThread();//恢复线程运行
             }
@@ -242,6 +242,9 @@ public class ActivityRTVideo extends AppCompatActivity {
         super.onPause();
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
+            if (myThreadTimecount != null) {
+                myThreadTimecount.pauseThread();//恢复线程运行
+            }
         }
         isVideoStop = true;
     }
@@ -250,6 +253,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         ouTthread =true;
+//        release();
         new MyTheard().start();
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);

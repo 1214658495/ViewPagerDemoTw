@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -71,8 +72,8 @@ public class FragmentRTVideo extends Fragment {
 //    @BindView(R.id.fl_shotView)
 //    FrameLayout flShotView;
 
-    private TextClock textClock;
-    private TextView tvCheckSdCard;
+    private static TextClock textClock;
+    private static TextView tvCheckSdCard;
 
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
@@ -82,11 +83,11 @@ public class FragmentRTVideo extends Fragment {
     private PLMediaPlayer mMediaPlayer;
 
     private IFragmentListener mListener;
-    private CheckBox ivRtRecordVideo;
+    private static  ImageView ivRtRecordVideo;
     private CheckBox ivRtRecordVoice;
     private SurfaceView svRecordVideo;
     //    private TextView tvTimeOfSv;
-    private ImageView ivIcRecord;
+    private static ImageView ivIcRecord;
     private FrameLayout flShotView;
 
     private RemoteCam mRemoteCam;
@@ -96,9 +97,10 @@ public class FragmentRTVideo extends Fragment {
     private boolean mIsStopped;
     private int seconds;
     private static final int MINI_CLICK_DELAY = 2000;
-    private long lastClickTime = 0;
+    private static long lastClickTime = 0;
     private AddSingleButtonDialog addSingleButtonDialog;
     private FragmentTransaction fragmentTransaction;
+
 
     public static FragmentRTVideo newInstance() {
         FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
@@ -107,6 +109,7 @@ public class FragmentRTVideo extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -260,7 +263,10 @@ public class FragmentRTVideo extends Fragment {
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
                     if (isRecord) {
-                        showRecordTag(true);
+                        setRecordState(true);
+//                        showRecordTag(true);
+                    } else {
+                        setRecordState(false);
                     }
                     mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
@@ -415,28 +421,6 @@ public class FragmentRTVideo extends Fragment {
         }
     };
 
-    public void showAddSingleButtonDialogFrgRT(String msg) {
-        fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-        addSingleButtonDialog = AddSingleButtonDialog.newInstance(msg);
-        if (addSingleButtonDialog != null) {
-//                        DialogFragment dialogFragment = addSingleButtonDialog;
-            if (!addSingleButtonDialog.isAdded()) {
-                fragmentTransaction.add(addSingleButtonDialog, AddSingleButtonDialog.class.getName());
-                fragmentTransaction.commitAllowingStateLoss();
-            }
-        }
-        addSingleButtonDialog.setOnDialogButtonClickListener(new AddSingleButtonDialog.OnDialogButtonClickListener() {
-            @Override
-            public void okButtonClick() {
-
-            }
-
-            @Override
-            public void cancelButtonClick() {
-
-            }
-        });
-    }
 
 
     @Override
@@ -490,27 +474,34 @@ public class FragmentRTVideo extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_rt_record_video:
-                if (isRecord) {
+                /*if (isRecord) {
 //                    showToastTips("关闭录像！");
-                    /*if (mMediaPlayer != null) {
+                    *//*if (mMediaPlayer != null) {
                         mMediaPlayer.stop();
                         mMediaPlayer.reset();
                     }
-                    mMediaPlayer = null;*/
+                    mMediaPlayer = null;*//*
 //                    tvTimeOfSv.setVisibility(View.INVISIBLE);
                     showRecordTag(false);
-                    ivRtRecordVideo.setChecked(true);
+                   *//* ivRtRecordVideo.setChecked(false);*//*
                 } else {
 //                    showToastTips("开启录像！");
 //                    prepare();
 //                    mMediaPlayer.start();
 //                    tvTimeOfSv.setVisibility(View.VISIBLE);
                     showRecordTag(true);
-                    ivRtRecordVideo.setChecked(false);
-                }
+                   *//* ivRtRecordVideo.setChecked(true);*//*
+                }*/
                 if (mListener != null) {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
                     if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
+//                        if (isRecord) {
+//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+//                            showRecordTag(false);
+//                        } else {
+//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
+//                            showRecordTag(true);
+//                        }
                         lastClickTime = currentTime;
                         isRecord = !isRecord;
                         mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_START, isRecord);
@@ -545,9 +536,11 @@ public class FragmentRTVideo extends Fragment {
             case R.id.iv_rt_lock_video:
                 if (mListener != null) {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
-                    if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
+                    if (currentTime - lastClickTime > 11000) {
                         lastClickTime = currentTime;
                         mListener.onFragmentAction(IFragmentListener.ACTION_LOCK_VIDEO_START, null);
+                    } else {
+                        showToastTips(getString(R.string.video_locking));
                     }
                 }
                 break;
@@ -571,11 +564,37 @@ public class FragmentRTVideo extends Fragment {
         }
     }
 
+    // TODO: 2018/4/12 状态是保存了但界面就是不会去刷新
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            boolean isSavedRecord = savedInstanceState.getBoolean("isRecord");
+            if (isSavedRecord) {
+                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
+            } else {
+                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isRecord",isRecord);
+    }
+
     public void setRecordState(boolean isOn) {
         isRecord = isOn;
         if (ivRtRecordVideo !=null) {
-            ivRtRecordVideo.setChecked(!isOn);
-            showRecordTag(isOn);
+            /*ivRtRecordVideo.setChecked(isOn);*/
+            if (isOn) {
+                showRecordTag(true);
+                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
+            } else {
+                showRecordTag(false);
+                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+            }
         }
     }
 

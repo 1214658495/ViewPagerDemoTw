@@ -163,7 +163,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private int doingDownFileCounts;
     private Intent shareIntent;
     private int lastPosition = -1;
-
+    public static MyTheard resush;
 
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
@@ -204,8 +204,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
         initData();
-        rueshcontrol = true;
-        new MyTheard().start();
+        resush= new MyTheard();
+        resush.start();
         return view;
 
     }
@@ -436,6 +436,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Override
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView: ");
+
+
         super.onDestroyView();
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
@@ -444,7 +446,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            添加
 //            mAdapter.isClickedMap.clear();
         }
-        rueshcontrol = false;
+        resush.rueshcontrol = false;
+        resush.interrupt();
     }
 
     @Override
@@ -1587,16 +1590,16 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     * rueshcontrol 控制线程停止
     *
     * */
-    public boolean rueshcontrol = true;
     private Handler handlerUpdate = new Handler();
 
     // TODO: 2018/4/8 后台去刷还有问题！！！！！！！！！！！！！！！！！！！！！！
     public class MyTheard extends Thread {
+        boolean rueshcontrol = true;
         @Override
         public void run() {
             while (rueshcontrol) {
                 try {
-                    Thread.sleep(1000 * 120);
+                    MyTheard.sleep(1000 * 300);
                     if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                         mPWD = "/tmp/SD0/PHOTO";
                         if (rueshcontrol && !isMultiChoose) {

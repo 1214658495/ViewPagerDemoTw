@@ -189,7 +189,7 @@ public abstract class CmdChannel {
                     }
                 }
                  mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT, null);
-                Log.e(TAG, "RX_TIMEOUT" + "response longer then 30 sec");// Add Json Segment to logView
+//                Log.e(TAG, "RX_TIMEOUT" + "response longer then 30 sec");// Add Json Segment to logView
                 addLog("TimerOut Debug Dump msg buffer: " + msg + "<br >");
                 msg = "";
                 Log.e(TAG, "RX_TIMEOUT ::" + msg);
@@ -740,13 +740,17 @@ public abstract class CmdChannel {
                         }
                         break;
                     case AMBA_RECORD_START:
-                        if (rval != 0) {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL, null);
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL, false);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_START_FAIL, true);
                         }
                         break;
                     case AMBA_RECORD_STOP:
-                        if (rval != 0) {
-                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL, null);
+                        if (rval == 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL, false);
+                        } else {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_RECORD_STOP_FAIL, true);
                         }
                         break;
                     default:

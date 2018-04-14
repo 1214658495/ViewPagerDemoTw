@@ -338,9 +338,11 @@ public class FragmentVideoPreview extends Fragment {
         super.onPause();
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
+            if (myThreadTimecount != null) {
+                myThreadTimecount.pauseThread();//恢复线程运行
+            }
         }
         isVideoStop = true;
-        //getFragmentManager().beginTransaction().addToBackStack(null);
     }
 
     @Override
@@ -397,6 +399,8 @@ public class FragmentVideoPreview extends Fragment {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
+                    mMediaPlayer.seekTo(CurrentTime * 1000);//解决播放回退
+
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
@@ -569,8 +573,8 @@ public class FragmentVideoPreview extends Fragment {
         super.onDestroy();
         ouTthread = true;
 //        替换为如下一行
-        release();
-//        new MyTheard().start();
+//        release();
+        new MyTheard().start();
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
     }
