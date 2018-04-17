@@ -130,7 +130,6 @@
         android:layout_height="wrap_content"
         android:text="@string/app_version"
         android:textAllCaps="false"
-        android:layout_marginEnd="@dimen/dp_62"
         android:gravity="start|center"
         app:layout_constraintStart_toStartOf="@id/tv_version"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
@@ -141,16 +140,28 @@
         app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion"
         android:src="@mipmap/line_settingpartdetail" />
 
-    <Button
+    <com.byd.lighttextview.LightButton
+        android:id="@+id/update_test"
         style="@style/ButtonStyle"
-        android:id="@+id/tv_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="测试横竖屏"
+        android:text="@string/check_version"
+        android:textAllCaps="false"
         android:visibility="gone"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_11"
-        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
-        app:layout_constraintTop_toBottomOf="@id/btn_appVersion" />
+        android:gravity="start|center"
+        app:layout_constraintStart_toEndOf="@id/btn_appVersion"
+        app:layout_constraintTop_toTopOf="@id/btn_appVersion" />
+
+    <!--<Button-->
+        <!--style="@style/ButtonStyle"-->
+        <!--android:id="@+id/update_test"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="测试横竖屏"-->
+        <!--android:visibility="gone"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="@dimen/sp_11"-->
+        <!--app:layout_constraintStart_toStartOf="@id/tv_textSetting"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/btn_appVersion" />-->
 
 </android.support.constraint.ConstraintLayout>

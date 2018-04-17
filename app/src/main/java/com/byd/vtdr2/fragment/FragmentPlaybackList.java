@@ -94,7 +94,7 @@ import butterknife.Unbinder;
 public class FragmentPlaybackList extends Fragment implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "FragmentPlaybackList";
     @BindView(R.id.rg_groupDetail)
-    RadioGroup rgGroupDetail;
+    public RadioGroup rgGroupDetail;
     //    @BindView(R.id.vp_itemPreview)
 //    NoScrollViewPager vpItemPreview;
 
@@ -137,7 +137,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
-    private PhotoWallAdapter mAdapter;
+    public PhotoWallAdapter mAdapter;
     public boolean isMultiChoose = false;
 
     private int screenHeight;
@@ -204,8 +204,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
         initData();
-        resush= new MyTheard();
-        resush.start();
+        if (resush == null) {
+            rueshcontrol = true;
+            resush = new MyTheard();
+            resush.start();
+        }
+
         return view;
 
     }
@@ -235,8 +239,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             screenHeight = dm.heightPixels;
             screenWidth = (int) (dm.widthPixels * 0.52);
         }
-
-
 //        ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 90,8);
 
         rgGroupDetail.check(R.id.rb_recordvideo);
@@ -436,9 +438,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Override
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView: ");
-
-
-        super.onDestroyView();
+        rueshcontrol = false;
+        resush.interrupt();
+        resush = null;
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
         if (mAdapter != null) {
@@ -446,8 +448,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            添加
 //            mAdapter.isClickedMap.clear();
         }
-        resush.rueshcontrol = false;
-        resush.interrupt();
+        super.onDestroyView();
     }
 
     @Override
@@ -1434,7 +1435,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         out.write(b);
                     }
                 } catch (IOException e) {
-                    result =false;
+                    result = false;
                     e.printStackTrace();
                 } finally {
                     try {
@@ -1582,31 +1583,28 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
 
-
     /*
-    * 定时刷新列表，更新数据
-    * 解决debug，长时间停留不更新，定时十分钟
-    *
-    * rueshcontrol 控制线程停止
-    *
-    * */
+* 定时刷新列表，更新数据
+* 解决debug，长时间停留不更新，定时十分钟
+*
+* rueshcontrol 控制线程停止
+*
+* */
     private Handler handlerUpdate = new Handler();
+    public boolean rueshcontrol = false;
 
     // TODO: 2018/4/8 后台去刷还有问题！！！！！！！！！！！！！！！！！！！！！！
     public class MyTheard extends Thread {
-        boolean rueshcontrol = true;
         @Override
         public void run() {
             while (rueshcontrol) {
                 try {
-                    MyTheard.sleep(1000 * 300);
+                    MyTheard.sleep(1000 * 180);
                     if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                         mPWD = "/tmp/SD0/PHOTO";
                         if (rueshcontrol && !isMultiChoose) {
                             listDirContents(mPWD);
                         }
-
-
                     } else if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
                         mPWD = "/tmp/SD0/NORMAL";
                         if (rueshcontrol && !isMultiChoose) {
@@ -1635,7 +1633,5 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             }
         }
     }
-
-
 }
 

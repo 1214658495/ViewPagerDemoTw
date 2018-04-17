@@ -40,7 +40,7 @@ public class FragmentVideoPlay extends Fragment {
 //    PLVideoTextureView svVideoPlayView;
     @BindView(R.id.ib_playVideo)
     ImageButton ibPlayVideo;
-    @BindView(R.id.tv_test)
+    @BindView(R.id.update_test)
     TextView tvTest;
 
     private ArrayList<ImageView> imageLists;

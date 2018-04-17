@@ -88,9 +88,9 @@ public abstract class CmdChannel {
     private static final int AMBA_QUERY_SESSION_HOLDER = 0x701;
 
     //madd
-    private static final int AMBA_LOCK_VIDEO = 0x801;
-    private static final int AMBA_FRIMWORK_VERSION = 0x802;
-    private static final int AMBA_SD_CARD_STATUS = 0x803;
+    private static final int BYD_EVENT_RECORD_START = 0x801;
+    private static final int BYD_VER_INFO = 0x802;
+    private static final int BYD_SYSTEM_STATE = 0x803;
     private static final int AMBA_BYDNOTIFICATION = 0x804;
 
 
@@ -185,10 +185,11 @@ public abstract class CmdChannel {
                     }
                     if (mReplyReceived) {
                         tmpLoop = 99;
-                        break;
+//                        break;
+                        return true;
                     }
                 }
-                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT, null);
+                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT, null);
 //                Log.e(TAG, "RX_TIMEOUT" + "response longer then 30 sec");// Add Json Segment to logView
                 addLog("TimerOut Debug Dump msg buffer: " + msg + "<br >");
                 msg = "";
@@ -402,12 +403,13 @@ public abstract class CmdChannel {
     //    madd
     public synchronized boolean lockVideo() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
-                + ",\"msg_id\":" + AMBA_LOCK_VIDEO + "}");
+                + ",\"msg_id\":" + BYD_EVENT_RECORD_START + "}");
     }
+
     //    madd
     public synchronized boolean frimworkVersion() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
-                + ",\"msg_id\":" + AMBA_FRIMWORK_VERSION + "}");
+                + ",\"msg_id\":" + BYD_VER_INFO + "}");
     }
 
     public synchronized boolean startRecord() {
@@ -452,6 +454,11 @@ public abstract class CmdChannel {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_GET_SPACE
                 + ",\"type\":\"" + type + "\"}");
+    }
+
+    public synchronized boolean getSystemState() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + BYD_SYSTEM_STATE + "}");
     }
 
     public synchronized boolean getDevInfo() {
@@ -671,6 +678,23 @@ public abstract class CmdChannel {
                         }
 //                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_SPACE, parser.getString("param"));
                         break;
+                    case BYD_SYSTEM_STATE:
+                        if (rval == 0) {
+                            if (parser.has("sensor")) {
+                                int value = parser.getInt("sensor");
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSENSOR_ALERT, value);
+                            }
+                            if (parser.has("sdcard")) {
+                                int value = parser.getInt("sdcard");
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSDCARD_ALERT, value);
+                            }
+//                            if (parser.has("record")) {
+//                                int value = parser.getInt("record");
+//                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDRECORD_ALERT, value);
+//                            }
+                        } else {
+                        }
+                        break;
                     case AMBA_GET_NUM_FILES:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_NUM_FILES, parser.getString("param"));
                         break;
@@ -724,14 +748,14 @@ public abstract class CmdChannel {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_TAKE_PHOTO, -1);
                         }
                         break;
-                    case AMBA_LOCK_VIDEO:
+                    case BYD_EVENT_RECORD_START:
                         if (rval == 0) {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, true);
                         } else {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO, false);
                         }
                         break;
-                    case AMBA_FRIMWORK_VERSION:
+                    case BYD_VER_INFO:
                         if (rval == 0) {
                             str = parser.getString("bydver");
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_FRIMWORK_VERSION, str);

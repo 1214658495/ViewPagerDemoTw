@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.byd.lighttextview.LightButton;
@@ -45,8 +44,8 @@ public class FragmentSetting extends Fragment {
     @BindView(R.id.btn_default_setting)
     LightButton btnDefaultSetting;
     Unbinder unbinder;
-    @BindView(R.id.tv_test)
-    Button tvTest;
+    @BindView(R.id.update_test)
+    LightButton btnUpdateTest;
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
@@ -101,7 +100,7 @@ public class FragmentSetting extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion,R.id.tv_test})
+    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion,R.id.update_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_default_setting:
@@ -120,29 +119,32 @@ public class FragmentSetting extends Fragment {
                 });
                 break;
             case R.id.btn_memoryCard_format:
-                myDialog = MyDialog.newInstance(0, getString(R.string.confirm_format_memory_card));
-                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
-                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
-                    @Override
-                    public void okButtonClick() {
-                        // TODO: 2017/11/29  删除照片
-                        mListener.onFragmentAction(IFragmentListener.ACTION_FS_FORMAT_SD, "C:");
-                    }
-
-                    @Override
-                    public void cancelButtonClick() {
-                    }
-                });
+//                myDialog = MyDialog.newInstance(0, getString(R.string.confirm_format_memory_card));
+//                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
+//                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+//                    @Override
+//                    public void okButtonClick() {
+//                        // TODO: 2017/11/29  删除照片
+//                        mListener.onFragmentAction(IFragmentListener.ACTION_FS_FORMAT_SD, "C:");
+//                    }
+//
+//                    @Override
+//                    public void cancelButtonClick() {
+//                    }
+//                });
+                mListener.onFragmentAction(IFragmentListener.ACTION_FS_FORMAT_SD, "C:");
                 break;
             case R.id.btn_firmwareVersion:
                 mListener.onFragmentAction(IFragmentListener.ACTION_FRIMWORK_VERSION, null);
                 break;
             case R.id.btn_appVersion:
-                String ver = getAppVersion(getContext());
-                myDialog = MyDialog.newInstance(1, "App" + getString(R.string.version) + ver);
-                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
+                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
+//                String ver = getAppVersion(getContext());
+//                myDialog = MyDialog.newInstance(1, "App" + getString(R.string.version) + ver);
+//                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 break;
-            case R.id.tv_test:
+            case R.id.update_test:
+//                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
                 break;
             default:
                 break;

@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
  */
 public class RemoteCam
         implements IChannelListener {
-//        implements IChannelListener, AmbaStreamListener {
+    //        implements IChannelListener, AmbaStreamListener {
     private final static String TAG = "RemoteCam::";
 
     public int ble_connection_timeout;
@@ -56,10 +56,10 @@ public class RemoteCam
     public static final int CAM_CONNECTIVITY_BT_WIFI = 4;
     public static final int CAM_CONNECTIVITY_BLE = 5;
 
-    public  String connectionMode;
+    public String connectionMode;
     public String lastCommandResponse;
 
-    private int    mConnectivityType;
+    private int mConnectivityType;
     private String mBlueAddrRequested;
     private String mWifiSSIDRequested;
     private String mBlueAddrConnected;
@@ -69,7 +69,7 @@ public class RemoteCam
     private String mZoomInfoType;
 
     private Boolean mfDataChannelConnected;
-    private String  mWifiIpAddr;
+    private String mWifiIpAddr;
     private Context mContext;
     private CmdChannel mCmdChannel;
     private DataChannel mDataChannel;
@@ -82,7 +82,7 @@ public class RemoteCam
     private String mEventFolder;
     private String mPhotoFolder;
 
-    private int    mMediaInfoStep;
+    private int mMediaInfoStep;
     private String mMediaInfoReply;
 
     private boolean querySessionHolder_flag;
@@ -150,7 +150,7 @@ public class RemoteCam
         return this;
     }
 
-    public RemoteCam debugLastCmdResponse (String resp) {
+    public RemoteCam debugLastCmdResponse(String resp) {
         lastCommandResponse = resp;
         return this;
     }
@@ -174,14 +174,10 @@ public class RemoteCam
             }
         });
     }
-//madd
+
+    //madd
     public void socketTest() {
-//        worker.execute(new Runnable() {
-//            @Override
-//            public void run() {
-                        CmdChannelWIFI.isSocketAvailable();
-//            }
-//        });
+        CmdChannelWIFI.isSocketAvailable();
     }
 
     public void standBy() {
@@ -200,7 +196,7 @@ public class RemoteCam
                 if (!connectToCmdChannel())
                     return;
                 //getram set the connection status for UI update
-               uiStatusSessionFlag = mCmdChannel.startSession();
+                uiStatusSessionFlag = mCmdChannel.startSession();
                 if (mSDCardDirectory == null && (uiStatusSessionFlag == true)) {
                     new java.util.Timer().schedule(
                             new java.util.TimerTask() {
@@ -270,7 +266,7 @@ public class RemoteCam
 
 
     public void changeFolder(final String path) {
-        worker.execute(new Runnable(){
+        worker.execute(new Runnable() {
             public void run() {
                 if (!connectToCmdChannel())
                     return;
@@ -332,10 +328,10 @@ public class RemoteCam
 
     public void getThumb(final String path) {
         int pos = path.lastIndexOf('/');
-        mGetFileName = path.substring(pos+1, path.length()) + ".thumb";
+        mGetFileName = path.substring(pos + 1, path.length()) + ".thumb";
         worker.execute(new Runnable() {
             public void run() {
-                if (!connectToDataChannel() || !connectToCmdChannel() )
+                if (!connectToDataChannel() || !connectToCmdChannel())
                     return;
                 /*int len = path.length();
                 String surfix = path.substring(len-3, len).toLowerCase();
@@ -358,7 +354,7 @@ public class RemoteCam
 
     public void getFile(final String path) {
         int pos = path.lastIndexOf('/');
-        mGetFileName = path.substring(pos+1, path.length());
+        mGetFileName = path.substring(pos + 1, path.length());
         worker.execute(new Runnable() {
             public void run() {
                 if (!connectToCmdChannel() || !connectToDataChannel())
@@ -387,8 +383,8 @@ public class RemoteCam
                     }
                     byte[] hash = md.digest();
                     StringBuilder sb = new StringBuilder();
-                    for (byte b: hash)
-                        sb.append(String.format("%02x", b&0xff));
+                    for (byte b : hash)
+                        sb.append(String.format("%02x", b & 0xff));
                     md5 = sb.toString();
                     in.close();
                 } catch (Exception e) {
@@ -505,7 +501,8 @@ public class RemoteCam
             }
         });
     }
-//    madd
+
+    //    madd
     public void lockPhoto() {
         worker.execute(new Runnable() {
             public void run() {
@@ -546,7 +543,8 @@ public class RemoteCam
             }
         });
     }
-//add
+
+    //add
     public void startMic() {
         worker.execute(new Runnable() {
             @Override
@@ -558,7 +556,8 @@ public class RemoteCam
             }
         });
     }
-//add
+
+    //add
     public void stopMic() {
         worker.execute(new Runnable() {
             @Override
@@ -590,6 +589,7 @@ public class RemoteCam
             }
         });
     }
+
     //madd;
     public void defaultSetting() {
         worker.execute(new Runnable() {
@@ -602,6 +602,7 @@ public class RemoteCam
             }
         });
     }
+
     //madd;
     public void appStatus() {
         worker.execute(new Runnable() {
@@ -612,7 +613,8 @@ public class RemoteCam
             }
         });
     }
-//madd;
+
+    //madd;
     public void micStatus() {
         worker.execute(new Runnable() {
             public void run() {
@@ -640,6 +642,7 @@ public class RemoteCam
             }
         });
     }
+
     public void getTotalFileCount() {
         worker.execute(new Runnable() {
             public void run() {
@@ -649,6 +652,7 @@ public class RemoteCam
             }
         });
     }
+
     public void getAllVideoFilesCount() {
         worker.execute(new Runnable() {
             public void run() {
@@ -658,6 +662,7 @@ public class RemoteCam
             }
         });
     }
+
     public void getAllPhotoFilesCount() {
         worker.execute(new Runnable() {
             public void run() {
@@ -677,12 +682,25 @@ public class RemoteCam
             }
         });
     }
+
     public void getTotalFreeSpace() {
         worker.execute(new Runnable() {
             public void run() {
                 if (!connectToCmdChannel())
                     return;
                 mCmdChannel.getSpace("free");
+            }
+        });
+    }
+
+    //    madd
+    public void getSystemState() {
+        worker.execute(new Runnable() {
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.getSystemState();
             }
         });
     }
@@ -702,7 +720,9 @@ public class RemoteCam
         return "rtsp://" + mWifiHostURL + path;
     }
 
-    public String sdCardDirectory() { return mSDCardDirectory; }
+    public String sdCardDirectory() {
+        return mSDCardDirectory;
+    }
 
     public void startLiveStream() {
 //        AmbaStreamSource.startWifi("rtsp://" + mWifiHostURL + "/live");
@@ -738,6 +758,7 @@ public class RemoteCam
             }
         });
     }
+
     public void getPWD() {
         worker.execute(new Runnable() {
             public void run() {
@@ -767,6 +788,7 @@ public class RemoteCam
             }
         });
     }
+
     public void stopWifi() {
         worker.execute(new Runnable() {
             public void run() {
@@ -776,6 +798,7 @@ public class RemoteCam
             }
         });
     }
+
     public void startWifi() {
         worker.execute(new Runnable() {
             public void run() {
@@ -785,6 +808,7 @@ public class RemoteCam
             }
         });
     }
+
     public void restartWifi() {
         worker.execute(new Runnable() {
             public void run() {
@@ -803,10 +827,11 @@ public class RemoteCam
                 //if (!connectToCmdChannel())
                 //    return;
                /* if (querySessionHolder_flag)我注销的*/
-                     mCmdChannel.replyQuerySessionHolder();
+                mCmdChannel.replyQuerySessionHolder();
             }
         });
     }
+
     public void setQuerySessionFlag(boolean Flag) {
         querySessionHolder_flag = Flag;
     }
@@ -828,27 +853,28 @@ public class RemoteCam
 //        mListener.onChannelEvent(type, null);
 //    }*/
 
-    public void onChannelEvent(int type, Object param, String...array) {
+    public void onChannelEvent(int type, Object param, String... array) {
         JSONObject parser;
         int size;
         String path;
 
         switch (type) {
             case IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB:
-                parser = (JSONObject)param;
+                parser = (JSONObject) param;
 
                 try {
                     if (parser.getInt("rval") != 0) {
                         /*mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT,
                                 "GET_THUMB failed");*/
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_FAIL,true);
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_FAIL, true);
 
                         break;
+                    } else {
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_TEST, true);
                     }
-                    else {
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_THUMB_TEST,true);
-                    }
-                } catch (JSONException e) {e.printStackTrace();}
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                /* try {
                     if (parser.getInt("rval") != 0) {
@@ -897,7 +923,7 @@ public class RemoteCam
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_DEVINFO:
                 try {
-                    parser = (JSONObject)param;
+                    parser = (JSONObject) param;
                     /*if (mSDCardDirectory == null) {
                         if (parser.has("media_folder")) {
                             String val = parser.getString("media_folder");
@@ -939,17 +965,19 @@ public class RemoteCam
 
                     Iterator<?> keys = parser.keys();
                     while (keys.hasNext()) {
-                        String key = (String)keys.next();
+                        String key = (String) keys.next();
                         if (key.equals("rval") || key.equals("msg_id"))
                             continue;
                         mMediaInfoReply += "\n" + key + ": " + parser.getString(key);
                     }
                     mListener.onChannelEvent(type, mMediaInfoReply);
                     mMediaInfoReply = null;
-                } catch (JSONException e) {e.printStackTrace();}
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_ZOOM_INFO:
-                mListener.onChannelEvent(type, mZoomInfoType, (String)param);
+                mListener.onChannelEvent(type, mZoomInfoType, (String) param);
                 break;
             default:
                 if (mListener != null)
@@ -963,7 +991,7 @@ public class RemoteCam
             return true;
 
         // try to connect
-        if (mCmdChannelBLE.connectTo(mBlueAddrRequested,ble_connection_timeout,gatt_autoConnect_flag)) {
+        if (mCmdChannelBLE.connectTo(mBlueAddrRequested, ble_connection_timeout, gatt_autoConnect_flag)) {
             mBlueAddrConnected = mBlueAddrRequested;
             mCmdChannel = mCmdChannelBLE;
             return true;
@@ -1046,7 +1074,7 @@ public class RemoteCam
         switch (mConnectivityType) {
             case CAM_CONNECTIVITY_BLE_WIFI:
                 if (mCmdChannelBLE.disconnectBLE()) {
-                    Log.e(TAG,"Disconnecting BLE connection");
+                    Log.e(TAG, "Disconnecting BLE connection");
                 }
         }
     }

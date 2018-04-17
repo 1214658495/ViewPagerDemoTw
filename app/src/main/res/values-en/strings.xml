@@ -60,7 +60,12 @@
     <string name="card_need_format">Card need format</string>
     <string name="sensor_issue">Can\'t get video</string>
     <string name="video_locking">Video_locking</string>
-    <string name="immediately_format">立刻格式化</string>
-    <string name="later_format">暂不格式化</string>
+    <string name="immediately_format">Immediately format</string>
+    <string name="later_format">Later format</string>
+    <string name="card_need_format_detail">You can click [setting] to format</string>
+    <string name="afrash_format">afrash format</string>
+    <string name="check_version">check new version</string>
+    <string name="version_newest">version is newest</string>
+    <string name="memory_card_formating">存储卡格式化中</string>
 
 </resources>

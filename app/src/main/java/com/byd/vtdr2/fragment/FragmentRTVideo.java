@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -67,8 +66,7 @@ public class FragmentRTVideo extends Fragment {
 
     //    @BindView(R.id.tv_timeOfSv)
 //    TextView tvTimeOfSv;
-    @BindView(R.id.loadingView)
-    ProgressBar loadingView;
+    private ProgressBar loadingView;
 //    @BindView(R.id.fl_shotView)
 //    FrameLayout flShotView;
 
@@ -80,7 +78,7 @@ public class FragmentRTVideo extends Fragment {
 //    private SurfaceHolder surfaceHolder;
 //    private IjkMediaPlayer player;
     private AVOptions mAVOptions;
-    private PLMediaPlayer mMediaPlayer;
+    private  PLMediaPlayer mMediaPlayer;
 
     private IFragmentListener mListener;
     private static  ImageView ivRtRecordVideo;
@@ -92,12 +90,13 @@ public class FragmentRTVideo extends Fragment {
 
     private RemoteCam mRemoteCam;
     private static boolean isRecord;
-    private boolean isMicOn;
+    private static boolean isMicOn;
     private Toast mToast;
     private boolean mIsStopped;
     private int seconds;
     private static final int MINI_CLICK_DELAY = 2000;
     private static long lastClickTime = 0;
+    private static long lastClickTime2 = 0;
     private AddSingleButtonDialog addSingleButtonDialog;
     private FragmentTransaction fragmentTransaction;
 
@@ -125,6 +124,7 @@ public class FragmentRTVideo extends Fragment {
         textClock = view.findViewById(R.id.tc_count);
         tvCheckSdCard = view.findViewById(R.id.tv_checkSdCord);
         flShotView = view.findViewById(R.id.fl_shotView);
+        loadingView = view.findViewById(R.id.loadingView);
         initData();
         return view;
     }
@@ -175,9 +175,14 @@ public class FragmentRTVideo extends Fragment {
 
     public void prepare() {
         Log.e(TAG, "prepare: iiii");
-
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(svRecordVideo.getHolder());
+//            mMediaPlayer.reset();
+//            mMediaPlayer.stop();
+//            mMediaPlayer.release();
+//            mMediaPlayer = null;
+//            sendReconnectMessage();
+            //mMediaPlayer.prepareAsync();
 //            if (!mIsLiveStreaming) {
 //            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
 //            }
@@ -185,7 +190,7 @@ public class FragmentRTVideo extends Fragment {
         }
 
         try {
-            mMediaPlayer = new PLMediaPlayer(getActivity(), mAVOptions);
+            mMediaPlayer = new PLMediaPlayer(getActivity(), mAVOptions);//getActivity()
             mMediaPlayer.setDebugLoggingEnabled(false);
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
 //            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
@@ -217,7 +222,7 @@ public class FragmentRTVideo extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        prepare();
+       // prepare();
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
         }
@@ -268,7 +273,8 @@ public class FragmentRTVideo extends Fragment {
                     } else {
                         setRecordState(false);
                     }
-                    mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
+                    setMicState(isMicOn);
+                  //  mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
@@ -390,8 +396,8 @@ public class FragmentRTVideo extends Fragment {
         }
     }
 
-    private void sendReconnectMessage() {
-        showToastTips(getString(R.string.Reconnecting));
+    public void sendReconnectMessage() {
+//        showToastTips(getString(R.string.Reconnecting));
         loadingView.setVisibility(View.VISIBLE);
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
@@ -403,20 +409,6 @@ public class FragmentRTVideo extends Fragment {
             if (msg.what != MESSAGE_ID_RECONNECTING) {
                 return;
             }
-//            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
-//                finish();
-//                return;
-//            }
-//            madd
-//            if (!Utils.isSocketAvailable(getActivity())) {
-//                sendReconnectMessage();
-//                return;
-//            }
-
-//            if (!Utils.isNetworkAvailable(getActivity())) {
-//                sendReconnectMessage();
-//                return;
-//            }
             prepare();
         }
     };
@@ -536,8 +528,8 @@ public class FragmentRTVideo extends Fragment {
             case R.id.iv_rt_lock_video:
                 if (mListener != null) {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
-                    if (currentTime - lastClickTime > 11000) {
-                        lastClickTime = currentTime;
+                    if (currentTime - lastClickTime2 > 11000) {
+                        lastClickTime2 = currentTime;
                         mListener.onFragmentAction(IFragmentListener.ACTION_LOCK_VIDEO_START, null);
                     } else {
                         showToastTips(getString(R.string.video_locking));
@@ -563,26 +555,26 @@ public class FragmentRTVideo extends Fragment {
                 break;
         }
     }
-
-    // TODO: 2018/4/12 状态是保存了但界面就是不会去刷新
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            boolean isSavedRecord = savedInstanceState.getBoolean("isRecord");
-            if (isSavedRecord) {
-                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
-            } else {
-                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("isRecord",isRecord);
-    }
+//
+//    // TODO: 2018/4/12 状态是保存了但界面就是不会去刷新
+//    @Override
+//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+//        super.onViewStateRestored(savedInstanceState);
+//        if (savedInstanceState != null) {
+//            boolean isSavedRecord = savedInstanceState.getBoolean("isRecord");
+//            if (isSavedRecord) {
+//                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
+//            } else {
+//                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putBoolean("isRecord",isRecord);
+//    }
 
     public void setRecordState(boolean isOn) {
         isRecord = isOn;
@@ -606,93 +598,5 @@ public class FragmentRTVideo extends Fragment {
     }
 
     public void updateRecordTime(String time) {
-
-//        final int second = Integer.parseInt(time);
-
-      /*  chronometer.setBase(SystemClock.elapsedRealtime());//计时器清零
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                long time = SystemClock.elapsedRealtime() - cArg.getBase() + second;
-                int h   = (int)(time /3600000);
-                int m = (int)(time - h*3600000)/60000;
-                int s= (int)(time - h*3600000- m*60000)/1000 ;
-//               *//* int minute = (int) (time / 60);
-//                int hour = minute / 60;
-//                time -= minute * 60;
-//                minute -= hour * 60;
-//                cArg.setText(String.format("%02d:%02d:%02d", hour, minute, time));*//*
-                String hh = h < 10 ? "0"+h: h+"";
-                String mm = m < 10 ? "0"+m: m+"";
-                String ss = s < 10 ? "0"+s: s+"";
-                cArg.setText(hh+":"+mm+":"+ss);
-            }
-        });
-        chronometer.start();*/
-      /*  getTime(second);
-
-        tvTimeOfSv.setVisibility(View.VISIBLE);
-        ivIcRecord.setVisibility(View.VISIBLE);
-
-//        Timer timer = new Timer();
-//        timer.schedule(new RecordTimeTask(), 1000);
-        *//*mHandler.postDelayed(runnable,1000);*//*
-
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new RecordTimeTask(),0, 1000, TimeUnit.MILLISECONDS);*/
-
     }
-
-/*    public String getTime(int second) {
-        seconds = second;
-
-        int minute = second / 60;
-        int hour = minute / 60;
-        second -= minute * 60;
-        minute -= hour * 60;
-        timeStr = String.format("%02d:%02d:%02d", hour, minute, second);
-        if (tvTimeOfSv.getVisibility() != View.VISIBLE) {
-            tvTimeOfSv.setVisibility(View.VISIBLE);
-            ivIcRecord.setVisibility(View.VISIBLE);
-            tvTimeOfSv.setText(timeStr);
-        }
-        return timeStr;
-//
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                tvTimeOfSv.setVisibility(View.VISIBLE);
-//                ivIcRecord.setVisibility(View.VISIBLE);
-//                Log.e(TAG, "getTime: tvTimeOfSv.setVisibility");
-//                tvTimeOfSv.setText(timeStr);
-//            }
-//        });
-
-    }*/
-
-
-  /*  private class RecordTimeTask extends TimerTask {
-        @Override
-        public void run() {
-//            Message msg = new Message();
-//            Bundle bundle = new Bundle();
-//            bundle.putString("mTime", mTime);
-//            msg.setData(bundle);
-//            mHandler.sendMessage(msg);
-            final String mTime = getTime(++seconds);
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-
-//                tvTimeOfSv.setVisibility(View.VISIBLE);
-//                ivIcRecord.setVisibility(View.VISIBLE);
-//                Log.e(TAG, "getTime: tvTimeOfSv.setVisibility");
-                    tvTimeOfSv.setText(mTime);
-                }
-            });
-        }
-    }*/
-
 }

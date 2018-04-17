@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.byd.vtdr2.R;
@@ -19,8 +20,12 @@ public class CustomDialog extends Dialog {
     private Context context;
     private boolean cancelTouchOut;
     private View view;
-    public TextView tvDialogContent;
+    private TextView tvDialogContent;
+    private Button btnDialogSure;
+    private Button btnCancel;
     private String title;
+//    private String buttonText;
+
 
     private CustomDialog(Builder builder) {
         super(builder.context);
@@ -28,6 +33,7 @@ public class CustomDialog extends Dialog {
         cancelTouchOut = builder.cancelTouchOut;
         view = builder.view;
         title = builder.title;
+//        buttonText = builder.buttonText;
     }
 
     private CustomDialog(Builder builder, int resStyle) {
@@ -36,12 +42,15 @@ public class CustomDialog extends Dialog {
         cancelTouchOut = builder.cancelTouchOut;
         view = builder.view;
         title = builder.title;
+//        buttonText = builder.buttonText;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tvDialogContent = view.findViewById(R.id.tv_dialogContent);
+//        btnDialogSure = view.findViewById(R.id.btn_dialogSure);
+//        btnCancel = view.findViewById(R.id.btn_cancel);
         setContentView(view);
         setCanceledOnTouchOutside(cancelTouchOut);
         DisplayMetrics dm = new DisplayMetrics();
@@ -53,6 +62,10 @@ public class CustomDialog extends Dialog {
         }
 
         tvDialogContent.setText(title);
+//        if (ok) {
+//        }
+//        btnDialogSure.setText(ok);
+//        btnCancel.setText(cancel);
     }
 
 
@@ -62,6 +75,7 @@ public class CustomDialog extends Dialog {
         private View view;
         private int resStyle = -1;
         private String title;
+        private String buttonText;
 
         public Builder(Context context) {
             this.context = context;

@@ -40,8 +40,8 @@
     <string name="card_removed">请插入存储卡</string>
     <string name="card_inserted">存储卡已插入</string>
     <string name="reboot_drivingReorder">请重启记录仪</string>
-    <string name="format_ok">存储卡格式化完成</string>
-    <string name="format_fail">存储卡格式化失败,是否再次格式化？</string>
+    <string name="format_ok">存储卡格式化已完成</string>
+    <string name="format_fail">存储卡格式化失败</string>
     <string name="downloading">正在下载...</string>
     <string name="Download_completed">下载完成！</string>
     <string name="Download_fail">下载失败</string>
@@ -58,7 +58,7 @@
     <string name="time_out">连接超时，记录仪无应答</string>
     <string name="download_num">请选择少于5个文件下载</string>
     <string name="card_readying">存储卡准备中</string>
-    <string name="image_max">图片已满300张</string>
+    <string name="image_max">图片已存储满</string>
     <string name="card_issue">存储卡异常</string>
     <string name="card_write_protect">存储卡写保护</string>
     <string name="card_not_enough">存储卡空间不足</string>
@@ -67,4 +67,9 @@
     <string name="video_locking">视频锁定中</string>
     <string name="immediately_format">立刻格式化</string>
     <string name="later_format">暂不格式化</string>
+    <string name="card_need_format_detail">您可以点击[设置]进行存储卡格式化</string>
+    <string name="afrash_format">重新格式化</string>
+    <string name="check_version">检查新版本</string>
+    <string name="version_newest">当前已是最新版本</string>
+    <string name="memory_card_formating">存储卡格式化中</string>
 </resources>
