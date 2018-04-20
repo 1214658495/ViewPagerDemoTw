@@ -140,7 +140,7 @@ public class FragmentSetting extends Fragment {
             case R.id.btn_appVersion:
                 mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
 //                String ver = getAppVersion(getContext());
-//                myDialog = MyDialog.newInstance(1, "App" + getString(R.string.version) + ver);
+//                myDialog = MyDialog.newInstance(1, "AppSkinApplication" + getString(R.string.version) + ver);
 //                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
                 break;
             case R.id.update_test:

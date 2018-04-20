@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -54,6 +55,8 @@ import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.CustomDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
+import com.byd.vtdr2.widget.Theme;
+import com.byd.vtdr2.widget.ThemeManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,11 +74,22 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import skin.support.annotation.Skinable;
+
+import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_ECONOMY;
+import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_SPORT;
+
+//import static android.app.ActivityManager.BYD_THEME_COMFORT;
+//import static android.app.ActivityManager.BYD_THEME_SPORT;
+//import static android.hardware.bydauto.energy.BYDAutoEnergyDevice;
+//import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_SPORT;
 
 
 /**
  * @author byd_tw
  */
+
+@Skinable
 public class MainActivity extends AppCompatActivity implements IChannelListener, IFragmentListener {
     private static final String TAG = "MainActivity";
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
@@ -136,16 +150,45 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private boolean isCardNoExist;
     public static int isSensormessage = 0;
     private boolean isNeedFormat;
+    private BYDAutoEnergyDevice bydAutoEnergyDevice;
+    private ThemeManager themeManager;
+
+//    AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
+//        @Override
+//        public void onOperationModeChanged(int type) {
+//            // TODO Auto-generated method stub
+//            super.onOperationModeChanged(type);
+//            showToastTips("模式切换" + type);
+////            Log.d(TAG, "onOperationModeChanged:" + type);
+//            updateHandler.sendEmptyMessage(type);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        requestWindowFeature();
         setContentView(R.layout.activity_main);
+
         requestPermission();
 //        checkUpdateThread();
         ButterKnife.bind(this);
+//        bydAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+//        bydAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
         initConnect();
+//        BYDAutoEnergyDevice  mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+//        int mode =  mBYDAutoEnergyDevice .getOperationMode();
+//        if(mode == ENERGY_OPERATION_ECONOMY ){
+//            //经济模式
+//        SkinCompatManager.getInstance().restoreDefaultTheme();
+//
+//            Log.e(TAG, "onCreate: 经济模式");
+//        }else if(mode == ENERGY_OPERATION_SPORT){
+//            //运动模式
+//        SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+
+//            Log.e(TAG, "onCreate: 运动模式");
+//        }
     }
 
     @Override
@@ -157,6 +200,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //        filter.addAction(EthernetManager.ETHERNET_STATE_CHANGED_ACTION); //以太网消息
         this.registerReceiver(receiver, filter);*/
     }
+
+
 
     private void receiverNetworkBroadcast() {
         if (receiver == null) {
@@ -1139,7 +1184,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IFragmentListener.ACTION_APP_VERSION:
                 String ver = getAppVersion(getApplicationContext());
-                showConfirmDialog("App" + getString(R.string.version) + " " + ver);
+                showConfirmDialog("AppSkinApplication" + getString(R.string.version) + " " + ver);
 //                checkUpdateThread();
                 break;
             case IFragmentListener.ACTION_RECORD_START:
@@ -1261,7 +1306,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     *3.30 add
     * */
 // 查询下载进度，文件总大小多少，已经下载多少？
-    private static  long[] Id;
+    private static long[] Id;
     public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
     private int newsize = 0, totalsize = 0;
     private static int IDcount = 0;
@@ -1293,8 +1338,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private void queryDownloadStatus() {
         DownloadManager.Query query = new DownloadManager.Query();
         try {
-            if (IDcount == 0)
-            {
+            if (IDcount == 0) {
                 return;
             }
             query.setFilterById(Id[IDcount - 1]);
@@ -1353,6 +1397,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         // 清除已下载的内容，重新下载
                         Log.v("tag", "STATUS_FAILED");
                         downloadManager.remove(Id[IDcount - 1]);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -1756,11 +1802,19 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 case UPDATE_CARD_DATA:
                     updateCardData();
                     break;
+                case ENERGY_OPERATION_ECONOMY:
+                    themeManager.updateTheme(Theme.NORMAL);
+                    break;
+                case ENERGY_OPERATION_SPORT:
+                    themeManager.updateTheme(Theme.SPORT);
+                    break;
                 default:
                     break;
             }
         }
     };
+
+
 
 
 }
