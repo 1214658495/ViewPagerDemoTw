@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.hardware.bydauto.energy.AbsBYDAutoEnergyListener;
 import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -74,16 +75,11 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import skin.support.SkinCompatManager;
 import skin.support.annotation.Skinable;
 
 import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_ECONOMY;
 import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_SPORT;
-
-//import static android.app.ActivityManager.BYD_THEME_COMFORT;
-//import static android.app.ActivityManager.BYD_THEME_SPORT;
-//import static android.hardware.bydauto.energy.BYDAutoEnergyDevice;
-//import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_SPORT;
-
 
 /**
  * @author byd_tw
@@ -150,45 +146,33 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private boolean isCardNoExist;
     public static int isSensormessage = 0;
     private boolean isNeedFormat;
-    private BYDAutoEnergyDevice bydAutoEnergyDevice;
+    private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
 
-//    AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
-//        @Override
-//        public void onOperationModeChanged(int type) {
-//            // TODO Auto-generated method stub
-//            super.onOperationModeChanged(type);
-//            showToastTips("模式切换" + type);
-////            Log.d(TAG, "onOperationModeChanged:" + type);
-//            updateHandler.sendEmptyMessage(type);
-//        }
-//    };
+    AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
+        @Override
+        public void onOperationModeChanged(int type) {
+            // TODO Auto-generated method stub
+            super.onOperationModeChanged(type);
+//            Log.d(TAG, "onOperationModeChanged:" + type);
+            updateHandler.sendEmptyMessage(type);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        requestWindowFeature();
         setContentView(R.layout.activity_main);
-
         requestPermission();
 //        checkUpdateThread();
         ButterKnife.bind(this);
-//        bydAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
-//        bydAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
-        initConnect();
-//        BYDAutoEnergyDevice  mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
-//        int mode =  mBYDAutoEnergyDevice .getOperationMode();
-//        if(mode == ENERGY_OPERATION_ECONOMY ){
-//            //经济模式
-//        SkinCompatManager.getInstance().restoreDefaultTheme();
-//
-//            Log.e(TAG, "onCreate: 经济模式");
-//        }else if(mode == ENERGY_OPERATION_SPORT){
-//            //运动模式
-//        SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
 
-//            Log.e(TAG, "onCreate: 运动模式");
-//        }
+        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+        themeManager = ThemeManager.getInstance();
+        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
+
+        initConnect();
     }
 
     @Override
@@ -1804,9 +1788,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     break;
                 case ENERGY_OPERATION_ECONOMY:
                     themeManager.updateTheme(Theme.NORMAL);
+                    SkinCompatManager.getInstance().restoreDefaultTheme();
                     break;
                 case ENERGY_OPERATION_SPORT:
                     themeManager.updateTheme(Theme.SPORT);
+                    SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+
                     break;
                 default:
                     break;
