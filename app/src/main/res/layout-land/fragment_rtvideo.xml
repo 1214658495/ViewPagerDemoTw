@@ -68,11 +68,13 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/sv_recordVideo"
-        app:layout_constraintEnd_toEndOf="@id/sv_recordVideo"
-        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:src="@mipmap/ic_shadow"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/sv_recordVideo"
+        app:layout_constraintStart_toStartOf="@id/sv_recordVideo"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_icRecord"

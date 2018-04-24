@@ -25,7 +25,7 @@
 
     <string name="Pictures_success">Pictures success</string>
     <string name="Pictures_fail">Pictures fail</string>
-    <string name="LockVideo_success">LockVideo success</string>
+    <string name="LockVideo_success">LockVideo start</string>
     <string name="LockVideo_fail">LockVideo fail</string>
     <string name="openVideo_fail">OpenVideo success</string>
     <string name="closeVideo_fail">OpenVideo fail</string>
@@ -66,6 +66,7 @@
     <string name="afrash_format">afrash format</string>
     <string name="check_version">check new version</string>
     <string name="version_newest">version is newest</string>
-    <string name="memory_card_formating">存储卡格式化中</string>
+    <string name="memory_card_formating">memory card formating</string>
+    <string name="delete_fail">delete fail</string>
 
 </resources>

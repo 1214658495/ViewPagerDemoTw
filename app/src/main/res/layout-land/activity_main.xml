@@ -7,22 +7,26 @@
     android:background="@mipmap/bg_all_land"
     tools:context="com.byd.vtdr2.MainActivity">
     <!--android:background="@mipbg_all_port_ver"-->
-    <com.byd.lighttextview.LightButton
+    <!--style="@style/ButtonStyle"-->
+    <!--android:drawableStart="@drawable/btn_tab_back_selector"-->
+
+    <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
-        style="@style/ButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_35"
         android:layout_marginTop="@dimen/dp_20"
+        android:background="@null"
+        android:fontFamily="plagiata"
         android:drawableStart="@drawable/btn_tab_back_selector"
+        android:gravity="center|end"
         android:paddingEnd="@dimen/dp_22"
         android:paddingStart="0dp"
         android:text="@string/back"
         android:textAllCaps="false"
         android:textSize="@dimen/sp_11"
-        android:gravity="center|end"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/rg_group"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -43,7 +47,7 @@
         app:layout_constraintLeft_toLeftOf="@id/btn_back"
         app:layout_constraintTop_toBottomOf="@id/btn_back">
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_realTimeVideo"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"
@@ -54,7 +58,7 @@
             android:text="@string/live_video"
             android:textSize="@dimen/sp_11" />
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_playbackList"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"
@@ -65,7 +69,7 @@
             android:text="@string/playback_list"
             android:textSize="@dimen/sp_11" />
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_setting"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"
@@ -89,15 +93,15 @@
     <!--android:visibility="gone"/>-->
 
     <!--<com.bydauto.myviewpager.view.NoScrollViewPager-->
-        <!--android:id="@+id/vp_main"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_marginEnd="@dimen/dp_100"-->
-        <!--android:layout_marginStart="@dimen/dp_30"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintLeft_toRightOf="@id/btn_back"-->
-        <!--app:layout_constraintTop_toTopOf="@id/btn_back">-->
+    <!--android:id="@+id/vp_main"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_marginEnd="@dimen/dp_100"-->
+    <!--android:layout_marginStart="@dimen/dp_30"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/btn_back"-->
+    <!--app:layout_constraintTop_toTopOf="@id/btn_back">-->
 
     <!--</com.bydauto.myviewpager.view.NoScrollViewPager>-->
 
@@ -113,7 +117,6 @@
         app:layout_constraintTop_toTopOf="@id/btn_back">
 
     </FrameLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>

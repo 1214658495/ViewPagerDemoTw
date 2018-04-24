@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -51,43 +50,21 @@ import butterknife.Unbinder;
 public class FragmentRTVideo extends Fragment {
     private static final String TAG = "FragmentRTVideo";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
-    @BindView(R.id.btn_rt_capture_photo)
-    ImageButton btnRtCapturePhoto;
-    @BindView(R.id.iv_rt_lock_video)
-    ImageButton ivRtLockVideo;
-//    @BindView(R.id.sv_recordVideo)
-//    SurfaceView svRecordVideo;
-
+    public  static ImageButton btnRtCapturePhoto;
+    public static ImageButton ivRtLockVideo;
+    private static  ImageView ivRtRecordVideo;
+    private static CheckBox ivRtRecordVoice;
     Unbinder unbinder;
-    //    @BindView(R.id.sv_recordVideo)
-//    SurfaceView svRecordVideo;
-//    @BindView(R.id.iv_icRecord)
-//    ImageView ivIcRecord;
-
-    //    @BindView(R.id.tv_timeOfSv)
-//    TextView tvTimeOfSv;
     private ProgressBar loadingView;
-//    @BindView(R.id.fl_shotView)
-//    FrameLayout flShotView;
-
     private static TextClock textClock;
     private static TextView tvCheckSdCard;
-
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
-    //    private String url = "rtsp://192.168.42.1/tmp/SD0/EVENT/2017-11-28-19-09-56.MP4" ;
-//    private SurfaceHolder surfaceHolder;
-//    private IjkMediaPlayer player;
     private AVOptions mAVOptions;
     private  PLMediaPlayer mMediaPlayer;
-
     private IFragmentListener mListener;
-    private static  ImageView ivRtRecordVideo;
-    private CheckBox ivRtRecordVoice;
     private SurfaceView svRecordVideo;
-    //    private TextView tvTimeOfSv;
     private static ImageView ivIcRecord;
     private FrameLayout flShotView;
-
     private RemoteCam mRemoteCam;
     private static boolean isRecord;
     private static boolean isMicOn;
@@ -96,7 +73,7 @@ public class FragmentRTVideo extends Fragment {
     private int seconds;
     private static final int MINI_CLICK_DELAY = 2000;
     private static long lastClickTime = 0;
-    private static long lastClickTime2 = 0;
+    public static long lastClickTime2 = 0;
     private AddSingleButtonDialog addSingleButtonDialog;
     private FragmentTransaction fragmentTransaction;
 
@@ -111,16 +88,12 @@ public class FragmentRTVideo extends Fragment {
         Log.e(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        btnRtCapturePhoto = view.findViewById(R.id.btn_rt_capture_photo);
+        ivRtLockVideo =view.findViewById(R.id.iv_rt_lock_video);
         ivRtRecordVideo = view.findViewById(R.id.iv_rt_record_video);
         ivRtRecordVoice = view.findViewById(R.id.iv_rt_record_voice);
         svRecordVideo = view.findViewById(R.id.sv_recordVideo);
-//        tvTimeOfSv = view.findViewById(R.id.tv_timeOfSv);
-//        tvTimeOfSv.setVisibility(View.VISIBLE);//test
-//        tvTimeOfSv.setText("xiaobo");
         ivIcRecord = view.findViewById(R.id.iv_icRecord);
-//        ivIcRecord.setVisibility(View.VISIBLE);//test
-//        chronometer = view.findViewById(R.id.time_count);
         textClock = view.findViewById(R.id.tc_count);
         tvCheckSdCard = view.findViewById(R.id.tv_checkSdCord);
         flShotView = view.findViewById(R.id.fl_shotView);
@@ -599,4 +572,33 @@ public class FragmentRTVideo extends Fragment {
 
     public void updateRecordTime(String time) {
     }
+
+    public void setImagerAple(boolean temp)
+    {
+        if (temp) {
+            ivRtRecordVideo.setAlpha((float) 0.4);
+            ivRtRecordVoice.setAlpha((float) 0.4);
+            btnRtCapturePhoto.setAlpha((float) 0.4);
+            ivRtLockVideo.setAlpha((float) 0.4);
+
+            ivRtRecordVoice.setEnabled(false);
+            btnRtCapturePhoto.setEnabled(false);
+            ivRtLockVideo.setEnabled(false);
+            ivRtRecordVideo.setEnabled(false);
+
+        }else
+        {
+            ivRtRecordVideo.setAlpha((float) 1.0);
+            ivRtRecordVoice.setAlpha((float) 1.0);
+            btnRtCapturePhoto.setAlpha((float) 1.0);
+            ivRtLockVideo.setAlpha((float) 1.0);
+            ivRtRecordVoice.setEnabled(true);
+            btnRtCapturePhoto.setEnabled(true);
+            ivRtLockVideo.setEnabled(true);
+            ivRtRecordVideo.setEnabled(true);
+
+        }
+
+    }
+
 }

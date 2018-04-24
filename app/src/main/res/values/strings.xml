@@ -29,7 +29,7 @@
     <string name="app_version">APP版本</string>
     <string name="Pictures_success">拍照成功</string>
     <string name="Pictures_fail">拍照失败</string>
-    <string name="LockVideo_success">锁定视频成功</string>
+    <string name="LockVideo_success">开始锁定</string>
     <string name="LockVideo_fail">锁定视频失败</string>
     <string name="openVideo_fail">开启录像失败</string>
     <string name="closeVideo_fail">关闭录像失败</string>
@@ -72,4 +72,5 @@
     <string name="check_version">检查新版本</string>
     <string name="version_newest">当前已是最新版本</string>
     <string name="memory_card_formating">存储卡格式化中</string>
+    <string name="delete_fail">删除失败</string>
 </resources>

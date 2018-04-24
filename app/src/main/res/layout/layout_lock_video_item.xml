@@ -54,13 +54,13 @@
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
         app:layout_constraintVertical_bias="0.4" />
 
-    <com.byd.lighttextview.LightCheckBox
+    <CheckBox
         android:id="@+id/cb_cbx"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="26dp"
-        android:button="@drawable/btn_edit_selected_item_selector"
+        android:layout_marginEnd="26dp"
+        android:background="@drawable/btn_edit_selected_item_selector"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"

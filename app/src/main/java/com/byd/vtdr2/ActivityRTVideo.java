@@ -489,6 +489,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
+                    mMediaPlayer.seekTo(CurrentTime * 1000);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:

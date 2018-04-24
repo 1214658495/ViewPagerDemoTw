@@ -9,8 +9,7 @@
         android:id="@+id/rg_groupDetail"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_30"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="@dimen/dp_24"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="visible"
@@ -18,33 +17,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_recordvideo"
             style="@style/RadioButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:drawableStart="@drawable/btn_tab_recordvideo_selector"
             android:text="@string/record_video"
             android:textSize="@dimen/sp_10" />
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_lockvideo"
             style="@style/RadioButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:drawableStart="@drawable/btn_tab_lockvideo_selector"
             android:text="@string/lock_video"
             android:textSize="@dimen/sp_10" />
 
-        <com.byd.lighttextview.LightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_capturephoto"
             style="@style/RadioButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:drawableStart="@drawable/btn_tab_images_selector"
             android:text="@string/photo"
             android:textSize="@dimen/sp_10" />
     </RadioGroup>
@@ -77,7 +76,7 @@
         app:layout_constraintStart_toStartOf="@id/rg_groupDetail"
         app:layout_constraintTop_toTopOf="@id/rg_groupDetail">
 
-        <com.byd.lighttextview.LightTextView
+        <com.byd.vtdr2.widget.ThemeTextView
             android:id="@+id/tv_editNav"
             style="@style/TextStyle"
             android:layout_width="0dp"

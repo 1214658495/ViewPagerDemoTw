@@ -3,6 +3,9 @@ package com.byd.vtdr2.widget;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+/**
+ * @author byd_tw
+ */
 public class ThemeManager {
 	private static ThemeManager sInstance;
 	private ArrayList<WeakReference<ITheme>> mThemes;

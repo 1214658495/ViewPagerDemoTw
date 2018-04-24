@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -41,9 +42,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.byd.lighttextview.LightButton;
-import com.byd.lighttextview.LightCheckBox;
-import com.byd.lighttextview.LightRadioButton;
-import com.byd.lighttextview.LightTextView;
 import com.byd.vtdr2.MainActivity;
 import com.byd.vtdr2.Model;
 import com.byd.vtdr2.R;
@@ -55,6 +53,8 @@ import com.byd.vtdr2.utils.DownloadUtil;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
+import com.byd.vtdr2.widget.ThemeLightRadioButton;
+import com.byd.vtdr2.widget.ThemeTextView;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import org.json.JSONArray;
@@ -100,11 +100,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     Unbinder unbinder;
     @BindView(R.id.rb_recordvideo)
-    LightRadioButton rbRecordvideo;
+    ThemeLightRadioButton rbRecordvideo;
     @BindView(R.id.rb_lockvideo)
-    LightRadioButton rbLockvideo;
+    ThemeLightRadioButton rbLockvideo;
     @BindView(R.id.rb_capturephoto)
-    LightRadioButton rbCapturephoto;
+    ThemeLightRadioButton rbCapturephoto;
     @BindView(R.id.gv_dataList)
     GridView mGridViewList;
 
@@ -117,11 +117,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.btn_delete)
     LightButton btnDelete;
     @BindView(R.id.btn_selectall)
-    LightCheckBox btnSelectall;
+    CheckBox btnSelectall;
     @BindView(R.id.ll_editItemBar)
     LinearLayout llEditItemBar;
     @BindView(R.id.tv_editNav)
-    LightTextView tvEditNav;
+    ThemeTextView tvEditNav;
     //    @BindView(R.id.rl_menu_edit)
 //    RelativeLayout rlMenuEdit;
     @BindView(R.id.iv_line_blowMenuEdit)
@@ -960,7 +960,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             nameView.setText(model.getName());
 
 
-            LightCheckBox cbMuliChoose = view.findViewById(R.id.cb_cbx);
+            CheckBox cbMuliChoose = view.findViewById(R.id.cb_cbx);
             if (isMultiChoose) {
                 cbMuliChoose.setVisibility(View.VISIBLE);
                 cbMuliChoose.setChecked(getIsSelectedAt(position));
