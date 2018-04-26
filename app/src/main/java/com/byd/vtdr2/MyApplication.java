@@ -21,7 +21,7 @@ import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATI
  * Created by ximsfei on 2017/1/10.
  */
 
-public class AppSkinApplication extends Application {
+public class MyApplication extends Application {
     private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
 

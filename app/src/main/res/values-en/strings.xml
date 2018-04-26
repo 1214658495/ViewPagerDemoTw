@@ -7,7 +7,7 @@
 
     <string name="record_video">Record Video</string>
     <string name="lock_video">Lock Video</string>
-    <string name="photo">Capture Photo</string>
+    <string name="photo">Photo</string>
 
     <string name="system">System</string>
     <string name="memoryCard_format">Memory Card Format</string>
@@ -16,7 +16,7 @@
     <string name="share">Share</string>
     <string name="export">Export</string>
     <string name="delete">Delete</string>
-    <string name="selectAll">SelectAll</string>
+    <string name="selectAll">All</string>
 
     <string name="restore_defaults">Restore Defaults</string>
     <string name="version">Version</string>

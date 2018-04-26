@@ -29,6 +29,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_8"
         android:src="@mipmap/line_ver_toback"
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
         app:layout_constraintLeft_toRightOf="@id/btn_back"
@@ -85,7 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_22"
-        android:src="@mipmap/line_hor_tomenu"
+        android:src="@mipmap/line_port_bottommenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_back" />

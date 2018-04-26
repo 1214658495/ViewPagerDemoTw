@@ -41,7 +41,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.MainActivity;
 import com.byd.vtdr2.MessageEvent;
 import com.byd.vtdr2.Model;
@@ -55,6 +54,8 @@ import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
 import com.byd.vtdr2.widget.Theme;
+import com.byd.vtdr2.widget.ThemeCheckBox;
+import com.byd.vtdr2.widget.ThemeLightButton;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
 import com.byd.vtdr2.widget.ThemeManager;
 import com.byd.vtdr2.widget.ThemeTextView;
@@ -115,15 +116,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     GridView mGridViewList;
 
     @BindView(R.id.btn_cancel)
-    LightButton btnCancel;
+    ThemeLightButton btnCancel;
     @BindView(R.id.btn_share)
-    LightButton btnShare;
+    ThemeLightButton btnShare;
     @BindView(R.id.btn_export)
-    LightButton btnExport;
+    ThemeLightButton btnExport;
     @BindView(R.id.btn_delete)
-    LightButton btnDelete;
+    ThemeLightButton btnDelete;
     @BindView(R.id.btn_selectall)
-    CheckBox btnSelectall;
+    ThemeCheckBox btnSelectall;
     @BindView(R.id.ll_editItemBar)
     LinearLayout llEditItemBar;
     @BindView(R.id.tv_editNav)
@@ -243,6 +244,17 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     null, null, null);
             rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_images_selector),
                     null, null, null);
+            btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+                    null, null, null);
+            btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+                    null, null, null);
+            btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+                    null, null, null);
+            btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+                    null, null, null);
+            btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+                    null, null, null);
+
 
         } else if (theme == Theme.SPORT) {
             rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_recordvideo_selector_sport),
@@ -250,6 +262,16 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_lockvideo_selector_sport),
                     null, null, null);
             rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_images_selector_sport),
+                    null, null, null);
+            btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_sport),
+                    null, null, null);
+            btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_sport),
+                    null, null, null);
+            btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_sport),
+                    null, null, null);
+            btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_sport),
+                    null, null, null);
+            btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_sport),
                     null, null, null);
 
         }
@@ -1024,7 +1046,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 // TODO: 2017/11/29  如下怎么实现还是没理解
                 if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                     if (getIsSelectedAt(position)) {
-                        view.setBackgroundColor(Color.parseColor("#1CC9FE"));
+                        int mode = ThemeManager.getInstance().getTheme();
+                        if (mode == Theme.NORMAL) {
+                            view.setBackgroundColor(Color.parseColor("#1CC9FE"));
+                        } else if (mode == Theme.SPORT) {
+                            view.setBackgroundColor(Color.parseColor("#fb8218"));
+                        }
                     } else {
                         view.setBackgroundColor(Color.TRANSPARENT);
                     }

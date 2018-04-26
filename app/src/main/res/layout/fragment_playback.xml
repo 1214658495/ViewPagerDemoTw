@@ -84,7 +84,7 @@
             android:text="@string/record_video"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_cancel"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -97,7 +97,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_share"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -109,7 +109,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_export"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -121,7 +121,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_delete"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -133,7 +133,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
-        <com.byd.lighttextview.LightCheckBox
+        <com.byd.vtdr2.widget.ThemeCheckBox
             android:id="@+id/btn_selectall"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -141,9 +141,9 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_selectall_selector"
             android:text="@string/selectAll"
-            android:gravity="start|center"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
+        <!--android:gravity="start|center"-->
 
     </LinearLayout>
 
