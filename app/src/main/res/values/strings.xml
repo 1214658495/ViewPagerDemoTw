@@ -78,4 +78,5 @@
     <string name="open_voice">打开录音</string>
     <string name="close_voice">关闭录音</string>
     <string name="voice_settingfail">录音开关失败</string>
+    <string name="del_image_sure">确认删除？</string>
 </resources>

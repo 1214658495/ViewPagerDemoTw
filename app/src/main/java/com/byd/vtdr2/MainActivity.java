@@ -1351,7 +1351,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }, 0, 3, TimeUnit.SECONDS);
     }
 
-    private void updateCardData() {
+    public void updateCardData() {
 
         if (customDialog != null && !isFinishing()) {
             customDialog.dismiss();

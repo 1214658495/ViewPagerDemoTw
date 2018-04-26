@@ -578,7 +578,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                intent.putExtra("position", i);
 //                startActivity(intent);
 
-                fragmentPhotoPreview = new FragmentPhotoPreview();
+                fragmentPhotoPreview =  FragmentPhotoPreview.newInstance();
+                fragmentPhotoPreview.setRemoteCam(mRemoteCam);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mPhotoList", mPlayLists);
                 bundle.putInt("position", i);

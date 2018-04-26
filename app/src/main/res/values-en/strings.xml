@@ -73,5 +73,6 @@
     <string name="open_voice">open voice</string>
     <string name="close_voice">close voice</string>
     <string name="voice_settingfail">voice setting fail</string>
+    <string name="del_image_sure">Are You Sure Del?</string>
 
 </resources>

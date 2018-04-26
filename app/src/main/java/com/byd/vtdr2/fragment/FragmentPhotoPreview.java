@@ -1,9 +1,12 @@
 package com.byd.vtdr2.fragment;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -16,17 +19,20 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.byd.vtdr2.ActivityImagesViewPager;
 import com.byd.vtdr2.MainActivity;
 import com.byd.vtdr2.Model;
 import com.byd.vtdr2.R;
+import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
-import com.byd.vtdr2.view.MyDialog;
+import com.byd.vtdr2.view.CustomDialog;
 import com.byd.vtdr2.view.MyViewPager;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -46,6 +52,7 @@ public class FragmentPhotoPreview extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static CustomDialog customDialog = null;
 
     // TODO: Rename and change types of parameters
     private ArrayList<Model> mParam1;
@@ -69,16 +76,23 @@ public class FragmentPhotoPreview extends Fragment {
     ImageButton btnZoom;
     @BindView(R.id.ll_bar_editPhoto)
     LinearLayout llBarEditPhoto;
-
+    private static RemoteCam mRemoteCam;
     private MyImagesPagerAdapter myImagesPagerAdapter;
-
     private ArrayList<Model> photoLists;
-
-    private int currentItem;
-
+    private static int currentItem;
     private static final int FADE_OUT = 1;
     private IFragmentListener mListener;
     public boolean reload = false;
+    public boolean customDialogOR = false;
+
+    public static FragmentPhotoPreview newInstance() {
+        FragmentPhotoPreview fragmentPhotoPreview = new FragmentPhotoPreview();
+        return fragmentPhotoPreview;
+    }
+
+    public void setRemoteCam(RemoteCam mRemoteCam) {
+        this.mRemoteCam = mRemoteCam;
+    }
 
     public FragmentPhotoPreview() {
         // Required empty public constructor
@@ -88,7 +102,7 @@ public class FragmentPhotoPreview extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
+        setRetainInstance(true);
         Bundle bundle = getArguments();//从activity传过来的Bundle
         if (bundle != null) {
             photoLists = (ArrayList<Model>) bundle.getSerializable("mPhotoList");
@@ -114,6 +128,7 @@ public class FragmentPhotoPreview extends Fragment {
                 photoLists.add(temp);
             }
             currentItem = (savedInstanceState.getInt("position"));
+            customDialogOR = savedInstanceState.getBoolean("customDialogOR");
         }
         if (photoLists.size() != 0) {
             initData();
@@ -175,10 +190,14 @@ public class FragmentPhotoPreview extends Fragment {
             }
         });
 
+        if (customDialogOR) {
+            Dialoagview();
+        }
 
         Message msg = mHandler.obtainMessage(FADE_OUT);
         mHandler.removeMessages(FADE_OUT);
         mHandler.sendMessageDelayed(msg, 3000);
+
     }
 
 
@@ -189,27 +208,14 @@ public class FragmentPhotoPreview extends Fragment {
             case R.id.btn_back_to_gridview:
                 // TODO: 2017/11/29 删除完成了，需要去更新gridview
                 reload = false;
+                ((MainActivity) getActivity()).updateCardData();
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.btn_share_preview:
+                countsDownload();
                 break;
             case R.id.btn_delete_preview:
-                MyDialog myDialog = MyDialog.newInstance(0, "确认删除？");
-                myDialog.show(getFragmentManager(), "delete");
-                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
-                    @Override
-                    public void okButtonClick() {
-                        // TODO: 2017/11/29  删除照片
-//                        myImagesPagerAdapter.destroyItem(vpViewPager,currentItem,vpViewPager.);
-//                        vpViewPager.removeViewAt(vpViewPager.getCurrentItem());
-                        photoLists.remove(currentItem);
-                        myImagesPagerAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void cancelButtonClick() {
-                    }
-                });
+                Dialoagview();
                 break;
             case R.id.btn_zoom:
                 Intent intent = new Intent(view.getContext(), ActivityImagesViewPager.class);
@@ -342,6 +348,97 @@ public class FragmentPhotoPreview extends Fragment {
         outState.putStringArrayList("time", time);
         outState.putIntegerArrayList("size", size);
         outState.putInt("position", currentItem);
+        outState.putBoolean("customDialogOR", customDialogOR);
+
         super.onSaveInstanceState(outState);
+    }
+
+    public void Dialoagview()
+    {
+
+        try {
+            if ((this.customDialog != null) && this.customDialog.isShowing()) {
+                this.customDialog.dismiss();
+            }
+        } catch (final IllegalArgumentException e) {
+        } catch (final Exception e) {
+        } finally {
+            this.customDialog = null;
+        }
+        customDialogOR = true;
+        CustomDialog.Builder builder = new CustomDialog.Builder(getActivity());
+        customDialog = builder.cancelTouchOut(false).view(R.layout
+                .fragment_doublebutton_dialog).style(R.style.CustomDialog).setTitle
+                (getString(R.string.del_image_sure)).addViewOnclick(R.id.btn_dialogSure, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String fileHead;
+                fileHead = "/tmp/SD0/PHOTO/";
+                customDialogOR = false;
+
+                mRemoteCam.deleteFile((String) (fileHead + photoLists.get(currentItem)
+                        .getName()));
+                photoLists.remove(currentItem);
+
+                if (currentItem == 0 && photoLists.size() == 0) {
+                    customDialog.dismiss();
+                    reload = false;
+                    ((MainActivity) getActivity()).updateCardData();
+                    getActivity().getSupportFragmentManager().popBackStack();
+
+                } else {
+                    if (currentItem == photoLists.size()) {
+                        currentItem--;
+                        tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
+                        tvTitlePhoto.setText(photoLists.get(currentItem).getName());
+                        myImagesPagerAdapter.notifyDataSetChanged();
+                        // ((MainActivity)getActivity()).updateCardData();
+
+                        customDialog.dismiss();
+                    } else {
+                        tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
+                        tvTitlePhoto.setText(photoLists.get(currentItem).getName());
+                        myImagesPagerAdapter.notifyDataSetChanged();
+                        customDialog.dismiss();
+                    }
+
+                }
+            }
+        }).addViewOnclick(R.id.btn_dialogCancel, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customDialogOR = false;
+                customDialog.dismiss();
+            }
+        }).build();
+        customDialog.show();
+    }
+
+
+    private void countsDownload() {
+        String mGetFileName;
+        mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + photoLists.get
+                (currentItem).getName();
+        String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪" + mGetFileName
+                .substring(mGetFileName.lastIndexOf('/'));
+        File file = new File(fileName);
+        if (!file.exists()) {
+            DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService
+                    (Context.DOWNLOAD_SERVICE);
+            //创建下载任务,downloadUrl就是下载链接
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mGetFileName));
+            //指定下载路径和下载文件名
+            request.setDestinationInExternalPublicDir("/行车记录仪/", photoLists.get(currentItem)
+                    .getName());
+            //不显示下载界面
+            request.setVisibleInDownloadsUi(true);
+
+            downloadManager.enqueue(request);
+
+            Toast.makeText(getActivity(), R.string.Download_completed, Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(getActivity(), R.string.File_downloaded, Toast.LENGTH_SHORT).show();
+        }
     }
 }
