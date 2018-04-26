@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -56,11 +57,15 @@ public class CustomDialog extends Dialog {
         DisplayMetrics dm = new DisplayMetrics();
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.25));
+//            getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.25));
+            getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.2));
         } else {
-            getWindow().setLayout((int) (dm.widthPixels * 0.6), (int) (dm.heightPixels * 0.5));
+//            getWindow().setLayout((int) (dm.widthPixels * 0.6), (int) (dm.heightPixels * 0.5));
+            getWindow().setLayout((int) (dm.widthPixels * 0.5), (int) (dm.heightPixels * 0.4));
         }
-
+        WindowManager.LayoutParams wl = getWindow().getAttributes();
+        wl.y = -50;
+        getWindow().setAttributes(wl);
         tvDialogContent.setText(title);
 //        if (ok) {
 //        }

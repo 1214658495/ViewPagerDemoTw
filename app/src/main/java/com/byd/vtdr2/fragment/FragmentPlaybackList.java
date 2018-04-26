@@ -43,6 +43,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.MainActivity;
+import com.byd.vtdr2.MessageEvent;
 import com.byd.vtdr2.Model;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
@@ -53,10 +54,15 @@ import com.byd.vtdr2.utils.DownloadUtil;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
+import com.byd.vtdr2.widget.Theme;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
+import com.byd.vtdr2.widget.ThemeManager;
 import com.byd.vtdr2.widget.ThemeTextView;
 import com.jakewharton.disklrucache.DiskLruCache;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -192,17 +198,32 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate: ");
-        // retain this fragment
         setRetainInstance(true);
-//        lastPosition = -1;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
+            container, @Nullable Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        int mode = ThemeManager.getInstance().getTheme();
+        if (mode == Theme.NORMAL) {
+//            //经济模式
+            loadSkinTheme(Theme.NORMAL);
+        } else if (mode == Theme.SPORT) {
+//            //运动模式
+            loadSkinTheme(Theme.SPORT);
+        }
+
         initData();
         if (resush == null) {
             rueshcontrol = true;
@@ -212,6 +233,38 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
         return view;
 
+    }
+
+    private void loadSkinTheme(int theme) {
+        if (theme == Theme.NORMAL) {
+            rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_recordvideo_selector),
+                    null, null, null);
+            rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_lockvideo_selector),
+                    null, null, null);
+            rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_images_selector),
+                    null, null, null);
+
+        } else if (theme == Theme.SPORT) {
+            rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_recordvideo_selector_sport),
+                    null, null, null);
+            rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_lockvideo_selector_sport),
+                    null, null, null);
+            rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_images_selector_sport),
+                    null, null, null);
+
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        int mode = ThemeManager.getInstance().getTheme();
+        if (mode == Theme.NORMAL) {
+//            //经济模式
+            loadSkinTheme(Theme.NORMAL);
+        } else if (mode == Theme.SPORT) {
+//            //运动模式
+            loadSkinTheme(Theme.SPORT);
+        }
     }
 
     private void initData() {
@@ -396,7 +449,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
      * @param padding     单元格间距
      * @return
      */
-    private ColumnInfo calculateColumnWidthAndCountInRow(int screenWidth, int width, int padding) {
+    private ColumnInfo calculateColumnWidthAndCountInRow(int screenWidth, int width,
+                                                         int padding) {
         ColumnInfo colInfo = new ColumnInfo();
         int colCount = 0;
         //判断屏幕是否刚好能容纳下整数个单元格，若不能，则将多出的宽度保存到space中
@@ -432,6 +486,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onStop() {
         Log.e(TAG, "onStop: ");
         super.onStop();
+        EventBus.getDefault().unregister(this);
         cancelMultiChoose();
     }
 
@@ -634,14 +689,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
                                 @Override
                                 public void onDownloading(final int progress) {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (progressDialogFragment != null) {
-                                                progressDialogFragment.setProgressText(progress);
-                                            }
-                                        }
-                                    });
+//                                    getActivity().runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            if (progressDialogFragment != null) {
+//                                                progressDialogFragment.setProgressText(progress);
+//                                            }
+//                                        }
+//                                    });
                                 }
 
                                 @Override
@@ -651,23 +706,23 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
                                 @Override
                                 public void onDownloadStart() {
-                                    synchronized (this) {
-                                        if (progressDialogFragment == null) {
-                                            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
-                                            progressDialogFragment.show(getActivity().getFragmentManager(), "text");
-                                            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
-                                                @Override
-                                                public void okButtonClick() {
-
-                                                }
-
-                                                @Override
-                                                public void cancelButtonClick() {
-                                                    downloadUtil.cancelDownload();
-                                                }
-                                            });
-                                        }
-                                    }
+//                                    synchronized (this) {
+//                                        if (progressDialogFragment == null) {
+//                                            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
+//                                            progressDialogFragment.show(getActivity().getFragmentManager(), "text");
+//                                            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
+//                                                @Override
+//                                                public void okButtonClick() {
+//
+//                                                }
+//
+//                                                @Override
+//                                                public void cancelButtonClick() {
+//                                                    downloadUtil.cancelDownload();
+//                                                }
+//                                            });
+//                                        }
+//                                    }
                                 }
                             });
                         } else {
@@ -866,7 +921,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         /**
          * 记录所有正在下载或等待下载的任务。
          */
-      /*  private Set<BitmapWorkerTask> taskCollection;*/
+        /*  private Set<BitmapWorkerTask> taskCollection;*/
         private Set<YuvBitmapWorkerTaskCashe> taskCollection1;
 
         /**
@@ -1458,9 +1513,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
          *
          * @author guolin
          */
-       /* class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+        /* class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
 
-            *//**
+         *//**
          * 图片的URL地址
          *//*
             private String imageUrl;
@@ -1584,12 +1639,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
 
     /*
-* 定时刷新列表，更新数据
-* 解决debug，长时间停留不更新，定时十分钟
-*
-* rueshcontrol 控制线程停止
-*
-* */
+     * 定时刷新列表，更新数据
+     * 解决debug，长时间停留不更新，定时十分钟
+     *
+     * rueshcontrol 控制线程停止
+     *
+     * */
     private Handler handlerUpdate = new Handler();
     public boolean rueshcontrol = false;
 

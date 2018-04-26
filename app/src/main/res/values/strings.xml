@@ -42,21 +42,23 @@
     <string name="reboot_drivingReorder">请重启记录仪</string>
     <string name="format_ok">存储卡格式化已完成</string>
     <string name="format_fail">存储卡格式化失败</string>
-    <string name="downloading">正在下载...</string>
-    <string name="Download_completed">下载完成！</string>
-    <string name="Download_fail">下载失败</string>
-    <string name="File_downloaded">文件已下载</string>
+    <string name="downloading">正在导出</string>
+    <string name="Download_completed">导出完成！</string>
+    <string name="Download_fail">导出失败</string>
+    <string name="File_downloaded">文件已导出</string>
     <string name="open_permissions">请打开app的存储权限</string>
     <string name="share_to">分享到</string>
     <string name="video_cannot_share">视频暂时无法分享</string>
-    <string name="select_to_download">请选择要下载的文件</string>
+    <string name="select_to_download">请选择要导出的文件</string>
     <string name="confirm_delete">确定删除？</string>
     <string name="Reconnecting">正在重连...</string>
     <string name="restore_settings">是否恢复默认设置？</string>
     <string name="confirm_format_memory_card">是否格式化存储卡？</string>
     <string name="connecting">正在重连...</string>
     <string name="time_out">连接超时，记录仪无应答</string>
-    <string name="download_num">请选择少于5个文件下载</string>
+    <string name="download_num">请选择少于12个文件导出</string>
+    <string name="download_num_tv">请选择少于6个文件导出</string>
+    <string name="download_free_space">下载存储空间小于1GB</string>
     <string name="card_readying">存储卡准备中</string>
     <string name="image_max">图片已存储满</string>
     <string name="card_issue">存储卡异常</string>
@@ -73,4 +75,7 @@
     <string name="version_newest">当前已是最新版本</string>
     <string name="memory_card_formating">存储卡格式化中</string>
     <string name="delete_fail">删除失败</string>
+    <string name="open_voice">打开录音</string>
+    <string name="close_voice">关闭录音</string>
+    <string name="voice_settingfail">录音开关失败</string>
 </resources>

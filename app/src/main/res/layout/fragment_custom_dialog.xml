@@ -24,18 +24,17 @@
         app:layout_constraintBottom_toTopOf="@id/ll_line_choose"
         android:src="@mipmap/line_below_content" />
 
+    <!--app:layout_constraintVertical_bias="0.85"-->
     <LinearLayout
         android:id="@+id/ll_line_choose"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.85"
         android:orientation="horizontal">
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_dialogSure"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -52,7 +51,7 @@
             android:src="@mipmap/line_between_choose"
             android:visibility="gone"/>
 
-        <com.byd.lighttextview.LightButton
+        <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_dialogCancel"
             style="@style/ButtonStyle"
             android:layout_width="0dp"

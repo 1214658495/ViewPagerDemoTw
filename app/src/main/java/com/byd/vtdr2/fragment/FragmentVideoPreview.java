@@ -643,9 +643,6 @@ public class FragmentVideoPreview extends Fragment {
                     }
                     try {
                         System.out.println(index);
-                        Thread.sleep(1000);
-                        ++index;
-                        ++CurrentTime;
                         Log.i(TAG, "time count = " + CurrentTime);
                         if (CurrentTime > durationtime) {
                             CurrentTime = 0;
@@ -656,7 +653,9 @@ public class FragmentVideoPreview extends Fragment {
                             mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
                         }
-
+                        Thread.sleep(1010);
+                        ++index;
+                        ++CurrentTime;
                     } catch (InterruptedException e) {
                         //捕获到异常之后，执行break跳出循环
                         break;

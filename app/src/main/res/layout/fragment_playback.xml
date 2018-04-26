@@ -65,15 +65,14 @@
         android:id="@+id/ll_editItemBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
         android:layout_centerVertical="true"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="invisible"
-
+        android:layout_marginStart="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="@id/rg_groupDetail"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/rg_groupDetail"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rg_groupDetail">
 
         <com.byd.vtdr2.widget.ThemeTextView

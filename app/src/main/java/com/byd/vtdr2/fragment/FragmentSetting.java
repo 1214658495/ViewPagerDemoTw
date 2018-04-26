@@ -18,6 +18,7 @@ import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
+import com.byd.vtdr2.widget.ThemeLightButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,12 +36,12 @@ public class FragmentSetting extends Fragment {
     ImageView ivBgSettingtext;
 
     @BindView(R.id.btn_memoryCard_format)
-    LightButton btnMemoryCardFormat;
+    ThemeLightButton btnMemoryCardFormat;
 
     @BindView(R.id.btn_firmwareVersion)
     LightButton btnFirmwareVersion;
     @BindView(R.id.btn_appVersion)
-    LightButton btnAppVersion;
+    ThemeLightButton btnAppVersion;
     @BindView(R.id.btn_default_setting)
     LightButton btnDefaultSetting;
     Unbinder unbinder;

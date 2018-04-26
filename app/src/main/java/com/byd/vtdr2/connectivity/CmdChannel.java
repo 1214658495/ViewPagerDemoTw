@@ -631,7 +631,9 @@ public abstract class CmdChannel {
                         }
                         break;
                     case AMBA_SET_SETTING:
-                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SET_SETTING, parser);
+                        if (rval != 0) {
+                            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SET_SETTING, parser);
+                        }
                         break;
                     case AMBA_GET_OPTIONS:
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_OPTIONS, parser);

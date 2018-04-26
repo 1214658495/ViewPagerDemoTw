@@ -52,6 +52,8 @@
     <string name="confirm_format_memory_card">Confirm format memory card?</string>
     <string name="time_out">Time out connected</string>
     <string name="download_num">Download num can\'t beyond five</string>
+    <string name="download_num_tv">Download num can\'t beyond five</string>
+    <string name="download_free_space">Download space less than 1GB</string>
     <string name="card_readying">Card readying</string>
     <string name="image_max">image max to 300</string>
     <string name="card_issue">Card issue</string>
@@ -68,5 +70,8 @@
     <string name="version_newest">version is newest</string>
     <string name="memory_card_formating">memory card formating</string>
     <string name="delete_fail">delete fail</string>
+    <string name="open_voice">open voice</string>
+    <string name="close_voice">close voice</string>
+    <string name="voice_settingfail">voice setting fail</string>
 
 </resources>

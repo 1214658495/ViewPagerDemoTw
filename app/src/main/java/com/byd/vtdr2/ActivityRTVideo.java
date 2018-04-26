@@ -314,9 +314,6 @@ public class ActivityRTVideo extends AppCompatActivity {
                     }
                     try {
                         System.out.println(index);
-                        Thread.sleep(1000);
-                        ++index;
-                        ++CurrentTime;
                         Log.i(TAG, "time count = " + CurrentTime  );
                         if (CurrentTime>durationtime)
                         {
@@ -328,6 +325,9 @@ public class ActivityRTVideo extends AppCompatActivity {
                             mHandler.sendEmptyMessage(SHOW_PROGRESS1);
 
                         }
+                        Thread.sleep(1010);
+                        ++index;
+                        ++CurrentTime;
 
                     } catch (InterruptedException e) {
                         //捕获到异常之后，执行break跳出循环

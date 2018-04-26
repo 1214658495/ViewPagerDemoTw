@@ -11,7 +11,7 @@
         android:id="@+id/iv_rt_record_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/btn_record_video_off"
+        android:src="@mipmap/btn_record_video_on"
         app:layout_constraintBottom_toTopOf="@id/btn_rt_capture_photo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/sv_recordVideo"
@@ -41,17 +41,18 @@
         app:layout_constraintBottom_toTopOf="@id/iv_rt_record_voice"
         app:layout_constraintVertical_weight="1" />
 
-    <CheckBox
+    <ImageView
         android:id="@+id/iv_rt_record_voice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_rt_record_voice_selector"
-        android:button="@null"
+        android:src="@mipmap/btn_record_voice_on"
         app:layout_constraintLeft_toLeftOf="@id/iv_rt_lock_video"
         app:layout_constraintRight_toRightOf="@id/iv_rt_lock_video"
         app:layout_constraintTop_toBottomOf="@id/iv_rt_lock_video"
         app:layout_constraintBottom_toBottomOf="@id/sv_recordVideo"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintVertical_weight="1"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <SurfaceView
         android:id="@+id/sv_recordVideo"

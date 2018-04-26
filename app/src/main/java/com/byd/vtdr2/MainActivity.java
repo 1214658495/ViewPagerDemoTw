@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.os.StatFs;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -59,6 +60,9 @@ import com.byd.vtdr2.widget.ThemeLightButton;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
 import com.byd.vtdr2.widget.ThemeManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -75,7 +79,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import skin.support.SkinCompatManager;
 import skin.support.annotation.Skinable;
 
 import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_ECONOMY;
@@ -114,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private String appStateStr;
     private MyDialog myDialog;
     private ArrayList<Model> selectedLists;
+    private static ArrayList<Model> selectedListsA = new ArrayList<Model>();
+
     private static int selectedCounts;
     private int hadDelete;
     private int doingDownFileCounts = 0;
@@ -146,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private boolean isCardNoExist;
     public static int isSensormessage = 0;
     private boolean isNeedFormat;
+    private boolean isMicOn;
     private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
 
@@ -154,10 +160,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         public void onOperationModeChanged(int type) {
             // TODO Auto-generated method stub
             super.onOperationModeChanged(type);
-//            Log.d(TAG, "onOperationModeChanged:" + type);
             updateHandler.sendEmptyMessage(type);
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,39 +175,27 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         ButterKnife.bind(this);
 //        themeManager = ThemeManager.getInstance();
 //        themeManager.updateTheme(Theme.NORMAL);
-        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+
+//        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
         themeManager = ThemeManager.getInstance();
-        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
-//        初始化时检测模式
-        int mode =  mBYDAutoEnergyDevice .getOperationMode();
-        if(mode == ENERGY_OPERATION_ECONOMY ){
-            //经济模式
-            SkinCompatManager.getInstance().restoreDefaultTheme();
-            themeManager.updateTheme(Theme.NORMAL);
-            btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_back_selector),null,null);
-            rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),null,null);
-            rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),null,null);
-            rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_setting_selector),null,null);
-
-
-        }else if(mode == ENERGY_OPERATION_SPORT){
-            //运动模式
-            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
-            themeManager.updateTheme(Theme.SPORT);
-            btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_back_selector_sport),null,null);
-            rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport),null,null);
-            rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport),null,null);
-            rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport),null,null);
-
+        int mode = themeManager.getTheme();
+        if (mode == Theme.NORMAL) {
+//            //经济模式
+            showMainSkinTheme(Theme.NORMAL);
+        } else if (mode == Theme.SPORT) {
+//            //运动模式
+            showMainSkinTheme(Theme.SPORT);
         }
+//        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
+////        初始化时检测模式
+//        int mode =  mBYDAutoEnergyDevice .getOperationMode();
+//        if(mode == ENERGY_OPERATION_ECONOMY ){
+//            //经济模式
+//            showMainSkinTheme(Theme.NORMAL);
+//        }else if(mode == ENERGY_OPERATION_SPORT){
+//            //运动模式
+//            showMainSkinTheme(Theme.SPORT);
+//        }
 
         initConnect();
     }
@@ -214,6 +208,24 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION); //网络连接消息
 //        filter.addAction(EthernetManager.ETHERNET_STATE_CHANGED_ACTION); //以太网消息
         this.registerReceiver(receiver, filter);*/
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        int mode = ThemeManager.getInstance().getTheme();
+        if (mode == Theme.NORMAL) {
+//            //经济模式
+            showMainSkinTheme(Theme.NORMAL);
+        } else if (mode == Theme.SPORT) {
+//            //运动模式
+            showMainSkinTheme(Theme.SPORT);
+        }
     }
 
 
@@ -477,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -763,7 +776,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                             @Override
                                             public void run() {
                                                 //更新UI
-                                                showConfirmDialog("请重启应用！");
+                                                if (fragment == fragmentRTVideo) {
+                                                    showConfirmDialog("请重启应用！");
+                                                }
                                             }
                                         });
                                     } else {
@@ -833,7 +848,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                                     @Override
                                                     public void run() {
                                                         //更新UI
-                                                        showConfirmDialog("请重启应用！");
+                                                        if (fragment == fragmentRTVideo) {
+                                                            showConfirmDialog("请重启应用！");
+                                                        }
                                                     }
                                                 });
                                             } else {
@@ -845,7 +862,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                                 } else if (fragment == fragmentPlaybackList) {
                                                     fragment = fragmentPlaybackList;
                                                     getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
-                                                    fragmentPlaybackList.rgGroupDetail.check(R.id.rb_lockvideo);
+//                                                    fragmentPlaybackList.rgGroupDetail.check(R.id.rb_lockvideo);
 
                                                 }
                                             }
@@ -1013,7 +1030,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE:
-                boolean isMicOn = (boolean) param;
+                isMicOn = (boolean) param;
                 Log.e(TAG, "handleCmdChannelEvent: isMicOn = " + isMicOn);
                 // TODO: 2017/12/20
                 fragmentRTVideo.setMicState(isMicOn);
@@ -1131,6 +1148,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_QUERY_SESSION_HOLDER:
                 mRemoteCam.actionQuerySessionHolder();
                 break;
+            case IChannelListener.CMD_CHANNEL_EVENT_SET_SETTING:
+//                fragmentRTVideo.setMicState(isMicOn);
+                showToastTips(getString(R.string.voice_settingfail));
             default:
                 break;
 
@@ -1236,12 +1256,16 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IFragmentListener.ACTION_MIC_ON:
-                boolean isMicOn = (boolean) param;
+                isMicOn = (boolean) param;
                 if (isMicOn) {
                     mRemoteCam.startMic();
+                    showToastTips(getString(R.string.open_voice));
                 } else {
                     mRemoteCam.stopMic();
+                    showToastTips(getString(R.string.close_voice));
                 }
+                fragmentRTVideo.setMicState(isMicOn);
+                // TODO: 2018/4/25 后续收vil
                 break;
             case IFragmentListener.ACTION_RECORD_TIME:
                 // TODO: 2018/4/3
@@ -1284,9 +1308,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 if (param != null) {
 
                 } else {
-                    downloadFiles();
+                    countsDownload();
+                    downloadManager = (DownloadManager) getApplicationContext().getSystemService
+                            (Context.DOWNLOAD_SERVICE);
+                    ContentObserver mObserver;
+                    mObserver = new DownloadChangeObserver(null);
+                    getContentResolver().registerContentObserver(CONTENT_URI, true, mObserver);
+                    query = new DownloadManager.Query();
+
+                    new MyTheardDownLoad().start();
                 }
                 break;
+
             default:
                 break;
         }
@@ -1351,12 +1384,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
      *3.30 add
      * */
 // 查询下载进度，文件总大小多少，已经下载多少？
-    private static long[] Id;
     public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
     private int newsize = 0, totalsize = 0;
     private static int IDcount = 0;
     //获取下载管理器
     private DownloadManager downloadManager;
+    DownloadManager.Query query;
 
     class DownloadChangeObserver extends ContentObserver {
 
@@ -1381,12 +1414,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     }
 
     private void queryDownloadStatus() {
-        DownloadManager.Query query = new DownloadManager.Query();
         try {
-            if (IDcount == 0) {
-                return;
-            }
-            query.setFilterById(Id[IDcount - 1]);
+            query.setFilterById(IdA);
             Cursor c = downloadManager.query(query);
             if (c != null && c.moveToFirst()) {
                 int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
@@ -1411,15 +1440,28 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 switch (status) {
                     case DownloadManager.STATUS_PAUSED:
                         Log.v("tag", "STATUS_PAUSED");
-                        for (int j = 0; j < IDcount; j++) {
-                            downloadManager.remove(Id[j]);
-                        }
-                        progressDialogFragment.dismissAllowingStateLoss();
-                        Toast.makeText(MainActivity.this, getString(R.string.Download_fail), Toast
-                                .LENGTH_SHORT).show();
+                        // progressDialogFragment.dismissAllowingStateLoss();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (IDcount != 0) {
+                                    //更新UI
+                                    Toast.makeText(MainActivity.this, getString(R.string
+                                            .Download_fail), Toast.LENGTH_SHORT).show();
+                                }
+                                showdialogA = false;
+                                countsOKdownload = 0;
+                                IDcount = 0;
+                                downloading = false;
+                                downloadManager.remove(IdA);
+                            }
+                        });
+                        break;
 
                     case DownloadManager.STATUS_PENDING:
                         Log.v("tag", "STATUS_PENDING");
+                        break;
+
                     case DownloadManager.STATUS_RUNNING:
                         // 正在下载，不做任何事情
                         runOnUiThread(new Runnable() {
@@ -1427,21 +1469,37 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                             public void run() {
                                 //更新UI
                                 double temp = div((double) newsize, (double) totalsize, 3);
-                                progressDialogFragment.setProgressText((int) (temp * 100.00));
-
+                                if (progressDialogFragment != null) {
+                                    progressDialogFragment.setProgressText((int) (temp * 100.00));
+                                    progressDialogFragment.setMessageText(getString(R.string
+                                            .downloading) + (IDcount) + "/" + countsOKdownload);
+                                }
                             }
                         });
+                        downloading = true;
+
                         Log.v("tag", "STATUS_RUNNING");
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
                         // 完成
                         Log.v("tag", "下载完成");
-                        progressDialogFragment.dismissAllowingStateLoss();
+                        if (countsOKdownload == IDcount) {
+                            progressDialogFragment.dismissAllowingStateLoss();
+                            showdialogA = false;
+                            countsOKdownload = 0;
+                            IDcount = 0;
+                        }
+                        downloading = false;
+
+
                         break;
                     case DownloadManager.STATUS_FAILED:
                         // 清除已下载的内容，重新下载
                         Log.v("tag", "STATUS_FAILED");
-                        downloadManager.remove(Id[IDcount - 1]);
+                        countsOKdownload = 0;
+                        IDcount = 0;
+                        downloading = false;
+                        downloadManager.remove(IdA);
                         break;
                     default:
                         break;
@@ -1453,97 +1511,181 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
     }
 
-    private void downloadFiles() {
-        IDcount = 0;
-        if (selectedCounts > 5) {
-//            progressDialogFragment = ProgressDialogFragment.newInstance("请选择少于5个文件下载");
-//            progressDialogFragment.show(getFragmentManager(), "text");
-//            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
-//                    .OnDialogButtonClickListener() {
-//                @Override
-//                public void okButtonClick() {
-//
-//                }
-//
-//                @Override
-//                public void cancelButtonClick() {
-//
-//                }
-//            });
-            Toast.makeText(MainActivity.this, "请选择少于5个文件下载", Toast
-                    .LENGTH_SHORT).show();
-            return;
-        } else if (selectedCounts == 0) {
-            if (!isDialogShow) {
-                showConfirmDialog("请选择文件！");
-                isDialogShow = true;
+    private void readSDCard() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            File sdcardDir = Environment.getExternalStorageDirectory();
+            StatFs sf = new StatFs(sdcardDir.getPath());
+            //String count2 = Formatter.formatFileSize(getApplicationContext(), sf.getFreeBytes());
+            int free = (int) (sf.getFreeBytes() / 1024 / 1024 / 1024);
+            if (free < 2) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, R.string.download_free_space, Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             }
-            return;
         }
-        Id = new long[selectedCounts];
-        boolean showdialog = false;
-        downloadManager = (DownloadManager) getApplicationContext().getSystemService(Context
-                .DOWNLOAD_SERVICE);
-        ContentObserver mObserver;
-        mObserver = new DownloadChangeObserver(null);
-        getContentResolver().registerContentObserver(CONTENT_URI, true, mObserver);
+    }
+
+    private long IdA;
+    boolean showdialogA = false;//
+    boolean downloading = false;//是否在下载，其他下载等待
+    private int countsOKdownload = 0;
+
+    private void countsDownload() {
+        boolean downloadImage = false;
+        countsOKdownload = 0;
+        IDcount = 0;
+        downloading = false;
+        selectedListsA.clear();
+        readSDCard();
 
         for (int i = 0; i < selectedCounts; i++) {
             if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
                 mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" + selectedLists
                         .get(i).getName();
+
             } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
                 mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" + selectedLists
                         .get(i).getName();
+
             } else {
                 mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + selectedLists
                         .get(i).getName();
+                downloadImage = true;
             }
             String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪" + mGetFileName
                     .substring(mGetFileName.lastIndexOf('/'));
             File file = new File(fileName);
             if (!file.exists()) {
-                //创建下载任务,downloadUrl就是下载链接
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse
-                        (mGetFileName));
-                //指定下载路径和下载文件名
-                request.setDestinationInExternalPublicDir("/行车记录仪/", selectedLists.get(i).getName
-                        ());
-                //不显示下载界面
-                request.setVisibleInDownloadsUi(true);
-                //将下载任务加入下载队列，否则不会进行下载
-                Id[IDcount] = downloadManager.enqueue(request);
-                IDcount++;
-                showdialog = true;
+                selectedListsA.add(selectedLists.get(i));
+                countsOKdownload++;
             }
         }
-        if (showdialog) {
-            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string
-                    .downloading));
-            progressDialogFragment.show(getFragmentManager(), "text");
-            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
-                    .OnDialogButtonClickListener() {
-                @Override
-                public void okButtonClick() {
 
-                }
+        if (downloadImage) {
+            if (selectedCounts > 12) {
+                countsOKdownload = 0;
+                IDcount = 0;
+                downloading = false;
+                selectedListsA.clear();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, R.string.download_num, Toast.LENGTH_SHORT).show();
 
-                @Override
-                public void cancelButtonClick() {
-                    for (int j = 0; j < Id.length; j++) {
-                        downloadManager.remove(Id[j]);
                     }
+                });
+                return;
+            }
+        } else {
+            if (selectedCounts > 6) {
+                countsOKdownload = 0;
+                IDcount = 0;
+                downloading = false;
+                selectedListsA.clear();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, R.string.download_num_tv, Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                return;
+            }
+        }
+
+        if (countsOKdownload == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
+                            .LENGTH_SHORT).show();
                 }
             });
-        } else {
-            Toast.makeText(MainActivity.this, R.string.File_downloaded, Toast
-                    .LENGTH_SHORT).show();
-            // getContentResolver().unregisterContentObserver(mObserver);
-
         }
+        return;
 
     }
 
+    private void downloadfilesA() {
+
+        if (countsOKdownload > IDcount) {
+
+            if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" + selectedListsA
+                        .get(IDcount).getName();
+            } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" + selectedListsA
+                        .get(IDcount).getName();
+            } else {
+                mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + selectedListsA
+                        .get(IDcount).getName();
+            }
+            String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪" + mGetFileName
+                    .substring(mGetFileName.lastIndexOf('/'));
+            //创建下载任务,downloadUrl就是下载链接
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mGetFileName));
+            //指定下载路径和下载文件名
+            request.setDestinationInExternalPublicDir("/行车记录仪/", selectedListsA.get(IDcount)
+                    .getName());
+            //不显示下载界面
+            request.setVisibleInDownloadsUi(true);
+            //将下载任务加入下载队列，否则不会进行下载
+            IdA = downloadManager.enqueue(request);
+            IDcount++;//注意关键
+
+            if (!showdialogA) {
+
+                progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string
+                        .downloading) + (IDcount) + "/" + countsOKdownload);
+
+                progressDialogFragment.show(getFragmentManager(), "text");
+                progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment
+                        .OnDialogButtonClickListener() {
+                    @Override
+
+                    public void okButtonClick() {
+
+                    }
+
+                    @Override
+                    public void cancelButtonClick() {
+                        downloadManager.remove(IdA);
+                        countsOKdownload = 0;
+                        downloading = false;
+                        showdialogA = false;
+
+                    }
+                });
+                showdialogA = true;
+            }
+        }
+        return;
+    }
+
+    public class MyTheardDownLoad extends Thread {
+        @Override
+        public void run() {
+            while (countsOKdownload > IDcount) {
+                try {
+                    if (!downloading) {
+                        downloadfilesA();
+                    }
+                    MyTheardDownLoad.sleep(1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    /*
+     *
+     * */
 
     public void showTipDialog(String msg) {
         if (myDialog != null) {
@@ -1848,12 +1990,14 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     updateCardData();
                     break;
                 case ENERGY_OPERATION_ECONOMY:
-                    themeManager.updateTheme(Theme.NORMAL);
-                    SkinCompatManager.getInstance().restoreDefaultTheme();
+//                    themeManager.updateTheme(Theme.NORMAL);
+//                    SkinCompatManager.getInstance().restoreDefaultTheme();
+                    showMainSkinTheme(Theme.NORMAL);
                     break;
                 case ENERGY_OPERATION_SPORT:
-                    themeManager.updateTheme(Theme.SPORT);
-                    SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                    themeManager.updateTheme(Theme.SPORT);
+//                    SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                    showMainSkinTheme(Theme.SPORT);
                     break;
                 default:
                     break;
@@ -1861,5 +2005,53 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
     };
 
+
+    private void showMainSkinTheme(int theme) {
+        if (theme == Theme.NORMAL) {
+//            themeManager.updateTheme(Theme.NORMAL);
+//            SkinCompatManager.getInstance().restoreDefaultTheme();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+                rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+                rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+                rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+            } else {
+                btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+                        null, null, null);
+                rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+                        null, null, null);
+                rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+                        null, null, null);
+                rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+                        null, null, null);
+            }
+        } else if (theme == Theme.SPORT) {
+//            themeManager.updateTheme(Theme.SPORT);
+//            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_back_selector_sport), null, null);
+                rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport), null, null);
+                rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport), null, null);
+                rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport), null, null);
+            } else {
+                btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_sport),
+                        null, null, null);
+                rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport),
+                        null, null, null);
+                rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport),
+                        null, null, null);
+                rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport),
+                        null, null, null);
+            }
+        }
+    }
 
 }

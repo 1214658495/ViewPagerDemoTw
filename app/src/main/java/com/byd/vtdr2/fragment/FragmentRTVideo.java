@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,7 +52,7 @@ public class FragmentRTVideo extends Fragment {
     public  static ImageButton btnRtCapturePhoto;
     public static ImageButton ivRtLockVideo;
     private static  ImageView ivRtRecordVideo;
-    private static CheckBox ivRtRecordVoice;
+    private static ImageView ivRtRecordVoice;
     Unbinder unbinder;
     private ProgressBar loadingView;
     private static TextClock textClock;
@@ -74,6 +73,7 @@ public class FragmentRTVideo extends Fragment {
     private static final int MINI_CLICK_DELAY = 2000;
     private static long lastClickTime = 0;
     public static long lastClickTime2 = 0;
+    private static long lastClickTime3 = 0;
     private AddSingleButtonDialog addSingleButtonDialog;
     private FragmentTransaction fragmentTransaction;
 
@@ -461,10 +461,10 @@ public class FragmentRTVideo extends Fragment {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
                     if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
 //                        if (isRecord) {
-//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
 //                            showRecordTag(false);
 //                        } else {
-//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
+//                            ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
 //                            showRecordTag(true);
 //                        }
                         lastClickTime = currentTime;
@@ -517,8 +517,8 @@ public class FragmentRTVideo extends Fragment {
                 }
                 if (mListener != null) {
                     long currentTime = Calendar.getInstance().getTimeInMillis();
-                    if (currentTime - lastClickTime > MINI_CLICK_DELAY) {
-                        lastClickTime = currentTime;
+                    if (currentTime - lastClickTime3 > MINI_CLICK_DELAY) {
+                        lastClickTime3 = currentTime;
                         isMicOn = !isMicOn;
                         mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
                     }
@@ -536,9 +536,9 @@ public class FragmentRTVideo extends Fragment {
 //        if (savedInstanceState != null) {
 //            boolean isSavedRecord = savedInstanceState.getBoolean("isRecord");
 //            if (isSavedRecord) {
-//                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
-//            } else {
 //                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_on);
+//            } else {
+//                ivRtRecordVideo.setImageResource(R.mipmap.btn_record_video_off);
 //            }
 //        }
 //    }
@@ -566,7 +566,11 @@ public class FragmentRTVideo extends Fragment {
     public void setMicState(boolean isOn) {
         isMicOn = isOn;
         if (ivRtRecordVoice !=null) {
-            ivRtRecordVoice.setChecked(!isOn);
+            if (isOn) {
+                ivRtRecordVoice.setImageResource(R.mipmap.btn_record_voice_off);
+            } else {
+                ivRtRecordVoice.setImageResource(R.mipmap.btn_record_voice_on);
+            }
         }
     }
 

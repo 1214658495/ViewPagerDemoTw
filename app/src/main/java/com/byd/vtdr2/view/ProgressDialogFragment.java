@@ -12,11 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
+import com.byd.vtdr2.widget.ThemeLightButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,9 +34,9 @@ public class ProgressDialogFragment extends DialogFragment {
     @BindView(R.id.tv_dialogContent)
     TextView tvDialogContent;
     @BindView(R.id.btn_dialogSure)
-    LightButton btnDialogSure;
+    ThemeLightButton btnDialogSure;
     @BindView(R.id.btn_dialogCancel)
-    LightButton btnDialogCancel;
+    ThemeLightButton btnDialogCancel;
     Unbinder unbinder;
     @BindView(R.id.tv_progressPercent)
     TextView tvProgressPercent;
@@ -114,10 +115,15 @@ public class ProgressDialogFragment extends DialogFragment {
             DisplayMetrics dm = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.25));
+//                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.25));
+                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.2));
             } else {
-                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.6), (int) (dm.heightPixels * 0.5));
+//                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.6), (int) (dm.heightPixels * 0.5));
+                myDialog.getWindow().setLayout((int) (dm.widthPixels * 0.5), (int) (dm.heightPixels * 0.4));
             }
+            WindowManager.LayoutParams wl = myDialog.getWindow().getAttributes();
+            wl.y = -50;
+            myDialog.getWindow().setAttributes(wl);
         }
     }
 
@@ -132,6 +138,11 @@ public class ProgressDialogFragment extends DialogFragment {
         }
     }
 
+    public void setMessageText(String msg) {
+        if (tvDialogContent != null) {
+            tvDialogContent.setText(msg);
+        }
+    }
     @Override
     public void onDestroyView() {
         // 如下在旋转后重建了
@@ -144,7 +155,5 @@ public class ProgressDialogFragment extends DialogFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
-
-
 
 }
