@@ -33,7 +33,7 @@ public class ThemeTextView extends LightTextView implements ITheme {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if(isPressed()){
+//		if(isPressed()){
 			getPaint().setShadowLayer(radius * 0.2f, 0, 0, color);
 			super.onDraw(canvas);
 
@@ -64,7 +64,7 @@ public class ThemeTextView extends LightTextView implements ITheme {
 //			super.onDraw(canvas);
 			
 
-		}
+//		}
 		
 		getPaint().setShadowLayer(radius, 0, 0, color);
 		super.onDraw(canvas);

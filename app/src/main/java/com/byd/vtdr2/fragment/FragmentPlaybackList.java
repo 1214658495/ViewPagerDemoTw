@@ -600,7 +600,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                intent.putExtra("position", i);
 //                startActivity(intent);
 
-                fragmentPhotoPreview =  FragmentPhotoPreview.newInstance();
+                fragmentPhotoPreview = FragmentPhotoPreview.newInstance();
                 fragmentPhotoPreview.setRemoteCam(mRemoteCam);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mPhotoList", mPlayLists);
@@ -1070,8 +1070,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         }
                     }
                     if (getIsClickedAt(position)) {
-                        nameView.setTextColor(Color.parseColor("#1CC9FE"));
-                        timeView.setTextColor(Color.parseColor("#1CC9FE"));
+                        int mode = ThemeManager.getInstance().getTheme();
+                        if (mode == Theme.NORMAL) {
+                            nameView.setTextColor(Color.parseColor("#1CC9FE"));
+                            timeView.setTextColor(Color.parseColor("#1CC9FE"));
+                        } else if (mode == Theme.SPORT) {
+                            nameView.setTextColor(Color.parseColor("#fb8218"));
+                            timeView.setTextColor(Color.parseColor("#fb8218"));
+                        }
                         playView.setVisibility(View.VISIBLE);
                     }
                 }
@@ -1116,7 +1122,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
             } else {
-                imageView.setImageResource(R.drawable.empty_photo);
+//                防止换肤时被自动加载一张空图
+                imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo));
+//                imageView.setImageResource(R.drawable.empty_photo);
             }
         }
 

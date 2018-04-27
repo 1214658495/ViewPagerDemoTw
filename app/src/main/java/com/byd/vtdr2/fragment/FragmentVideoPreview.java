@@ -516,6 +516,7 @@ public class FragmentVideoPreview extends Fragment {
                 isVideoStop = false;
                 mHandler.removeMessages(SHOW_CONTROLLER);
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+                break;
             default:
                 break;
         }
