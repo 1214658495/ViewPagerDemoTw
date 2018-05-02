@@ -26,7 +26,7 @@
         android:layout_height="71dp"
         android:layout_marginStart="8dp"
         android:text="@string/downloading"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pb_downloadProgressBar"

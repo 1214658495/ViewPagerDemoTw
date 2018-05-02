@@ -92,6 +92,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import skin.support.SkinCompatManager;
 
 
 /**
@@ -220,9 +221,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (mode == Theme.NORMAL) {
 //            //经济模式
             loadSkinTheme(Theme.NORMAL);
+            SkinCompatManager.getInstance().restoreDefaultTheme();
         } else if (mode == Theme.SPORT) {
 //            //运动模式
             loadSkinTheme(Theme.SPORT);
+            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
         }
 
         initData();
@@ -283,9 +286,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (mode == Theme.NORMAL) {
 //            //经济模式
             loadSkinTheme(Theme.NORMAL);
+            SkinCompatManager.getInstance().restoreDefaultTheme();
         } else if (mode == Theme.SPORT) {
 //            //运动模式
             loadSkinTheme(Theme.SPORT);
+            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
         }
     }
 

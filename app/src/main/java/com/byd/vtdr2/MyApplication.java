@@ -78,26 +78,22 @@ public class MyApplication extends Application {
 
 
         themeManager = ThemeManager.getInstance();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
-                mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
-//            }
-//        }).start();
 
-        int mode =  mBYDAutoEnergyDevice .getOperationMode();
-        if(mode == ENERGY_OPERATION_ECONOMY ){
+//如下为运动模式功能开启代码
+        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
+
+        int mode = mBYDAutoEnergyDevice.getOperationMode();
+        if (mode == ENERGY_OPERATION_ECONOMY) {
             //经济模式
-//            showMainSkinTheme(Theme.NORMAL);
             themeManager.updateTheme(Theme.NORMAL);
             SkinCompatManager.getInstance().restoreDefaultTheme();
-        }else if(mode == ENERGY_OPERATION_SPORT){
+        } else if (mode == ENERGY_OPERATION_SPORT) {
             //运动模式
-//            showMainSkinTheme(Theme.SPORT);
             themeManager.updateTheme(Theme.SPORT);
             SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
         }
+
     }
 
 

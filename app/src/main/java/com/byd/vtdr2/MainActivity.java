@@ -17,8 +17,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.hardware.bydauto.energy.AbsBYDAutoEnergyListener;
-import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -79,6 +77,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import skin.support.SkinCompatManager;
 import skin.support.annotation.Skinable;
 
 import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_ECONOMY;
@@ -152,18 +151,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     public static int isSensormessage = 0;
     private boolean isNeedFormat;
     private boolean isMicOn;
-    private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
-
-    AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
-        @Override
-        public void onOperationModeChanged(int type) {
-            // TODO Auto-generated method stub
-            super.onOperationModeChanged(type);
-            updateHandler.sendEmptyMessage(type);
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,29 +161,18 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         requestPermission();
 //        checkUpdateThread();
         ButterKnife.bind(this);
-//        themeManager = ThemeManager.getInstance();
-//        themeManager.updateTheme(Theme.NORMAL);
 
-//        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
         themeManager = ThemeManager.getInstance();
         int mode = themeManager.getTheme();
         if (mode == Theme.NORMAL) {
 //            //经济模式
             showMainSkinTheme(Theme.NORMAL);
+            SkinCompatManager.getInstance().restoreDefaultTheme();
         } else if (mode == Theme.SPORT) {
 //            //运动模式
             showMainSkinTheme(Theme.SPORT);
+            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
         }
-//        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
-////        初始化时检测模式
-//        int mode =  mBYDAutoEnergyDevice .getOperationMode();
-//        if(mode == ENERGY_OPERATION_ECONOMY ){
-//            //经济模式
-//            showMainSkinTheme(Theme.NORMAL);
-//        }else if(mode == ENERGY_OPERATION_SPORT){
-//            //运动模式
-//            showMainSkinTheme(Theme.SPORT);
-//        }
 
         initConnect();
     }
@@ -222,9 +199,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         if (mode == Theme.NORMAL) {
 //            //经济模式
             showMainSkinTheme(Theme.NORMAL);
+            SkinCompatManager.getInstance().restoreDefaultTheme();
         } else if (mode == Theme.SPORT) {
 //            //运动模式
             showMainSkinTheme(Theme.SPORT);
+            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
         }
     }
 
@@ -367,6 +346,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }, 0, 3, TimeUnit.SECONDS);
         mRemoteCam.startSession();
         fragmentPlaybackList.setRemoteCam(mRemoteCam);
+        fragmentRTVideo.setRemoteCam(mRemoteCam);
         if (fragment == null) {
             fragment = fragmentRTVideo;
             getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment)
@@ -529,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     public void onClick(View view) {
                         customDialog.dismiss();
                         isDialogShow = false;
-                        if (temp == (getString(R.string.format_ok))) {
+                        if (temp == (getString(R.string.format_finished))) {
                             if (fragmentPlaybackList.mAdapter != null) {
                                 fragmentPlaybackList.mAdapter.clear();
                                 fragmentPlaybackList.mAdapter.cancelAllTasks();
@@ -574,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     public void onClick(View view) {
                         mRemoteCam.formatSD("C:");
                         customDialog.dismiss();
-                        showWaitingDialog(getString(R.string.memory_card_formating));
+                        showWaitingDialog(getString(R.string.storage_card_formatting));
                     }
                 })
                 .addViewOnclick(R.id.btn_dialogCancel, new View.OnClickListener() {
@@ -614,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     public void onClick(View view) {
                         mRemoteCam.formatSD("C:");
                         customDialog.dismiss();
-                        showWaitingDialog(getString(R.string.memory_card_formating));
+                        showWaitingDialog(getString(R.string.storage_card_formatting));
                     }
                 })
                 .addViewOnclick(R.id.btn_dialogCancel, new View.OnClickListener() {
@@ -642,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         mRemoteCam.formatSD("C:");
                         isNeedFormat = true;
                         customDialog.dismiss();
-                        showWaitingDialog(getString(R.string.memory_card_formating));
+                        showWaitingDialog(getString(R.string.storage_card_formatting));
                     }
                 })
                 .addViewOnclick(R.id.btn_dialogCancel, new View.OnClickListener() {
@@ -682,12 +662,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 finish();
                 return;
             }*/
-
-            if (fragmentPlaybackList.fragmentVideoPreview != null) {
-                fragmentPlaybackList.fragmentVideoPreview.CurrentTime = 0;
-            }
-
-
             if (fragment == fragmentPlaybackList && fragmentPlaybackList.isMultiChoose) {
                 fragmentPlaybackList.cancelMultiChoose();
             } else {
@@ -699,6 +673,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 System.exit(0);
             }
         } else {
+            if (fragmentPlaybackList.fragmentVideoPreview != null) {
+                fragmentPlaybackList.fragmentVideoPreview.CurrentTime = 0;
+            }
             getSupportFragmentManager().popBackStack();
         }
 
@@ -835,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 //                                customDialog.dismiss();
 //                            }
                             showWaitingDialog(getString(R.string.card_readying));
-                            new java.util.Timer().schedule(
+                           /* new java.util.Timer().schedule(
                                     new java.util.TimerTask() {
                                         @Override
                                         public void run() {
@@ -869,7 +846,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                         }
                                     }, 5000);
 
-                            fragmentRTVideo.showCheckSdCordTag(true);
+                            fragmentRTVideo.showCheckSdCordTag(true);*/
                         }
                         isCardNoExist = false;
                         break;
@@ -910,8 +887,32 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 int valueRecord = (int) param;
                 switch (valueRecord) {
                     case ServerConfig.REC_CAP_STATE_PREVIEW:
+//                        如下未报文断电了
+                        if (isReconnecting) {
+                            fragmentRTVideo.setRecordState(false);
+                        }
                         break;
                     case ServerConfig.REC_CAP_STATE_RECORD:
+                        if (!isCardNoExist) {
+                            if (customDialog != null && !isFinishing()) {
+                                customDialog.dismiss();
+                            }
+                            if (fragment == fragmentRTVideo) {
+                                rgGroup.check(R.id.rb_realTimeVideo);
+                                fragmentRTVideo = FragmentRTVideo.newInstance();
+                                fragment = fragmentRTVideo;
+                                getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                            } else if (fragment == fragmentPlaybackList) {
+                                fragmentPlaybackList.setRemoteCam(mRemoteCam);
+                                if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                                    fragmentPlaybackList.showRecordList();
+                                } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                                    fragmentPlaybackList.showLockVideoList();
+                                } else {
+                                    fragmentPlaybackList.showCapturePhotoList();
+                                }
+                            }
+                        }
                         // TODO: 2018/4/13 先屏蔽
                         mRemoteCam.appStatus();
                         break;
@@ -1072,7 +1073,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 boolean isFormatSD = (boolean) param;
                 if (isFormatSD) {
 //                    showCrossDialog(getString(R.string.format_ok));
-                    showConfirmDialog(getString(R.string.format_ok));
+                    showConfirmDialog(getString(R.string.format_finished));
                     /*myDialog = MyDialog.newInstance(1, getString(R.string.format_ok));
                     myDialog.show(getFragmentManager(), "FormatDone");*/
                     // TODO: 2018/1/5 如下发送后记录仪来不及反应，即无应答
@@ -1985,9 +1986,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     break;
                 case VERSION_IS_NEWEST:
                     isVersionNewest = true;
-                    break;
-                case UPDATE_CARD_DATA:
-                    updateCardData();
                     break;
                 case ENERGY_OPERATION_ECONOMY:
 //                    themeManager.updateTheme(Theme.NORMAL);

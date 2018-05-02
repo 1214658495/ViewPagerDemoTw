@@ -64,7 +64,7 @@ public class FragmentRTVideo extends Fragment {
     private SurfaceView svRecordVideo;
     private static ImageView ivIcRecord;
     private FrameLayout flShotView;
-    private RemoteCam mRemoteCam;
+    private static RemoteCam mRemoteCam;
     private static boolean isRecord;
     private static boolean isMicOn;
     private Toast mToast;
@@ -102,7 +102,13 @@ public class FragmentRTVideo extends Fragment {
         return view;
     }
 
+    public void setRemoteCam(RemoteCam mRemoteCam) {
+        Log.e(TAG, "setRemoteCam: " + FragmentRTVideo.mRemoteCam);
+        FragmentRTVideo.mRemoteCam = mRemoteCam;
+    }
+
     private void initData() {
+        mRemoteCam.appStatus();
         ((MainActivity) getActivity()).isDialogShow = false;
         svRecordVideo.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override

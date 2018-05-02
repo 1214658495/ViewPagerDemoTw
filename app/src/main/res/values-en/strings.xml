@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">VTDR</string>
     <string name="back">Back</string>
-    <string name="live_video">Live Video</string>
-    <string name="playback_list">Playback List</string>
+    <string name="live_video">Camera</string>
+    <string name="playback_list">Media List</string>
     <string name="setting">Setting</string>
 
-    <string name="record_video">Record Video</string>
-    <string name="lock_video">Lock Video</string>
+    <string name="record_video">RecordVideo</string>
+    <string name="lock_video">VideoLock </string>
     <string name="photo">Photo</string>
 
     <string name="system">System</string>
-    <string name="memoryCard_format">Memory Card Format</string>
+    <string name="storageCard_format">Storage Card Format</string>
 
     <string name="cancel">Cancel</string>
     <string name="share">Share</string>
@@ -33,11 +33,11 @@
     <string name="ok">OK</string>
     <string name="close">Close</string>
     <string name="logo_text">BYD Driving Recorder</string>
-    <string name="card_removed">Please inserted memory card</string>
-    <string name="card_inserted">Memory card inserted</string>
+    <string name="card_removed">Insert card please</string>
+    <string name="card_inserted">Storage card inserted</string>
     <string name="reboot_drivingReorder">Reboot driving reorder</string>
-    <string name="format_ok">Memory card formatting completed</string>
-    <string name="format_fail">Memory card formatting fail,confirm to reformat?</string>
+    <string name="format_finished">Format finished</string>
+    <string name="format_fail">Storage card formatting fail,confirm to reformat?</string>
     <string name="downloading">Downloading</string>
     <string name="Download_completed">Download completed</string>
     <string name="Download_fail">Download fail</string>
@@ -46,10 +46,10 @@
     <string name="share_to">Share to</string>
     <string name="video_cannot_share">Video can\'t be shared right now!</string>
     <string name="select_to_download">Please select the file to download</string>
-    <string name="confirm_delete">Confirm delete</string>
+    <string name="confirm_delete">Delete the selected files?</string>
     <string name="Reconnecting">Reconnecting...</string>
     <string name="restore_settings">Confirm restore the default settings?</string>
-    <string name="confirm_format_memory_card">Confirm format memory card?</string>
+    <string name="confirm_format_memory_card">Format Storage Card?</string>
     <string name="time_out">Time out connected</string>
     <string name="download_num">Download num can\'t beyond five</string>
     <string name="download_num_tv">Download num can\'t beyond five</string>
@@ -59,8 +59,8 @@
     <string name="card_issue">Card issue</string>
     <string name="card_write_protect">Card write protect</string>
     <string name="card_not_enough">Card not enough</string>
-    <string name="card_need_format">Card need format</string>
-    <string name="sensor_issue">Can\'t get video</string>
+    <string name="card_need_format">Unformatted Storage Card</string>
+    <string name="sensor_issue">Video Signal Error</string>
     <string name="video_locking">Video_locking</string>
     <string name="immediately_format">Immediately format</string>
     <string name="later_format">Later format</string>
@@ -68,11 +68,11 @@
     <string name="afrash_format">afrash format</string>
     <string name="check_version">check new version</string>
     <string name="version_newest">version is newest</string>
-    <string name="memory_card_formating">memory card formating</string>
+    <string name="storage_card_formatting">Formatting</string>
     <string name="delete_fail">delete fail</string>
     <string name="open_voice">open voice</string>
     <string name="close_voice">close voice</string>
     <string name="voice_settingfail">voice setting fail</string>
-    <string name="del_image_sure">Are You Sure Del?</string>
+    <string name="del_image_sure">Are you sure delete?</string>
 
 </resources>

@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.35"
         android:text="@string/exit"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_14" />
 
     <ImageView
         android:layout_width="match_parent"

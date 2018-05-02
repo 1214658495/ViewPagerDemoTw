@@ -80,7 +80,7 @@
         android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/memoryCard_format"
+        android:text="@string/storageCard_format"
         android:textAllCaps="false"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"

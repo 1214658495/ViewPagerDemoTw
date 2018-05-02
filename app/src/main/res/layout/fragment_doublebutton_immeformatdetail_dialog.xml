@@ -30,7 +30,7 @@
         android:gravity="center"
         android:text="@string/card_need_format"
         android:textColor="#fff"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:id="@+id/tv_dialogContentDetail"
