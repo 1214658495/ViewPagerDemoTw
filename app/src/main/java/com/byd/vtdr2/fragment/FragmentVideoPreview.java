@@ -423,7 +423,7 @@ public class FragmentVideoPreview extends Fragment {
     private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(PLMediaPlayer mp, int percent) {
-            Log.d(TAG, "onBufferingUpdate: " + percent + "%");
+//            Log.d(TAG, "onBufferingUpdate: " + percent + "%");
         }
     };
 

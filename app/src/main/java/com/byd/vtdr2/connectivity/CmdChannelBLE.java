@@ -325,6 +325,7 @@ public class CmdChannelBLE extends CmdChannel {
         }
     }
 
+    @Override
     protected void writeToChannel(byte[] buffer) {
         //byte[] fake = new byte[32];
         //mBluetoothGatt.readCharacteristic(mGattOutput);
@@ -346,6 +347,7 @@ public class CmdChannelBLE extends CmdChannel {
         }
     }
 
+    @Override
     protected String readFromChannel() {
         try {
             return new String(mNotificationQueue.take());

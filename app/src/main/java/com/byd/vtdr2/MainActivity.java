@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
         themeManager = ThemeManager.getInstance();
         int mode = themeManager.getTheme();
+        Log.e(TAG, "onCreate: mode:" + mode);
         if (mode == Theme.NORMAL) {
 //            //经济模式
             showMainSkinTheme(Theme.NORMAL);
@@ -482,6 +483,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         if (mScheduledTask != null) {
             mScheduledTask.cancel(false);
         }
+        mRemoteCam.stopSession();
 
     }
 
@@ -850,6 +852,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         }
                         isCardNoExist = false;
                         break;
+
                     case ServerConfig.BYD_CARD_STATE_NOCARD:
                         isCardNoExist = true;
                         fragmentRTVideo.showCheckSdCordTag(false);
@@ -887,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 int valueRecord = (int) param;
                 switch (valueRecord) {
                     case ServerConfig.REC_CAP_STATE_PREVIEW:
-//                        如下未报文断电了
+//                        如下为报文断电了
                         if (isReconnecting) {
                             fragmentRTVideo.setRecordState(false);
                         }
@@ -923,9 +926,13 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     case ServerConfig.REC_CAP_STATE_CAPTURE:
                         break;
                     case ServerConfig.REC_CAP_STATE_VF:
-                        if (isCardNoExist) {
+//                        若不加这个判断，直接发获取appstatus会很容易出现粘包！！！
+//                        if (isCardNoExist) {
+//                            mRemoteCam.appStatus();
+//                        }
+//                        if (isCardNoExist) {
                             mRemoteCam.appStatus();
-                        }
+//                        }
                         break;
                     case ServerConfig.REC_CAP_STATE_TRANSIT_TO_VF:
 
@@ -1024,7 +1031,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 } else if (Objects.equals(appStateStr, "vf")) {
                     fragmentRTVideo.setRecordState(false);
                 } else if (Objects.equals(appStateStr, "idle")) {
-                    showToastTips(getString(R.string.reboot_drivingReorder));
+//                    showToastTips(getString(R.string.reboot_drivingReorder));
 //                    Toast.makeText(getApplicationContext(), "请重启记录仪！", Toast.LENGTH_LONG).show();
 //                    showAddSingleButtonDialog(getString(R.string.reboot_drivingReorder));
                     // TODO: 2018/1/4 如下显示弹窗，旋转就闪退。
@@ -1181,6 +1188,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private void handleCmdChannelError(int type, Object param) {
         switch (type) {
             case IChannelListener.CMD_CHANNEL_ERROR_INVALID_TOKEN:
+                showConfirmDialog("记录仪无法使用，请更新设备程序！");
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT:
                 //showToastTips(getString(R.string.time_out));

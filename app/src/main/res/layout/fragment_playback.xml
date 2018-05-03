@@ -49,13 +49,13 @@
     </RadioGroup>
 
     <ImageButton
-        style="@style/ButtonStyle"
         android:id="@+id/ib_search"
+        style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_30"
-        android:visibility="invisible"
         android:background="@drawable/btn_search_selector"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/rg_groupDetail"
         app:layout_constraintLeft_toRightOf="@+id/rg_groupDetail"
         app:layout_constraintRight_toRightOf="parent"
@@ -66,16 +66,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_10"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="invisible"
-        android:layout_marginStart="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="@id/rg_groupDetail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rg_groupDetail">
 
-        <com.byd.vtdr2.widget.ThemeTextView
+        <com.byd.vtdr2.widget.LightTextView
             android:id="@+id/tv_editNav"
             style="@style/TextStyle"
             android:layout_width="0dp"
@@ -92,8 +92,8 @@
             android:layout_marginStart="@dimen/dp_10"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
-            android:text="@string/cancel"
             android:gravity="start|center"
+            android:text="@string/cancel"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
@@ -104,8 +104,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_share_selector"
-            android:text="@string/share"
             android:gravity="start|center"
+            android:text="@string/share"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
@@ -116,8 +116,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_export_selector"
-            android:text="@string/export"
             android:gravity="start|center"
+            android:text="@string/export"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
@@ -128,8 +128,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_delete_selector"
-            android:text="@string/delete"
             android:gravity="start|center"
+            android:text="@string/delete"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
 
@@ -161,8 +161,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
         android:src="@mipmap/line_hor_tomenu"
-        app:layout_constraintTop_toBottomOf="@id/ll_editItemBar"
-        app:layout_constraintBottom_toTopOf="@id/gv_dataList"/>
+        app:layout_constraintBottom_toTopOf="@id/gv_dataList"
+        app:layout_constraintTop_toBottomOf="@id/ll_editItemBar" />
 
     <!--android:layout_height="@dimen/dp_356"-->
     <GridView

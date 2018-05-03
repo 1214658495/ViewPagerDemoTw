@@ -53,12 +53,12 @@ import com.byd.vtdr2.utils.DownloadUtil;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
+import com.byd.vtdr2.widget.LightTextView;
 import com.byd.vtdr2.widget.Theme;
 import com.byd.vtdr2.widget.ThemeCheckBox;
 import com.byd.vtdr2.widget.ThemeLightButton;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
 import com.byd.vtdr2.widget.ThemeManager;
-import com.byd.vtdr2.widget.ThemeTextView;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import org.greenrobot.eventbus.EventBus;
@@ -129,7 +129,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.ll_editItemBar)
     LinearLayout llEditItemBar;
     @BindView(R.id.tv_editNav)
-    ThemeTextView tvEditNav;
+    LightTextView tvEditNav;
     //    @BindView(R.id.rl_menu_edit)
 //    RelativeLayout rlMenuEdit;
     @BindView(R.id.iv_line_blowMenuEdit)
@@ -257,6 +257,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     null, null, null);
             btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
                     null, null, null);
+            tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
 
 
         } else if (theme == Theme.SPORT) {
@@ -276,7 +277,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                     null, null, null);
             btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_sport),
                     null, null, null);
-
+            tvEditNav.setLight(getResources().getColor(R.color.sport_color), 22);
         }
     }
 

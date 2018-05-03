@@ -81,6 +81,7 @@ public class CmdChannelBT extends CmdChannel {
         }
     }
 
+    @Override
     protected void writeToChannel(byte[] buffer) {
         try {
             if (mOutputStream != null)
@@ -90,6 +91,7 @@ public class CmdChannelBT extends CmdChannel {
         }
     }
 
+    @Override
     protected String readFromChannel() {
         try {
             if (mInputStream != null) {

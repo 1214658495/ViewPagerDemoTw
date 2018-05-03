@@ -41,58 +41,109 @@ public abstract class CmdChannel {
     private boolean mReplyReceived;
     final Handler handler = new Handler();
 
-    private static final int AMBA_GET_SETTING = 0x001;
-    private static final int AMBA_SET_SETTING = 0x002;
-    private static final int AMBA_GET_ALL = 0x003;
-    private static final int AMBA_FORMAT_SD = 0x004;
-    private static final int AMBA_GET_SPACE = 0x005;
-    private static final int AMBA_GET_NUM_FILES = 0x006;
-    private static final int AMBA_NOTIFICATION = 0x007;
-    private static final int AMBA_BURN_FW = 0x008;
-    private static final int AMBA_GET_OPTIONS = 0x009;
-    private static final int AMBA_GET_DEVINFO = 0x00B;
-    private static final int AMBA_POWER_MANAGE = 0x00C;
-    private static final int AMBA_BATTERY_LEVEL = 0x00D;
-    private static final int AMBA_ZOOM = 0x00E;
-    private static final int AMBA_ZOOM_INFO = 0x00F;
-    private static final int AMBA_SET_BITRATE = 0x010;
-    private static final int AMBA_START_SESSION = 0x101;
-    private static final int AMBA_STOP_SESSION = 0x102;
-    private static final int AMBA_RESETVF = 0x103;
-    private static final int AMBA_STOP_VF = 0x104;
-    private static final int AMBA_SET_CLINT_INFO = 0x105;
-    private static final int AMBA_RECORD_START = 0x201;
-    private static final int AMBA_RECORD_STOP = 0x202;
-    private static final int AMBA_RECORD_TIME = 0x203;
-    private static final int AMBA_FORCE_SPLIT = 0x204;
-    private static final int AMBA_TAKE_PHOTO = 0x301;
-    private static final int AMBA_STOP_PHOTO = 0x302;
+    /*旧协议*/
+//    private static final int AMBA_GET_SETTING = 0x001;
+//    private static final int AMBA_SET_SETTING = 0x002;
+//    private static final int AMBA_GET_ALL = 0x003;
+//    private static final int AMBA_FORMAT_SD = 0x004;
+//    private static final int AMBA_GET_SPACE = 0x005;
+//    private static final int AMBA_GET_NUM_FILES = 0x006;
+//    private static final int AMBA_NOTIFICATION = 0x007;
+//    private static final int AMBA_BURN_FW = 0x008;
+//    private static final int AMBA_GET_OPTIONS = 0x009;
+//    private static final int AMBA_GET_DEVINFO = 0x00B;
+//    private static final int AMBA_POWER_MANAGE = 0x00C;
+//    private static final int AMBA_BATTERY_LEVEL = 0x00D;
+//    private static final int AMBA_ZOOM = 0x00E;
+//    private static final int AMBA_ZOOM_INFO = 0x00F;
+//    private static final int AMBA_SET_BITRATE = 0x010;
+//    private static final int AMBA_START_SESSION = 0x101;
+//    private static final int AMBA_STOP_SESSION = 0x102;
+//    private static final int AMBA_RESETVF = 0x103;
+//    private static final int AMBA_STOP_VF = 0x104;
+//    private static final int AMBA_SET_CLINT_INFO = 0x105;
+//    private static final int AMBA_RECORD_START = 0x201;
+//    private static final int AMBA_RECORD_STOP = 0x202;
+//    private static final int AMBA_RECORD_TIME = 0x203;
+//    private static final int AMBA_FORCE_SPLIT = 0x204;
+//    private static final int AMBA_TAKE_PHOTO = 0x301;
+//    private static final int AMBA_STOP_PHOTO = 0x302;
+//
+//
+//    private static final int AMBA_GET_THUMB = 0x401;
+//    private static final int AMBA_GET_MEDIAINFO = 0x402;
+//    private static final int AMBA_SET_ATTRIBUTE = 0x403;
+//    private static final int AMBA_DEL = 0x501;
+//    private static final int AMBA_LS = 0x502;
+//    private static final int AMBA_CD = 0x503;
+//    private static final int AMBA_PWD = 0x504;
+//    private static final int AMBA_GET_FILE = 0x505;
+//    private static final int AMBA_PUT_FILE = 0x506;
+//    private static final int AMBA_CANCLE_XFER = 0x507;
+//    private static final int AMBA_WIFI_RESTART = 0x601;
+//    private static final int AMBA_SET_WIFI_SETTING = 0x602;
+//    private static final int AMBA_GET_WIFI_SETTING = 0x603;
+//    private static final int AMBA_WIFI_STOP = 0x604;
+//    private static final int AMBA_WIFI_START = 0x605;
+//    private static final int AMBA_GET_WIFI_STATUS = 0x606;
+//    private static final int AMBA_QUERY_SESSION_HOLDER = 0x701;
+//
+//    //madd
+//    private static final int BYD_EVENT_RECORD_START = 0x801;
+//    private static final int BYD_VER_INFO = 0x802;
+//    private static final int BYD_SYSTEM_STATE = 0x803;
+//    private static final int AMBA_BYDNOTIFICATION = 0x804;
 
-
-    private static final int AMBA_GET_THUMB = 0x401;
-    private static final int AMBA_GET_MEDIAINFO = 0x402;
-    private static final int AMBA_SET_ATTRIBUTE = 0x403;
-    private static final int AMBA_DEL = 0x501;
-    private static final int AMBA_LS = 0x502;
-    private static final int AMBA_CD = 0x503;
-    private static final int AMBA_PWD = 0x504;
-    private static final int AMBA_GET_FILE = 0x505;
-    private static final int AMBA_PUT_FILE = 0x506;
-    private static final int AMBA_CANCLE_XFER = 0x507;
-    private static final int AMBA_WIFI_RESTART = 0x601;
-    private static final int AMBA_SET_WIFI_SETTING = 0x602;
-    private static final int AMBA_GET_WIFI_SETTING = 0x603;
-    private static final int AMBA_WIFI_STOP = 0x604;
-    private static final int AMBA_WIFI_START = 0x605;
-    private static final int AMBA_GET_WIFI_STATUS = 0x606;
-    private static final int AMBA_QUERY_SESSION_HOLDER = 0x701;
+    /*新协议*/
+    private static final int AMBA_GET_SETTING = 0x0010;
+    private static final int AMBA_SET_SETTING = 0x0020;
+    private static final int AMBA_GET_ALL = 0x0030;
+    private static final int AMBA_FORMAT_SD = 0x0040;
+    private static final int AMBA_GET_SPACE = 0x0050;
+    private static final int AMBA_GET_NUM_FILES = 0x0060;
+    private static final int AMBA_NOTIFICATION = 0x0070;
+    private static final int AMBA_BURN_FW = 0x0080;
+    private static final int AMBA_GET_OPTIONS = 0x0090;
+    private static final int AMBA_GET_DEVINFO = 0x00B0;
+    private static final int AMBA_POWER_MANAGE = 0x00C0;
+    private static final int AMBA_BATTERY_LEVEL = 0x00D0;
+    private static final int AMBA_ZOOM = 0x00E0;
+    private static final int AMBA_ZOOM_INFO = 0x00F0;
+    private static final int AMBA_SET_BITRATE = 0x0100;
+    private static final int AMBA_START_SESSION = 0x1010;
+    private static final int AMBA_STOP_SESSION = 0x1020;
+    private static final int AMBA_RESETVF = 0x1030;
+    private static final int AMBA_STOP_VF = 0x1040;
+    private static final int AMBA_SET_CLINT_INFO = 0x1050;
+    private static final int AMBA_RECORD_START = 0x2010;
+    private static final int AMBA_RECORD_STOP = 0x2020;
+    private static final int AMBA_RECORD_TIME = 0x2030;
+    private static final int AMBA_FORCE_SPLIT = 0x2040;
+    private static final int AMBA_TAKE_PHOTO = 0x3010;
+    private static final int AMBA_STOP_PHOTO = 0x3020;
+    private static final int AMBA_GET_THUMB = 0x4010;
+    private static final int AMBA_GET_MEDIAINFO = 0x4020;
+    private static final int AMBA_SET_ATTRIBUTE = 0x4030;
+    private static final int AMBA_DEL = 0x5010;
+    private static final int AMBA_LS = 0x5020;
+    private static final int AMBA_CD = 0x5030;
+    private static final int AMBA_PWD = 0x5040;
+    private static final int AMBA_GET_FILE = 0x5050;
+    private static final int AMBA_PUT_FILE = 0x5060;
+    private static final int AMBA_CANCLE_XFER = 0x5070;
+    private static final int AMBA_WIFI_RESTART = 0x6010;
+    private static final int AMBA_SET_WIFI_SETTING = 0x6020;
+    private static final int AMBA_GET_WIFI_SETTING = 0x6030;
+    private static final int AMBA_WIFI_STOP = 0x6040;
+    private static final int AMBA_WIFI_START = 0x6050;
+    private static final int AMBA_GET_WIFI_STATUS = 0x6060;
+    private static final int AMBA_QUERY_SESSION_HOLDER = 0x7010;
 
     //madd
-    private static final int BYD_EVENT_RECORD_START = 0x801;
-    private static final int BYD_VER_INFO = 0x802;
-    private static final int BYD_SYSTEM_STATE = 0x803;
-    private static final int AMBA_BYDNOTIFICATION = 0x804;
-
+    private static final int BYD_EVENT_RECORD_START = 0x8010;
+    private static final int BYD_VER_INFO = 0x8020;
+    private static final int BYD_SYSTEM_STATE = 0x8030;
+    private static final int AMBA_BYDNOTIFICATION = 0x8040;
 
     private static final String ERR_CODE[] = {
             "OK",
@@ -157,8 +208,9 @@ public abstract class CmdChannel {
     }
 
     private boolean checkSessionID() {
-        if (!mCheckSessionId || (mSessionId > 0))
+        if (!mCheckSessionId || (mSessionId > 0)) {
             return true;
+        }
 
         if (!mAutoStartSession) {
             mListener.onChannelEvent(
@@ -603,8 +655,9 @@ public abstract class CmdChannel {
                         str = parser.getString("param");
                         Pattern p = Pattern.compile("\\d+");
                         Matcher m = p.matcher(str);
-                        if (m.find())
+                        if (m.find()) {
                             mSessionId = Integer.parseInt(m.group(0));
+                        }
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_START_SESSION,
                                 mSessionId);
                         break;
@@ -665,8 +718,9 @@ public abstract class CmdChannel {
                     case AMBA_GET_MEDIAINFO:
                         str = (!parser.has("thumb_file")) ? "" :
                                 "thumb: " + parser.getString("thumb_file");
-                        if (parser.has("duration"))
+                        if (parser.has("duration")) {
                             str += "\nduration: " + parser.getString("duration");
+                        }
                         str += "\nresolution: " + parser.getString("resolution")
                                 + "\nsize: " + parser.getString("size")
                                 + "\ndate: " + parser.getString("date")
@@ -821,8 +875,9 @@ public abstract class CmdChannel {
                                 break;
                             } catch (JSONException e1) {
                             }
-                            if (timerFlag == false)
+                            if (timerFlag == false) {
                                 break;
+                            }
                         }
                     }
 //                    if (timerFlag) {
@@ -839,7 +894,7 @@ public abstract class CmdChannel {
                             handleNotification(tmpOne);
                         }
                         //处理粘包第二段数据
-                        String tmpTwo = msg.substring(msg.indexOf("}{") + 1);
+                        String tmpTwo = msg.substring(msg.lastIndexOf("}{") + 1);
                         Log.e(TAG, tmpTwo);
                         if (tmpTwo.contains("rval")) {
                             handleResponse(tmpTwo);

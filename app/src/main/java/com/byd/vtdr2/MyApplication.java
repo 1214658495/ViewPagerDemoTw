@@ -5,6 +5,7 @@ import android.hardware.bydauto.energy.AbsBYDAutoEnergyListener;
 import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.byd.vtdr2.widget.Theme;
 import com.byd.vtdr2.widget.ThemeManager;
@@ -22,6 +23,7 @@ import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATI
  */
 
 public class MyApplication extends Application {
+    private static final String TAG = "MyApplication";
     private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
 
@@ -84,6 +86,7 @@ public class MyApplication extends Application {
         mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
 
         int mode = mBYDAutoEnergyDevice.getOperationMode();
+        Log.e(TAG, "onCreate: mode:" + mode);
         if (mode == ENERGY_OPERATION_ECONOMY) {
             //经济模式
             themeManager.updateTheme(Theme.NORMAL);
