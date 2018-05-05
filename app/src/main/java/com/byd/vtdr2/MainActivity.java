@@ -48,6 +48,7 @@ import com.byd.vtdr2.fragment.FragmentRTVideo;
 import com.byd.vtdr2.fragment.FragmentSetting;
 import com.byd.vtdr2.utils.Config;
 import com.byd.vtdr2.utils.DownloadUtil;
+import com.byd.vtdr2.utils.LogcatHelper;
 import com.byd.vtdr2.utils.Utility;
 import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.CustomDialog;
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogcatHelper.getInstance(this).start();
 //        requestWindowFeature();
         setContentView(R.layout.activity_main);
         requestPermission();
@@ -476,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LogcatHelper.getInstance(this).stop();
         if (customDialog != null) {
             customDialog.dismiss();
             customDialog = null;
@@ -680,8 +683,6 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             }
             getSupportFragmentManager().popBackStack();
         }
-
-
     }
 
     @Override
@@ -849,6 +850,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                     }, 5000);
 
                             fragmentRTVideo.showCheckSdCordTag(true);*/
+                            fragmentRTVideo.showCheckSdCordTag(true);
                         }
                         isCardNoExist = false;
                         break;
@@ -979,8 +981,8 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
 
             case IChannelListener.CMD_CHANNEL_EVENT_START_SESSION:
                 mRemoteCam.getAllSettings();
-                mRemoteCam.appStatus();
-                mRemoteCam.micStatus();
+//                mRemoteCam.appStatus();
+//                mRemoteCam.micStatus();
                 mRemoteCam.getSystemState();
 //                mRemoteCam.actionQuerySessionHolder();
 //                mRemoteCam.getTotalFreeSpace();
@@ -1188,7 +1190,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private void handleCmdChannelError(int type, Object param) {
         switch (type) {
             case IChannelListener.CMD_CHANNEL_ERROR_INVALID_TOKEN:
-                showConfirmDialog("记录仪无法使用，请更新设备程序！");
+                showConfirmDialog(getString(R.string.update_firmware));
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT:
                 //showToastTips(getString(R.string.time_out));
@@ -1198,12 +1200,12 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 mRemoteCam.setChannelListener(this).setConnectivity(mConnectivityType)
                         .setWifiInfo(wifiManager.getConnectionInfo().getSSID().replace("\"", ""), getWifiIpAddr());
                 isDialogShow = false;
-                mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRemoteCam.socketTest();
-                    }
-                }, 0, 3, TimeUnit.SECONDS);
+//                mScheduledTask = worker.scheduleAtFixedRate(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mRemoteCam.socketTest();
+//                    }
+//                }, 0, 3, TimeUnit.SECONDS);
 
                 mRemoteCam.startSession();
                 break;
@@ -1366,7 +1368,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             customDialog.dismiss();
         }
         if (getSupportFragmentManager().isStateSaved()) {
-            showConfirmDialog("请重启应用！");
+            showConfirmDialog(getString(R.string.reboot_drivingReorder));
         } else {
             // TODO: 2018/4/14 当不在这个界面时如何处理
             if (fragment == fragmentRTVideo) {

@@ -355,6 +355,7 @@ public class FragmentVideoPreview extends Fragment {
         public void onPrepared(PLMediaPlayer mp) {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
+            isVideoStop = false;
             long duration = mMediaPlayer.getDuration();
             durationtime = (int) (duration / 1000);
             /*

@@ -217,9 +217,9 @@ public class RemoteCam
                 if (!connectToCmdChannel())
                     return;
                 //getram: set connection status for UI update
-                ///mCmdChannel.stopSession();
-                if (mCmdChannel.stopSession())
-                    uiStatusSessionFlag = false;
+                mCmdChannel.stopSession();
+//                if (mCmdChannel.stopSession())
+//                    uiStatusSessionFlag = false;
             }
         });
     }

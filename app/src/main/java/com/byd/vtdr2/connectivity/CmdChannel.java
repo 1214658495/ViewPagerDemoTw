@@ -231,7 +231,7 @@ public abstract class CmdChannel {
             }
 
             if (!mReplyReceived) {
-                for (tmpLoop = 1; tmpLoop < 3; tmpLoop++) {
+                for (tmpLoop = 1; tmpLoop < 10; tmpLoop++) {
                     synchronized (mRxLock) {
                         mRxLock.wait(RX_TIMEOUT);
                     }
@@ -875,9 +875,9 @@ public abstract class CmdChannel {
                                 break;
                             } catch (JSONException e1) {
                             }
-                            if (timerFlag == false) {
-                                break;
-                            }
+//                            if (timerFlag == false) {
+//                                break;
+//                            }
                         }
                     }
 //                    if (timerFlag) {
@@ -890,23 +890,37 @@ public abstract class CmdChannel {
                         Log.e(TAG, tmpOne);
                         if (tmpOne.contains("rval")) {
                             handleResponse(tmpOne);
+
+                            mReplyReceived = true;
+                            stopTimerTask();
+                            synchronized (mRxLock) {
+                                mRxLock.notify();
+                            }
                         } else {
                             handleNotification(tmpOne);
+//                            stopTimerTask();
                         }
                         //处理粘包第二段数据
                         String tmpTwo = msg.substring(msg.lastIndexOf("}{") + 1);
                         Log.e(TAG, tmpTwo);
                         if (tmpTwo.contains("rval")) {
                             handleResponse(tmpTwo);
+
+                            mReplyReceived = true;
+                            stopTimerTask();
+                            synchronized (mRxLock) {
+                                mRxLock.notify();
+                            }
                         } else {
                             handleNotification(tmpTwo);
+//                            stopTimerTask();
                         }
 
-                        mReplyReceived = true;
-                        stopTimerTask();
-                        synchronized (mRxLock) {
-                            mRxLock.notify();
-                        }
+//                        mReplyReceived = true;
+//                        stopTimerTask();
+//                        synchronized (mRxLock) {
+//                            mRxLock.notify();
+//                        }
                     } else {
                         Log.e(TAG, msg);
                         if (msg.contains("rval")) {
@@ -923,7 +937,7 @@ public abstract class CmdChannel {
                             }
                         } else {
                             handleNotification(msg);
-                            stopTimerTask();
+//                            stopTimerTask();
                         }
                     }
 //                    }

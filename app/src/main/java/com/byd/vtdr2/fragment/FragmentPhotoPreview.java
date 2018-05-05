@@ -29,6 +29,7 @@ import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
+import com.byd.vtdr2.utils.DownloadUtil;
 import com.byd.vtdr2.view.CustomDialog;
 import com.byd.vtdr2.view.MyViewPager;
 
@@ -201,7 +202,7 @@ public class FragmentPhotoPreview extends Fragment {
     }
 
 
-    @OnClick({R.id.btn_back_to_gridview, R.id.btn_share_preview, R.id.btn_delete_preview, R.id
+    @OnClick({R.id.btn_back_to_gridview, R.id.btn_share_preview, R.id.btn_export_preview,R.id.btn_delete_preview, R.id
             .btn_zoom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -212,6 +213,9 @@ public class FragmentPhotoPreview extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.btn_share_preview:
+                sharePhoto();
+                break;
+            case R.id.btn_export_preview:
                 countsDownload();
                 break;
             case R.id.btn_delete_preview:
@@ -439,6 +443,49 @@ public class FragmentPhotoPreview extends Fragment {
 
         } else {
             Toast.makeText(getActivity(), R.string.File_downloaded, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sharePhoto() {
+        String mGetFileName;
+        mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + photoLists.get
+                (currentItem).getName();
+        String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪" + mGetFileName
+                .substring(mGetFileName.lastIndexOf('/'));
+        final File file = new File(fileName);
+        if (!file.exists()) {
+            final DownloadUtil downloadUtil = DownloadUtil.get();
+            downloadUtil.download(mGetFileName, "行车记录仪", new DownloadUtil.OnDownloadListener() {
+                @Override
+                public void onDownloadSuccess() {
+                    Uri imageUri = Uri.fromFile(file);
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                    shareIntent.setType("image/*");
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+                }
+
+                @Override
+                public void onDownloading(final int progress) {
+                }
+
+                @Override
+                public void onDownloadFailed() {
+                }
+
+                @Override
+                public void onDownloadStart() {
+                }
+            });
+        } else {
+            Uri imageUri = Uri.fromFile(file);
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.setType("image/*");
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+
         }
     }
 }

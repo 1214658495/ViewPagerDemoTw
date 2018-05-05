@@ -49,9 +49,9 @@ import butterknife.Unbinder;
 public class FragmentRTVideo extends Fragment {
     private static final String TAG = "FragmentRTVideo";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
-    public  static ImageButton btnRtCapturePhoto;
+    public static ImageButton btnRtCapturePhoto;
     public static ImageButton ivRtLockVideo;
-    private static  ImageView ivRtRecordVideo;
+    private static ImageView ivRtRecordVideo;
     private static ImageView ivRtRecordVoice;
     Unbinder unbinder;
     private ProgressBar loadingView;
@@ -59,7 +59,7 @@ public class FragmentRTVideo extends Fragment {
     private static TextView tvCheckSdCard;
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     private AVOptions mAVOptions;
-    private  PLMediaPlayer mMediaPlayer;
+    private PLMediaPlayer mMediaPlayer;
     private IFragmentListener mListener;
     private SurfaceView svRecordVideo;
     private static ImageView ivIcRecord;
@@ -89,7 +89,7 @@ public class FragmentRTVideo extends Fragment {
         View view = inflater.inflate(R.layout.fragment_rtvideo, container, false);
         unbinder = ButterKnife.bind(this, view);
         btnRtCapturePhoto = view.findViewById(R.id.btn_rt_capture_photo);
-        ivRtLockVideo =view.findViewById(R.id.iv_rt_lock_video);
+        ivRtLockVideo = view.findViewById(R.id.iv_rt_lock_video);
         ivRtRecordVideo = view.findViewById(R.id.iv_rt_record_video);
         ivRtRecordVoice = view.findViewById(R.id.iv_rt_record_voice);
         svRecordVideo = view.findViewById(R.id.sv_recordVideo);
@@ -109,6 +109,7 @@ public class FragmentRTVideo extends Fragment {
 
     private void initData() {
         mRemoteCam.appStatus();
+        mRemoteCam.micStatus();
         ((MainActivity) getActivity()).isDialogShow = false;
         svRecordVideo.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -201,7 +202,7 @@ public class FragmentRTVideo extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-       // prepare();
+        // prepare();
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
         }
@@ -253,7 +254,7 @@ public class FragmentRTVideo extends Fragment {
                         setRecordState(false);
                     }
                     setMicState(isMicOn);
-                  //  mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
+                    //  mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
@@ -391,7 +392,6 @@ public class FragmentRTVideo extends Fragment {
             prepare();
         }
     };
-
 
 
     @Override
@@ -557,7 +557,7 @@ public class FragmentRTVideo extends Fragment {
 
     public void setRecordState(boolean isOn) {
         isRecord = isOn;
-        if (ivRtRecordVideo !=null) {
+        if (ivRtRecordVideo != null) {
             /*ivRtRecordVideo.setChecked(isOn);*/
             if (isOn) {
                 showRecordTag(true);
@@ -571,7 +571,7 @@ public class FragmentRTVideo extends Fragment {
 
     public void setMicState(boolean isOn) {
         isMicOn = isOn;
-        if (ivRtRecordVoice !=null) {
+        if (ivRtRecordVoice != null) {
             if (isOn) {
                 ivRtRecordVoice.setImageResource(R.mipmap.btn_record_voice_off);
             } else {
@@ -583,8 +583,7 @@ public class FragmentRTVideo extends Fragment {
     public void updateRecordTime(String time) {
     }
 
-    public void setImagerAple(boolean temp)
-    {
+    public void setImagerAple(boolean temp) {
         if (temp) {
             ivRtRecordVideo.setAlpha((float) 0.4);
             ivRtRecordVoice.setAlpha((float) 0.4);
@@ -596,8 +595,7 @@ public class FragmentRTVideo extends Fragment {
             ivRtLockVideo.setEnabled(false);
             ivRtRecordVideo.setEnabled(false);
 
-        }else
-        {
+        } else {
             ivRtRecordVideo.setAlpha((float) 1.0);
             ivRtRecordVoice.setAlpha((float) 1.0);
             btnRtCapturePhoto.setAlpha((float) 1.0);

@@ -38,8 +38,15 @@
                 android:id="@+id/btn_share_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:background="@drawable/btn_preview_share_selector" />
+
+            <ImageButton
+                android:id="@+id/btn_export_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@drawable/btn_preview_export_selector" />
 
             <ImageButton
                 android:id="@+id/btn_delete_preview"

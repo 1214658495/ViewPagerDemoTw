@@ -61,7 +61,7 @@
     <string name="card_not_enough">Card not enough</string>
     <string name="card_need_format">Unformatted Storage Card</string>
     <string name="sensor_issue">Video Signal Error</string>
-    <string name="video_locking">Video_locking</string>
+    <string name="video_locking">Video locking</string>
     <string name="immediately_format">Immediately format</string>
     <string name="later_format">Later format</string>
     <string name="card_need_format_detail">You can click [setting] to format</string>
@@ -74,5 +74,6 @@
     <string name="close_voice">close voice</string>
     <string name="voice_settingfail">voice setting fail</string>
     <string name="del_image_sure">Are you sure delete?</string>
+    <string name="update_firmware">Update firmware</string>
 
 </resources>
