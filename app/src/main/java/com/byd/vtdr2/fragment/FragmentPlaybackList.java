@@ -37,6 +37,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -143,6 +144,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public static FragmentVideoPreview fragmentVideoPreview;
     public static FragmentPhotoPreview fragmentPhotoPreview;
 
+    private ProgressBar listLoadingView;
+
     private List<Fragment> fragments;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     public PhotoWallAdapter mAdapter;
@@ -215,6 +218,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             container, @Nullable Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_playback, container, false);
+        listLoadingView = view.findViewById(R.id.listLoadingView);
         unbinder = ButterKnife.bind(this, view);
 
         int mode = ThemeManager.getInstance().getTheme();
@@ -302,7 +306,16 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             mPWD = "/tmp/SD0/NORMAL";
             listDirContents(mPWD);
         } else {
-            mGridViewList.setAdapter(mAdapter);
+            if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                mPWD = "/tmp/SD0/NORMAL";
+                listDirContents(mPWD);
+            } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                mGridViewList.setAdapter(mAdapter);
+            } else if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                mGridViewList.setAdapter(mAdapter);
+
+            }
+//            mGridViewList.setAdapter(mAdapter);
         }
 
 //        mPlayLists = new ArrayList<>();
@@ -311,7 +324,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-
             //屏幕高度
             screenHeight = dm.heightPixels;
             //屏幕宽度
@@ -452,6 +464,14 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             mAdapter.notifyDataSetChanged();
             mAdapter.isSelectedMap.clear();
 
+        }
+    }
+
+    public void showLoadView(boolean isShow) {
+        if (isShow) {
+            listLoadingView.setVisibility(View.VISIBLE);
+        } else {
+            listLoadingView.setVisibility(View.INVISIBLE);
         }
     }
 

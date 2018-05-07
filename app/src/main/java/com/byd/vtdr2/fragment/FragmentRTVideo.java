@@ -527,6 +527,12 @@ public class FragmentRTVideo extends Fragment {
                         lastClickTime3 = currentTime;
                         isMicOn = !isMicOn;
                         mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+                        // TODO: 2018/5/7 改变切换方式
+//                        if (isMicOn) {
+//                            mRemoteCam.stopMic();
+//                        } else {
+//                            mRemoteCam.startMic();
+//                        }
                     }
                 }
                 break;

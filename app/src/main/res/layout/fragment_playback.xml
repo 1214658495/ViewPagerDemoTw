@@ -187,6 +187,16 @@
 
     </GridView>
 
+    <ProgressBar
+        android:id="@+id/listLoadingView"
+        style="@style/ProgressBarStyle"
+        app:layout_constraintTop_toTopOf="@id/gv_dataList"
+        app:layout_constraintBottom_toBottomOf="@id/gv_dataList"
+        app:layout_constraintStart_toStartOf="@id/gv_dataList"
+        app:layout_constraintEnd_toEndOf="@id/gv_dataList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <FrameLayout
         android:id="@+id/fl_videoPlayPreview"
         android:layout_width="0dp"
