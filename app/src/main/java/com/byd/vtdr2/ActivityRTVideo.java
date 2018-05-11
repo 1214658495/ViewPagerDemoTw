@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -121,6 +122,8 @@ public class ActivityRTVideo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_rtvideo);
 
         Intent intent = getIntent();
@@ -546,6 +549,9 @@ public class ActivityRTVideo extends AppCompatActivity {
                     //release();
                     }
                 }
+                Intent intent = new Intent();
+                intent.putExtra("CurrentTime",CurrentTime);
+                setResult(RESULT_OK, intent);
                 this.finish();
 
                 break;
@@ -581,6 +587,9 @@ public class ActivityRTVideo extends AppCompatActivity {
                         //release();
                     }
                 }
+                Intent intent1 = new Intent();
+                intent1.putExtra("CurrentTime",CurrentTime);
+                setResult(RESULT_OK, intent1);
                 this.finish();
                 break;
             default:

@@ -13,6 +13,12 @@ public class ServerConfig {
 //	public static final String PADIP = "192.168.8.2";
 	public static final String VTDRIP = "192.168.195.6";
 	public static final String PADIP = "192.168.195.2";
+
+//	public static final int cmdPort = 7878;
+//	public static final int dataPort = 8787;
+    public static final int cmdPort = 50000;
+    public static final int dataPort = 50008;
+
 	public static final int RB_RECORD_VIDEO = 0;
 	public static final int RB_LOCK_VIDEO = 1;
 	public static final int RB_CAPTURE_PHOTO = 2;

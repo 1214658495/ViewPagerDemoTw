@@ -110,6 +110,8 @@ public class FragmentRTVideo extends Fragment {
     private void initData() {
         mRemoteCam.appStatus();
         mRemoteCam.micStatus();
+        mRemoteCam.getSystemState();
+
         ((MainActivity) getActivity()).isDialogShow = false;
         svRecordVideo.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -247,13 +249,13 @@ public class FragmentRTVideo extends Fragment {
                     loadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
-                    if (isRecord) {
+                 /*   if (isRecord) {
                         setRecordState(true);
 //                        showRecordTag(true);
                     } else {
                         setRecordState(false);
-                    }
-                    setMicState(isMicOn);
+                    }*/
+//                    setMicState(isMicOn);
                     //  mListener.onFragmentAction(IFragmentListener.ACTION_RECORD_TIME, null);
 //                    showToastTips(meta.toString());
                     break;
@@ -367,13 +369,22 @@ public class FragmentRTVideo extends Fragment {
     public void showCheckSdCordTag(boolean isSdInsert) {
         if (isSdInsert) {
             if (tvCheckSdCard != null) {
+                tvCheckSdCard.setText(R.string.card_removed);
                 tvCheckSdCard.setVisibility(View.INVISIBLE);
             }
         } else {
             if (tvCheckSdCard != null) {
+                tvCheckSdCard.setText(R.string.card_removed);
                 tvCheckSdCard.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public void showCheckSdCordState() {
+            if (tvCheckSdCard != null) {
+                tvCheckSdCard.setText(R.string.card_need_format);
+                tvCheckSdCard.setVisibility(View.VISIBLE);
+            }
     }
 
     public void sendReconnectMessage() {
@@ -526,13 +537,16 @@ public class FragmentRTVideo extends Fragment {
                     if (currentTime - lastClickTime3 > MINI_CLICK_DELAY) {
                         lastClickTime3 = currentTime;
                         isMicOn = !isMicOn;
-                        mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+//                        如下一句为旧协议
+//                        mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
                         // TODO: 2018/5/7 改变切换方式
-//                        if (isMicOn) {
-//                            mRemoteCam.stopMic();
-//                        } else {
-//                            mRemoteCam.startMic();
-//                        }
+                        if (isMicOn) {
+                            mRemoteCam.startMic();
+                            showToastTips(getString(R.string.open_voice));
+                        } else {
+                            mRemoteCam.stopMic();
+                            showToastTips(getString(R.string.close_voice));
+                        }
                     }
                 }
                 break;
@@ -590,6 +604,31 @@ public class FragmentRTVideo extends Fragment {
     }
 
     public void setImagerAple(boolean temp) {
+        if (temp) {
+            ivRtRecordVideo.setAlpha((float) 0.4);
+            ivRtRecordVoice.setAlpha((float) 0.4);
+            btnRtCapturePhoto.setAlpha((float) 0.4);
+            ivRtLockVideo.setAlpha((float) 0.4);
+
+            ivRtRecordVoice.setEnabled(false);
+            btnRtCapturePhoto.setEnabled(false);
+            ivRtLockVideo.setEnabled(false);
+            ivRtRecordVideo.setEnabled(false);
+
+        } else {
+            ivRtRecordVideo.setAlpha((float) 1.0);
+            ivRtRecordVoice.setAlpha((float) 1.0);
+            btnRtCapturePhoto.setAlpha((float) 1.0);
+            ivRtLockVideo.setAlpha((float) 1.0);
+            ivRtRecordVoice.setEnabled(true);
+            btnRtCapturePhoto.setEnabled(true);
+            ivRtLockVideo.setEnabled(true);
+            ivRtRecordVideo.setEnabled(true);
+
+        }
+
+    }
+    public void setImagerAple_SD(boolean temp) {
         if (temp) {
             ivRtRecordVideo.setAlpha((float) 0.4);
             ivRtRecordVoice.setAlpha((float) 0.4);

@@ -125,7 +125,7 @@ public class CmdChannelWIFI extends CmdChannel {
     public static boolean isSocketAvailable() {
         try {
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, 7878), 2000);
+            socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, ServerConfig.cmdPort), 2000);
             socket.close();
             socket = null;
             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK, null);

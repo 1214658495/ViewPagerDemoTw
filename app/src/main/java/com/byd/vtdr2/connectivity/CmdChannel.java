@@ -357,8 +357,9 @@ public abstract class CmdChannel {
     }
 
     public synchronized boolean listDir(String dir) {
-        if (!checkSessionID())
+        if (!checkSessionID()) {
             return false;
+        }
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_START_LS, null);
         return sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_LS
@@ -625,6 +626,12 @@ public abstract class CmdChannel {
                     } else if (parser.has("sdcard")) {
                         int value = parser.getInt("sdcard");
                         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSDCARD_ALERT, value);
+                    } else if (parser.has("photo")) {
+                        int value = parser.getInt("photo");
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDPHOTO_ALERT, value);
+                    } else if (parser.has("eventrecord")) {
+                        int value = parser.getInt("eventrecord");
+                        mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDEVENTRECORD_ALERT, value);
                     } else {
                         Log.e(CommonUtility.LOG_TAG, "unhandled notification " + parser + "!!!");
                     }
@@ -684,7 +691,18 @@ public abstract class CmdChannel {
                         }
                         break;
                     case AMBA_SET_SETTING:
-                        if (rval != 0) {
+                        if (rval == 0) {
+                            String typeSetting = parser.getString("type");
+                            str = parser.getString("param");
+                            switch (typeSetting) {
+                                case "micphone":
+                                    boolean isMicOn = "on".equalsIgnoreCase(str);
+                                    mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE, isMicOn);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else {
                             mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SET_SETTING, parser);
                         }
                         break;
@@ -744,10 +762,10 @@ public abstract class CmdChannel {
                                 int value = parser.getInt("sdcard");
                                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSDCARD_ALERT, value);
                             }
-//                            if (parser.has("record")) {
-//                                int value = parser.getInt("record");
-//                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDRECORD_ALERT, value);
-//                            }
+                            if (parser.has("record")) {
+                                int value = parser.getInt("record");
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE_INIT, value);
+                            }
                         } else {
                         }
                         break;

@@ -40,11 +40,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.byd.vtdr2.MainActivity;
 import com.byd.vtdr2.MessageEvent;
 import com.byd.vtdr2.Model;
+import com.byd.vtdr2.MyApplication;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
@@ -175,6 +177,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private Intent shareIntent;
     private int lastPosition = -1;
     public static MyTheard resush;
+    MyApplication myApplication;
 
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
@@ -202,6 +205,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myApplication = (MyApplication) (getActivity().getApplicationContext());
         Log.e(TAG, "onCreate: ");
         setRetainInstance(true);
     }
@@ -341,6 +345,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.rb_recordvideo:
+                        mGridViewList.setFastScrollAlwaysVisible(true);
+                        mGridViewList.setFastScrollEnabled(true);
+                        mGridViewList.setScrollbarFadingEnabled(true);
+
                         if (rbRecordvideo.isChecked()) {
                             currentRadioButton = ServerConfig.RB_RECORD_VIDEO;
                             mGridViewList.setNumColumns(1);
@@ -351,6 +359,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         }
                         break;
                     case R.id.rb_lockvideo:
+                        mGridViewList.setFastScrollAlwaysVisible(true);
+                        mGridViewList.setFastScrollEnabled(true);
+                        mGridViewList.setScrollbarFadingEnabled(true);
+
                         currentRadioButton = ServerConfig.RB_LOCK_VIDEO;
                         mGridViewList.setNumColumns(1);
                         showLockVideoList();
@@ -359,6 +371,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         }
                         break;
                     case R.id.rb_capturephoto:
+                        mGridViewList.setFastScrollAlwaysVisible(false);
+                        mGridViewList.setFastScrollEnabled(false);
+                        mGridViewList.setScrollbarFadingEnabled(false);
                         currentRadioButton = ServerConfig.RB_CAPTURE_PHOTO;
 
                         ColumnInfo colInfo = calculateColumnWidthAndCountInRow(screenWidth, 300, 12);
@@ -406,7 +421,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
         Collections.sort(models, new order());
         if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO && models.size() > 0) {
-            models.remove(0);
+            if (myApplication.getisRescod()) {
+                models.remove(0);
+            }
         }
         mPlayLists = models;
         if (getActivity() != null) {
@@ -699,101 +716,68 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 btnSelectall.setChecked(false);
                 break;
             case R.id.btn_share:
-//                share("测试",/2018-01-19-06-56-2000.JPG);
-                if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
-                    shareIntent = null;
-                    if (progressDialogFragment != null) {
-                        progressDialogFragment = null;
-                    }
-                    final int selectedCount = mSelectedLists.size();
-                    final ArrayList<Uri> localUriList = new ArrayList<>();
-                    for (int i = 0; i < selectedCount; i++) {
-                        doingDownFileCounts = i;
-                        String mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + mSelectedLists.get(i).getName();
-                        final String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
-                                + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
-                        final File file = new File(fileName);
-                        if (!file.exists()) {
-                            final DownloadUtil downloadUtil = DownloadUtil.get();
-                            downloadUtil.download(mGetFileName, "行车记录仪", new DownloadUtil.OnDownloadListener() {
-                                @Override
-                                public void onDownloadSuccess() {
-                                    // TODO: 2018/1/23 此处会异步多次调用，如何处理
-                                    synchronized (this) {
-                                        if (doingDownFileCounts == (selectedCount - 1)) {
-                                            if (progressDialogFragment != null) {
-                                                progressDialogFragment.dismiss();
-                                            }
-                                            localUriList.add(Uri.fromFile(file));
-                                            if (shareIntent == null) {
-                                                shareIntent = new Intent();
-                                                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
-                                                shareIntent.setType("image/*");
-                                                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
-                                            }
-                                        }
-                                    }
-                                }
+                final int selectedCount = mSelectedLists.size();
+                if (selectedCount == 0) {
+                    Toast.makeText(getContext(), R.string.select_file, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if (selectedCount > 9 || selectedCount == 0) {
+                    Toast.makeText(getContext(), R.string.download_num, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                shareIntent = null;
 
-                                @Override
-                                public void onDownloading(final int progress) {
-//                                    getActivity().runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            if (progressDialogFragment != null) {
-//                                                progressDialogFragment.setProgressText(progress);
-//                                            }
-//                                        }
-//                                    });
-                                }
+                final ArrayList<Uri> localUriList = new ArrayList<>();
+                for (int i = 0; i < selectedCount; i++) {
+                    String mGetFileName = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" +
+                            mSelectedLists.get(i).getName();
+                    final String fileName = Environment.getExternalStorageDirectory() + "/行车记录仪"
+                            + mGetFileName.substring(mGetFileName.lastIndexOf('/'));
+                    final File file = new File(fileName);
+                    localUriList.add(Uri.fromFile(file));
 
-                                @Override
-                                public void onDownloadFailed() {
-
-                                }
-
-                                @Override
-                                public void onDownloadStart() {
-//                                    synchronized (this) {
-//                                        if (progressDialogFragment == null) {
-//                                            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.downloading));
-//                                            progressDialogFragment.show(getActivity().getFragmentManager(), "text");
-//                                            progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
-//                                                @Override
-//                                                public void okButtonClick() {
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void cancelButtonClick() {
-//                                                    downloadUtil.cancelDownload();
-//                                                }
-//                                            });
-//                                        }
-//                                    }
-                                }
-                            });
-                        } else {
-                            localUriList.add(Uri.fromFile(file));
-//                            synchronized (this) {
-                            if (doingDownFileCounts == (selectedCount - 1)) {
-                                if (shareIntent == null) {
-                                    shareIntent = new Intent();
-                                    shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                    shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, localUriList);
-                                    shareIntent.setType("image/*");
-                                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+                    if (!file.exists()) {
+                        final DownloadUtil downloadUtil = DownloadUtil.get();
+                        downloadUtil.download(mGetFileName, "行车记录仪", new DownloadUtil
+                                .OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess() {
+                                synchronized (this) {
                                 }
                             }
-//                            }
+
+                            @Override
+                            public void onDownloading(final int progress) {
+
+                            }
+
+                            @Override
+                            public void onDownloadFailed() {
+
+                            }
+
+                            @Override
+                            public void onDownloadStart() {
+                            }
+                        });
+                    }
+                }
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (shareIntent == null) {
+                            shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
+                                    localUriList);
+                            shareIntent.setType("image/*");
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string
+                                    .share_to)));
                         }
                     }
-
-
-                } else {
-                    showTipDialog(getString(R.string.video_cannot_share));
-                }
+                }, 600);//600毫秒秒后执行Runnable中的run方法
                 break;
             case R.id.btn_export:
                 if (mSelectedLists.size() > 0) {

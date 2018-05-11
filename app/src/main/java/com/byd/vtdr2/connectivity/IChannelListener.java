@@ -60,6 +60,10 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_BYDSENSOR_ALERT = 0x39;
     final static int CMD_CHANNEL_EVENT_BYDRECORD_ALERT = 0x40;
     final static int CMD_CHANNEL_EVENT_BYDSDCARD_ALERT = 0x41;
+    final static int CMD_CHANNEL_EVENT_APP_STATE_INIT = 0x42;
+    final static int CMD_CHANNEL_EVENT_SDCARD_STATE_INIT = 0x43;
+    final static int CMD_CHANNEL_EVENT_BYDPHOTO_ALERT = 0x44;
+    final static int CMD_CHANNEL_EVENT_BYDEVENTRECORD_ALERT = 0x45;
 
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;

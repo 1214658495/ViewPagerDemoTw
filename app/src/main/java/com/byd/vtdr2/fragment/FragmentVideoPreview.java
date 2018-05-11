@@ -404,9 +404,13 @@ public class FragmentVideoPreview extends Fragment {
 
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                    LoadingView.setVisibility(View.GONE);
+                    break;
+
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     // TODO: 2018/3/12   java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.LinearLayout.setVisibility(int)' on a null object reference
                     LoadingView.setVisibility(View.GONE);
+
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
 //                    showToastTips(meta.toString());
@@ -504,7 +508,7 @@ public class FragmentVideoPreview extends Fragment {
                 intent.putExtra("fileName", fileName);
                 intent.putExtra("CurrentTime", CurrentTime);
                 intent.putExtra("url", url);
-                startActivity(intent);
+                startActivityForResult(intent,0);
                 break;
             case R.id.btn_start:
                 mMediaPlayer.start();
@@ -534,6 +538,9 @@ public class FragmentVideoPreview extends Fragment {
             tvCurrentTime.setText(generateTime(CurrentTime * 1000));
             tvEndTime.setText(generateTime(duration));
             sbMediaCtrlBar.setProgress((int) CurrentTime);
+            if (CurrentTime%10 ==0) {
+                mMediaPlayer.seekTo(CurrentTime*1000);
+            }
         }
 
         return currentPosition;
@@ -655,9 +662,10 @@ public class FragmentVideoPreview extends Fragment {
                             mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
                         }
-                        Thread.sleep(1010);
                         ++index;
                         ++CurrentTime;
+                        Thread.sleep(1010);
+
                     } catch (InterruptedException e) {
                         //捕获到异常之后，执行break跳出循环
                         break;
@@ -666,6 +674,15 @@ public class FragmentVideoPreview extends Fragment {
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0){
+            CurrentTime =(data.getIntExtra("CurrentTime",0));
         }
     }
 }
