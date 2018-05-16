@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_all_port"
-    tools:context="com.byd.vtdr2.ActivityRTVideo">
+    tools:context="com.byd.vtdr.ActivityRTVideo">
 
     <SurfaceView
         android:id="@+id/sv_videoPlayView_activity"
@@ -84,7 +84,7 @@
 
     <LinearLayout
         android:id="@+id/ll_bar_editVideo_activity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@mipmap/bg_text_item"
         android:gravity="center"
