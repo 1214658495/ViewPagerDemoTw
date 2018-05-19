@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -103,6 +104,8 @@ public class FragmentVideoPreview extends Fragment {
 //    private AudioManager audioManager;
     public boolean reload = false;
     private boolean mDragging;
+    private int lastTime;
+
 
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -161,6 +164,7 @@ public class FragmentVideoPreview extends Fragment {
         } else {
             fileName = url.substring(32);
         }
+//        setRetainInstance(true);
     }
 
     @Override
@@ -174,6 +178,9 @@ public class FragmentVideoPreview extends Fragment {
         LoadingView = view.findViewById(R.id.loadingView);
         btnStart = view.findViewById(R.id.btn_start);
         btnStop = view.findViewById(R.id.btn_stop);
+        if (savedInstanceState != null) {
+            lastTime = savedInstanceState.getInt("lastTime");
+        }
         initData();
         reload = true;
         return view;
@@ -263,6 +270,9 @@ public class FragmentVideoPreview extends Fragment {
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
 //            if (!mIsLiveStreaming) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
+//            Log.e(TAG, "prepare: mMediaPlayer.getCurrentPosition()" + mMediaPlayer.getCurrentPosition() );
+//            mMediaPlayer.seekTo(lastTime);
+//            sbMediaCtrlBar.setProgress(lastTime);
 //            }
             return;
         }
@@ -426,6 +436,9 @@ public class FragmentVideoPreview extends Fragment {
             // TODO: 2017/12/18 播放结束的逻辑交互处理
             isVideoStop = true;
             showControlBar();
+            //                播放完成再更新进度条
+            mHandler.removeMessages(SHOW_PROGRESS);
+
 //            CurrentTime =0;
 //            durationtime =0;
 //            long pos = setProgress();
@@ -498,6 +511,8 @@ public class FragmentVideoPreview extends Fragment {
                 isVideoStop = false;
                 mHandler.removeMessages(SHOW_CONTROLLER);
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+//                开始播放再更新进度条
+                mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
                 break;
             default:
                 break;
@@ -509,6 +524,10 @@ public class FragmentVideoPreview extends Fragment {
         if (mMediaPlayer == null) {
             return 0;
         }
+//        if (lastTime != 0) {
+//            mMediaPlayer.seekTo(lastTime);
+//            lastTime = 0;
+//        }
         long currentPosition = mMediaPlayer.getCurrentPosition();
         //Log.e(TAG, "setProgress: getCurrentPosition:" + currentPosition);
         long duration = mMediaPlayer.getDuration();
@@ -541,6 +560,7 @@ public class FragmentVideoPreview extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        mHandler.removeMessages(SHOW_PROGRESS);
     }
 
 
@@ -663,4 +683,12 @@ public class FragmentVideoPreview extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        lastTime = sbMediaCtrlBar.getProgress();
+        outState.putInt("lastTime",lastTime);
+    }
+
 }

@@ -874,11 +874,12 @@ public abstract class CmdChannel {
                     }
 
                     // continue to read until we got a valid JSON message
-//                    while (true) {
-                    while (fetchFlag) {
+                    while (true) {
+//                    while (fetchFlag) {
                         try {
                             new JSONObject(msg);
                             //msg = msg.replaceAll(".*",msg); 如上执行。
+                            mReplyReceived = true;
                             break;
                         } catch (JSONException e) {
                             ////Log.i(TAG, "JSON segment: " + msg);一般不执行
@@ -887,12 +888,12 @@ public abstract class CmdChannel {
                             msg += readFromChannel();
                             //msg = msg.replaceAll(".*",msg);
 
-                            try {
+                     /*       try {
                                 JSONObject parser = new JSONObject(msg);
                                 mReplyReceived = true;
                                 break;
                             } catch (JSONException e1) {
-                            }
+                            }*/
 //                            if (timerFlag == false) {
 //                                break;
 //                            }

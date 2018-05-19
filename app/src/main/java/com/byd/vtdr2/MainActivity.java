@@ -1320,7 +1320,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private void handleCmdChannelError(int type, Object param) {
         switch (type) {
             case IChannelListener.CMD_CHANNEL_ERROR_INVALID_TOKEN:
-                showConfirmDialog(getString(R.string.update_firmware));
+                showToastTips(getString(R.string.invalid_token));
                 break;
             case IChannelListener.CMD_CHANNEL_ERROR_TIMEOUT:
                 //showToastTips(getString(R.string.time_out));

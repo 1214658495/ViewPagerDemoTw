@@ -74,7 +74,7 @@
     <string name="close_voice">Close Voice</string>
     <string name="voice_settingfail">Voice Setting Fail</string>
     <string name="del_image_sure">Are You Sure Delete?</string>
-    <string name="update_firmware">Update Firmware</string>
+    <string name="invalid_token">Invalid Token</string>
     <string name="select_file">Please Select First</string>
 
 </resources>
