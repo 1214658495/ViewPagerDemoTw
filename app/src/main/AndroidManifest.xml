@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.byd.vtdr">
+    package="com.byd.vtdr2">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,7 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppWelcome">
-        <activity android:name="com.byd.vtdr.MainActivity">
+        <activity android:name="com.byd.vtdr2.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,15 +32,15 @@
         </activity>
         <!--<activity android:name="com.byd.vtdr2.MainActivity"-->
             <!--/>-->
-        <activity android:name="com.byd.vtdr.ActivityImagesViewPager"
+        <activity android:name="com.byd.vtdr2.ActivityImagesViewPager"
             android:screenOrientation="landscape"/>
-        <activity android:name="com.byd.vtdr.ActivityVideoViewPager" />
-        <activity android:name="com.byd.vtdr.ActivityRTVideo"
+        <activity android:name="com.byd.vtdr2.ActivityVideoViewPager" />
+        <activity android:name="com.byd.vtdr2.ActivityRTVideo"
             android:screenOrientation="landscape"
             />
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.byd.vtdr.fileProvider"
+            android:authorities="com.byd.vtdr2.fileProvider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data
