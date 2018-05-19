@@ -40,13 +40,11 @@ import butterknife.Unbinder;
 
 import static android.content.ContentValues.TAG;
 
-
 /**
  * Created by byd_tw on 2017/11/1.
  */
 
 public class FragmentVideoPreview extends Fragment {
-
 
     Unbinder unbinder;
     @BindView(R.id.sv_videoPlayView)
@@ -104,6 +102,8 @@ public class FragmentVideoPreview extends Fragment {
     private boolean ouTthread = false;
 //    private AudioManager audioManager;
     public boolean reload = false;
+    private boolean mDragging;
+
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -111,6 +111,10 @@ public class FragmentVideoPreview extends Fragment {
             switch (msg.what) {
                 case SHOW_PROGRESS:
                     long pos = setProgress();
+                    if (!mDragging) {
+                        msg = obtainMessage(SHOW_PROGRESS);
+                        sendMessageDelayed(msg,1000 - (pos % 1000));
+                    }
                     break;
                 case SHOW_CONTROLLER:
                     showControlBar();
@@ -227,34 +231,6 @@ public class FragmentVideoPreview extends Fragment {
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
-//    AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-//        @Override
-//        public void onAudioFocusChange(int focusChange) {
-//            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-//                if (mMediaPlayer.isPlaying()) {
-//                    mMediaPlayer.pause();
-//                }
-//
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-//                if (mMediaPlayer == null) {
-////                    ...
-//                } else if (!mMediaPlayer.isPlaying()) {
-//
-//                    mMediaPlayer.start();
-//
-//                }
-//                // Resume playback
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-//                if (mMediaPlayer.isPlaying()) {
-//
-//                    mMediaPlayer.stop();
-//                }
-//                audioManager.abandonAudioFocus(afChangeListener);
-//            }
-//        }
-//    };
-
-
     private void showControlBar() {
         if (mMediaPlayer == null) {
             return;
@@ -279,7 +255,6 @@ public class FragmentVideoPreview extends Fragment {
             }
         }
         isShowControl = !isShowControl;
-//
     }
 
     private void prepare() {
@@ -362,6 +337,8 @@ public class FragmentVideoPreview extends Fragment {
             * 视屏播放后开始进度条初始化
             * */
             sbMediaCtrlBar.setMax(durationtime);
+//            sbMediaCtrlBar.setThumbOffset(1);
+//            sbMediaCtrlBar.setMax(1000);
             sbMediaCtrlBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -376,6 +353,8 @@ public class FragmentVideoPreview extends Fragment {
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
+                    mHandler.removeMessages(SHOW_PROGRESS);
+                    mDragging = false;
 
                 }
 
@@ -384,11 +363,13 @@ public class FragmentVideoPreview extends Fragment {
                     long duration = mMediaPlayer.getDuration();
                     mMediaPlayer.seekTo(seekBar.getProgress() * 1000);
                     CurrentTime = seekBar.getProgress();
+                    mHandler.removeMessages(SHOW_PROGRESS);
+                    mDragging = false;
+                    mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
                 }
             });
             myThreadTimecount = new MyThreadTimecount();
-            myThreadTimecount.start();
-
+//            myThreadTimecount.start();
 
         }
     };
@@ -400,17 +381,13 @@ public class FragmentVideoPreview extends Fragment {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
-                    mMediaPlayer.seekTo(CurrentTime * 1000);//解决播放回退
+//                    mMediaPlayer.seekTo(CurrentTime * 1000);//解决播放回退
 
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                    LoadingView.setVisibility(View.GONE);
-                    break;
-
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     // TODO: 2018/3/12   java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.LinearLayout.setVisibility(int)' on a null object reference
                     LoadingView.setVisibility(View.GONE);
-
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
 //                    showToastTips(meta.toString());
@@ -533,13 +510,13 @@ public class FragmentVideoPreview extends Fragment {
             return 0;
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
+        //Log.e(TAG, "setProgress: getCurrentPosition:" + currentPosition);
         long duration = mMediaPlayer.getDuration();
         if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null && !isVideoStop) {
-            tvCurrentTime.setText(generateTime(CurrentTime * 1000));
+            tvCurrentTime.setText(generateTime(currentPosition));
             tvEndTime.setText(generateTime(duration));
-            sbMediaCtrlBar.setProgress((int) CurrentTime);
-            if (CurrentTime%10 ==0) {
-                mMediaPlayer.seekTo(CurrentTime*1000);
+            if (duration > 0) {
+                sbMediaCtrlBar.setProgress((int)(currentPosition/1000));
             }
         }
         return currentPosition;
@@ -663,7 +640,7 @@ public class FragmentVideoPreview extends Fragment {
                         }
                         ++index;
                         ++CurrentTime;
-                        Thread.sleep(1010);
+                        Thread.sleep(1000);
 
                     } catch (InterruptedException e) {
                         //捕获到异常之后，执行break跳出循环

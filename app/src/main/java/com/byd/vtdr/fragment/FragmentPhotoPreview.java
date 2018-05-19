@@ -202,7 +202,7 @@ public class FragmentPhotoPreview extends Fragment {
     }
 
 
-    @OnClick({R.id.btn_back_to_gridview, R.id.btn_share_preview, R.id.btn_export_preview,R.id.btn_delete_preview, R.id
+    @OnClick({R.id.btn_back_to_gridview, R.id.btn_share_preview, R.id.btn_export_preview, R.id.btn_delete_preview, R.id
             .btn_zoom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -357,8 +357,7 @@ public class FragmentPhotoPreview extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public void Dialoagview()
-    {
+    public void Dialoagview() {
 
         try {
             if ((this.customDialog != null) && this.customDialog.isShowing()) {

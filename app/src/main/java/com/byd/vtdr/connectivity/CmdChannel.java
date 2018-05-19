@@ -900,45 +900,25 @@ public abstract class CmdChannel {
                     }
 //                    if (timerFlag) {
                     addLog("<font color=#cc0029>" + msg + "<br ></font>");
-
                     if (msg.contains("}{")) {
                         Log.e(TAG, "警报！！！！！出现了粘包");
-                        //处理粘包第一段数据
-                        String tmpOne = msg.substring(0, msg.indexOf("}{") + 1);
-                        Log.e(TAG, tmpOne);
-                        if (tmpOne.contains("rval")) {
-                            handleResponse(tmpOne);
+                        String[] split = msg.split("\\}");
+                        for (String s : split) {
+                            String substring  = s + "}";
+                            Log.e(TAG, "run: "+ substring);
+                            if (substring.contains("rval")) {
+                                handleResponse(substring);
 
-                            mReplyReceived = true;
-                            stopTimerTask();
-                            synchronized (mRxLock) {
-                                mRxLock.notify();
-                            }
-                        } else {
-                            handleNotification(tmpOne);
+                                mReplyReceived = true;
+                                stopTimerTask();
+                                synchronized (mRxLock) {
+                                    mRxLock.notify();
+                                }
+                            } else {
+                                handleNotification(substring);
 //                            stopTimerTask();
-                        }
-                        //处理粘包第二段数据
-                        String tmpTwo = msg.substring(msg.lastIndexOf("}{") + 1);
-                        Log.e(TAG, tmpTwo);
-                        if (tmpTwo.contains("rval")) {
-                            handleResponse(tmpTwo);
-
-                            mReplyReceived = true;
-                            stopTimerTask();
-                            synchronized (mRxLock) {
-                                mRxLock.notify();
                             }
-                        } else {
-                            handleNotification(tmpTwo);
-//                            stopTimerTask();
                         }
-
-//                        mReplyReceived = true;
-//                        stopTimerTask();
-//                        synchronized (mRxLock) {
-//                            mRxLock.notify();
-//                        }
                     } else {
                         Log.e(TAG, msg);
                         if (msg.contains("rval")) {
