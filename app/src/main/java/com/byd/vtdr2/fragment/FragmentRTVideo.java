@@ -76,6 +76,7 @@ public class FragmentRTVideo extends Fragment {
     private static long lastClickTime3 = 0;
     private AddSingleButtonDialog addSingleButtonDialog;
     private FragmentTransaction fragmentTransaction;
+    public boolean isRTLocking;
 
 
     public static FragmentRTVideo newInstance() {
@@ -381,10 +382,10 @@ public class FragmentRTVideo extends Fragment {
     }
 
     public void showCheckSdCordState() {
-            if (tvCheckSdCard != null) {
-                tvCheckSdCard.setText(R.string.card_need_format);
-                tvCheckSdCard.setVisibility(View.VISIBLE);
-            }
+        if (tvCheckSdCard != null) {
+            tvCheckSdCard.setText(R.string.card_need_format);
+            tvCheckSdCard.setVisibility(View.VISIBLE);
+        }
     }
 
     public void sendReconnectMessage() {
@@ -524,6 +525,12 @@ public class FragmentRTVideo extends Fragment {
                     } else {
                         showToastTips(getString(R.string.video_locking));
                     }
+
+//                    if (!isRTLocking) {
+//                        mListener.onFragmentAction(IFragmentListener.ACTION_LOCK_VIDEO_START, null);
+//                    } else {
+//                        showToastTips(getString(R.string.video_locking));
+//                    }
                 }
                 break;
             case R.id.iv_rt_record_voice:
@@ -623,6 +630,7 @@ public class FragmentRTVideo extends Fragment {
         }
 
     }
+
     public void setImagerAple_SD(boolean temp) {
         if (temp) {
             ivRtRecordVideo.setAlpha((float) 0.4);

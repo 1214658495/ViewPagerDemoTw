@@ -25,7 +25,7 @@
 
     <string name="Pictures_success">Pictures Success</string>
     <string name="Pictures_fail">Pictures Fail</string>
-    <string name="LockVideo_success">LockVideo Start</string>
+    <string name="LockVideo_start">LockVideo Start</string>
     <string name="LockVideo_fail">LockVideo Fail</string>
     <string name="openVideo_fail">OpenVideo Fail</string>
     <string name="closeVideo_fail">CloseVideo Fail</string>
@@ -76,5 +76,6 @@
     <string name="del_image_sure">Are You Sure Delete?</string>
     <string name="invalid_token">Invalid Token</string>
     <string name="select_file">Please Select First</string>
+    <string name="LockVideo_end">LockVideo End</string>
 
 </resources>

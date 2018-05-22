@@ -155,6 +155,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private ThemeManager themeManager;
     MyApplication myApplication;
     private boolean hasCard;
+    private int valueEventRecord;
+    private boolean isLocking;
+    private boolean isCardInsert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -868,6 +871,67 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         break;
                     default:
                         break;
+
+                  /*  case ServerConfig.BYD_CARD_STATE_OK:
+                        hasCard = true;
+//                        if (isCardNoExist) {
+                            showWaitingDialog(getString(R.string.card_readying));
+                            fragmentRTVideo.showCheckSdCordTag(true);
+                            if (fragment == fragmentRTVideo) {
+                                fragmentRTVideo.setImagerAple_SD(false);
+                            }
+//                        }
+//                        isCardNoExist = false;
+
+                        break;
+
+                    case ServerConfig.BYD_CARD_STATE_NOCARD:
+                        hasCard = false;
+//                        isCardNoExist = true;
+                        fragmentRTVideo.showCheckSdCordTag(false);
+//                    showAddSingleButtonDialog(str);
+                        showConfirmDialog(getString(R.string.card_removed));
+                        if (fragment == fragmentPlaybackList) {
+                            fragmentPlaybackList.setRemoteCam(mRemoteCam);
+                            if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                                fragmentPlaybackList.showRecordList();
+                            } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                                fragmentPlaybackList.showLockVideoList();
+                            } else {
+                                fragmentPlaybackList.showCapturePhotoList();
+                            }
+                        }
+                        if (fragment == fragmentRTVideo) {
+                            fragmentRTVideo.setImagerAple_SD(true);
+                        }
+                        break;
+                    case ServerConfig.BYD_CARD_STATE_SMALL_NAND:
+                    case ServerConfig.BYD_CARD_STATE_NOT_MEM:
+                    case ServerConfig.BYD_CARD_STATE_SETROOT_FAIL:
+                    case ServerConfig.BYD_CARD_STATE_UNINIT:
+                        hasCard = true;
+                        showConfirmDialog(getString(R.string.card_issue));
+                        break;
+                    case ServerConfig.BYD_CARD_STATE_NEED_FORMAT:
+                        hasCard = true;
+//                        isCardNoExist = false;
+                        showDoubleImmeFormatDialog(getString(R.string.card_need_format));
+                        fragmentRTVideo.showCheckSdCordState();//显示需要格式化
+//                        showConfirmDialog(getString(R.string.card_need_format));
+                        if (fragment == fragmentRTVideo) {
+                            fragmentRTVideo.setImagerAple_SD(true);
+                        }
+                        break;
+                    case ServerConfig.BYD_CARD_STATE_NOT_ENOUGH:
+                        hasCard = true;
+                        showConfirmDialog(getString(R.string.card_not_enough));
+                        break;
+                    case ServerConfig.BYD_CARD_STATE_WP:
+                        hasCard = true;
+                        showConfirmDialog(getString(R.string.card_write_protect));
+                        break;
+                    default:
+                        break;*/
                 }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_BYDRECORD_ALERT:
@@ -902,6 +966,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                     fragmentPlaybackList.showCapturePhotoList();
                                 }
                             } else {
+                                if (customDialog != null && !isFinishing()) {
+                                    customDialog.dismiss();
+                                }
 //                                    防止格式化时，收到录像状态弹窗被隐藏
                             }
                         }
@@ -916,14 +983,37 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     case ServerConfig.REC_CAP_STATE_CAPTURE:
                         break;
                     case ServerConfig.REC_CAP_STATE_VF:
-//                        若不加这个判断，直接发获取appstatus会很容易出现粘包！！！
-//                        if (isCardNoExist) {
-//                            mRemoteCam.appStatus();
-//                        }
-//                        if (isCardNoExist) {
+                         if (!isCardNoExist) {
+                            if (fragment == fragmentRTVideo) {
+                                if (customDialog != null && !isFinishing()) {
+                                    customDialog.dismiss();
+                                }
+                                rgGroup.check(R.id.rb_realTimeVideo);
+                                fragmentRTVideo = FragmentRTVideo.newInstance();
+                                fragment = fragmentRTVideo;
+                                getSupportFragmentManager().beginTransaction().replace(flMain.getId(), fragment).commitAllowingStateLoss();
+                            } else if (fragment == fragmentPlaybackList) {
+                                if (customDialog != null && !isFinishing()) {
+                                    customDialog.dismiss();
+                                }
+                                fragmentPlaybackList.setRemoteCam(mRemoteCam);
+                                if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                                    fragmentPlaybackList.showRecordList();
+                                } else if (fragmentPlaybackList.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                                    fragmentPlaybackList.showLockVideoList();
+                                } else {
+                                    fragmentPlaybackList.showCapturePhotoList();
+                                }
+                            } else {
+                                if (customDialog != null && !isFinishing()) {
+                                    customDialog.dismiss();
+                                }
+//                                    防止格式化时，收到录像状态弹窗被隐藏
+                            }
+                        }
                         mRemoteCam.appStatus();
                         myApplication.setisRescod(false);
-//                        }
+//
                         break;
                     case ServerConfig.REC_CAP_STATE_TRANSIT_TO_VF:
 
@@ -960,11 +1050,10 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     case 0:
                         showToastTips(getString(R.string.Pictures_success));
                         break;
-                    case -14:
-                    case -17:
+                    case -2:
                         showToastTips(getString(R.string.Pictures_fail));
                         break;
-                    case -30:
+                    case -1:
                         showToastTips(getString(R.string.image_max));
                         break;
                     default:
@@ -972,15 +1061,22 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_BYDEVENTRECORD_ALERT:
-                int valueEventRecord = (int) param;
+                valueEventRecord = (int) param;
                 switch (valueEventRecord) {
                     case 0:
-                        showToastTips(getString(R.string.LockVideo_success));
+                        isLocking = false;
+//                        showToastTips(getString(R.string.LockVideo_start));
                         break;
-                    case -14:
-                        showToastTips(getString(R.string.LockVideo_fail));
+                    case 1:
+                        isLocking = true;
+                        showToastTips(getString(R.string.LockVideo_start));
+                        break;
+                    case 2:
+                        isLocking = false;
+                        showToastTips(getString(R.string.LockVideo_end));
                         break;
                     default:
+                        isLocking = false;
                         break;
                 }
                 break;
@@ -1025,9 +1121,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
             case IChannelListener.CMD_CHANNEL_EVENT_LOCK_VIDEO:
                 boolean isLockVideo = (boolean) param;
                 if (isLockVideo) {
-                    showToastTips(getString(R.string.LockVideo_success));
+                    showToastTips(getString(R.string.LockVideo_start));
 //                    锁定视频列表不显示
-                    if (fragmentPlaybackList != null) {
+               /*     if (fragmentPlaybackList != null) {
                         fragmentPlaybackList.isLockVideo = true;
                     }
                     new Handler().postDelayed(new Runnable() {
@@ -1037,7 +1133,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                                 fragmentPlaybackList.isLockVideo = false;
                             }
                         }
-                    },11000);
+                    },11000);*/
                 } else {
                     showToastTips(getString(R.string.LockVideo_fail));
                     if (fragmentRTVideo != null) {
@@ -1120,7 +1216,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 boolean isFormatSD = (boolean) param;
                 if (isFormatSD) {
 //                    showCrossDialog(getString(R.string.format_ok));
-                    showConfirmDialog(getString(R.string.format_finished));
+                    showToastTips(getString(R.string.format_finished));
                     /*myDialog = MyDialog.newInstance(1, getString(R.string.format_ok));
                     myDialog.show(getFragmentManager(), "FormatDone");*/
                     // TODO: 2018/1/5 如下发送后记录仪来不及反应，即无应答
@@ -1132,7 +1228,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         fragmentRTVideo.setImagerAple_SD(false);
                     }
                 } else {
-                    showDoubleFormatDialog(getString(R.string.format_fail));
+                    showToastTips(getString(R.string.format_fail));
                     if (fragment == fragmentRTVideo) {
                         fragmentRTVideo.setImagerAple_SD(true);
                     }
@@ -1277,15 +1373,35 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                     case ServerConfig.BYD_CARD_STATE_NOT_MEM:
                     case ServerConfig.BYD_CARD_STATE_SETROOT_FAIL:
                     case ServerConfig.BYD_CARD_STATE_UNINIT:
+                        hasCard = true;
                         break;
                     case ServerConfig.BYD_CARD_STATE_NEED_FORMAT:
                         hasCard = true;
                         break;
                     case ServerConfig.BYD_CARD_STATE_NOT_ENOUGH:
+                        hasCard = true;
                         showConfirmDialog(getString(R.string.card_not_enough));
                         break;
                     case ServerConfig.BYD_CARD_STATE_WP:
+                        hasCard = true;
                         showConfirmDialog(getString(R.string.card_write_protect));
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_EVENTRECORD_STATE_INIT:
+                valueEventRecord = (int) param;
+                switch (valueEventRecord) {
+                    case 0:
+//                        showToastTips(getString(R.string.LockVideo_success));
+                        break;
+                    case 1:
+                        isLocking = true;
+//                        showToastTips(getString(R.string.LockVideo_fail));
+                        break;
+                    case 2:
+//                        showToastTips(getString(R.string.LockVideo_fail));
                         break;
                     default:
                         break;
@@ -1789,7 +1905,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         countsOKdownload = 0;
                         downloading = false;
                         showdialogA = false;
-
+                        mRemoteCam.restartHttp();//重置记录仪Http
                     }
                 });
                 showdialogA = true;

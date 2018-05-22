@@ -93,6 +93,8 @@ public abstract class CmdChannel {
 //    private static final int BYD_VER_INFO = 0x802;
 //    private static final int BYD_SYSTEM_STATE = 0x803;
 //    private static final int AMBA_BYDNOTIFICATION = 0x804;
+//    private static final int AMBA_RESTHTTPSERVER= 0x702;
+
 
     /*新协议*/
     private static final int AMBA_GET_SETTING = 0x0010;
@@ -144,6 +146,7 @@ public abstract class CmdChannel {
     private static final int BYD_VER_INFO = 0x8020;
     private static final int BYD_SYSTEM_STATE = 0x8030;
     private static final int AMBA_BYDNOTIFICATION = 0x8040;
+    private static final int AMBA_RESTHTTPSERVER = 0x7020;
 
     private static final String ERR_CODE[] = {
             "OK",
@@ -599,6 +602,12 @@ public abstract class CmdChannel {
                 + ",\"msg_id\":" + AMBA_WIFI_RESTART + "}");
     }
 
+    public synchronized boolean restartHttp() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_RESTHTTPSERVER + "}");
+
+    }
+
     class QueueRunnable implements Runnable {
         private void handleNotification(String msg) {
             try {
@@ -766,6 +775,11 @@ public abstract class CmdChannel {
                                 int value = parser.getInt("record");
                                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE_INIT, value);
                             }
+                            if (parser.has("eventrecord")) {
+                                int value = parser.getInt("eventrecord");
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_EVENTRECORD_STATE_INIT, value);
+                            }
+
                         } else {
                         }
                         break;
@@ -888,9 +902,9 @@ public abstract class CmdChannel {
                             msg += readFromChannel();
                             //msg = msg.replaceAll(".*",msg);
 
-                     /*       try {
+                        /*    try {
                                 JSONObject parser = new JSONObject(msg);
-                                mReplyReceived = true;
+
                                 break;
                             } catch (JSONException e1) {
                             }*/
@@ -901,12 +915,13 @@ public abstract class CmdChannel {
                     }
 //                    if (timerFlag) {
                     addLog("<font color=#cc0029>" + msg + "<br ></font>");
+
                     if (msg.contains("}{")) {
                         Log.e(TAG, "警报！！！！！出现了粘包");
                         String[] split = msg.split("\\}");
                         for (String s : split) {
-                            String substring  = s + "}";
-                            Log.e(TAG, "run: "+ substring);
+                            String substring = s + "}";
+                            Log.e(TAG, "run: " + substring);
                             if (substring.contains("rval")) {
                                 handleResponse(substring);
 

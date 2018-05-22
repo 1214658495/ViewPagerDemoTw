@@ -389,6 +389,15 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         break;
                 }
 
+                disableRadioGroup(rgGroupDetail);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableRadioGroup(rgGroupDetail);
+                    }
+                }, 500);
+
 //                mGridViewList.setAdapter(mAdapter);
 
             }
@@ -426,9 +435,9 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 models.remove(0);
             }
         } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO && models.size() > 0) {
-            if (isLockVideo) {
+           /* if (isLockVideo) {
                 models.remove(0);
-            }
+            }*/
         }
         mPlayLists = models;
         if (getActivity() != null) {
@@ -1107,7 +1116,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                "http://192.168.42.1/SD0/PHOTO/2017-12-20-23-14-0100.JPG"
                 url = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" +
                         model.getName();
-                Glide.with(mContext).load(url).thumbnail(0.1f).into(imageView);
+                //                快速切换避免发送文件名错误
+                if (!url.contains("MP4")) {
+                    Glide.with(mContext).load(url).thumbnail(0.1f).into(imageView);
+                }
 
             } else {
                 if (currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
@@ -1122,6 +1134,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 }
                 imageView.setTag(url);
                 setImageView(url, imageView);
+//                快速切换避免发送文件名错误
+                if (url.contains("jpg") || (url.contains("NORMAL") && url.contains("LOCK")) || (url
+                        .contains("EVENT") && !url.contains("LOCK"))) {
+                    return view;
+                }
                 loadBitmaps(imageView, url);
 //                long interval = 5000 * 1000;
 //                RequestOptions options = new RequestOptions().frame(interval);
@@ -1736,6 +1753,23 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+
+    public void disableRadioGroup(RadioGroup testRadioGroup) {
+        if (testRadioGroup != null) {
+            for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+                testRadioGroup.getChildAt(i).setEnabled(false);
+            }
+        }
+    }
+
+    public void enableRadioGroup(RadioGroup testRadioGroup) {
+        if (testRadioGroup != null) {
+            for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+                testRadioGroup.getChildAt(i).setEnabled(true);
             }
         }
     }

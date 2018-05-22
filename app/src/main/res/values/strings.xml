@@ -29,7 +29,7 @@
     <string name="app_version">APP版本</string>
     <string name="Pictures_success">拍照成功</string>
     <string name="Pictures_fail">拍照失败</string>
-    <string name="LockVideo_success">开始锁定</string>
+    <string name="LockVideo_start">开始锁定</string>
     <string name="LockVideo_fail">锁定视频失败</string>
     <string name="openVideo_fail">开启录像失败</string>
     <string name="closeVideo_fail">关闭录像失败</string>
@@ -81,4 +81,5 @@
     <string name="del_image_sure">确认删除？</string>
     <string name="invalid_token">无法获得会话号</string>
     <string name="select_file">请先选择文件</string>
+    <string name="LockVideo_end">锁定视频完成</string>
 </resources>

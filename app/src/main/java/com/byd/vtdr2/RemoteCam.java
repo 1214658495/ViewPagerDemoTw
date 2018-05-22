@@ -819,6 +819,15 @@ public class RemoteCam
         });
     }
 
+    public void restartHttp() {
+        worker.execute(new Runnable() {
+            public void run() {
+                if (!connectToCmdChannel())
+                    return;
+                mCmdChannel.restartHttp();
+            }
+        });
+    }
     public void actionQuerySessionHolder() {
         worker.execute(new Runnable() {
             @Override
@@ -853,6 +862,7 @@ public class RemoteCam
 //        mListener.onChannelEvent(type, null);
 //    }*/
 
+    @Override
     public void onChannelEvent(int type, Object param, String... array) {
         JSONObject parser;
         int size;
