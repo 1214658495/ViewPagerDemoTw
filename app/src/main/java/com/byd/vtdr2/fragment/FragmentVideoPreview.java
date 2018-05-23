@@ -98,16 +98,13 @@ public class FragmentVideoPreview extends Fragment {
     private boolean isVideoStop;
 
     private int durationtime = 0;
-    public static  int CurrentTime = 0;
-    private MyThreadTimecount myThreadTimecount;
-    private boolean ouTthread = false;
-//    private AudioManager audioManager;
+    public static int CurrentTime = 0;
+    //    private AudioManager audioManager;
     public boolean reload = false;
     private boolean mDragging;
     private int lastTime;
 
-
-
+    private boolean isShowPlayer;
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -116,29 +113,25 @@ public class FragmentVideoPreview extends Fragment {
                     long pos = setProgress();
                     if (!mDragging) {
                         msg = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(msg,1000 - (pos % 1000));
+                        sendMessageDelayed(msg, 1000 - (pos % 1000));
                     }
                     break;
                 case SHOW_CONTROLLER:
                     showControlBar();
                     break;
-                case SHOW_END:
-                    CurrentTime = 0;
-                    long pos1 = setProgress();
-                    if (mMediaPlayer != null) {
-                        mMediaPlayer.seekTo(CurrentTime * 1000);
-                        mMediaPlayer.pause();
-                    }
-                    if (myThreadTimecount != null) {
-                        myThreadTimecount.pauseThread();//暂停线程运行
-                    }
-
-                    btnStop.setVisibility(View.INVISIBLE);
-                    btnStart.setVisibility(View.VISIBLE);
-                    isVideoStop = true;
-                    mHandler.removeMessages(SHOW_CONTROLLER);
-                    mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
-                    break;
+//                case SHOW_END:
+//                    CurrentTime = 0;
+//                    long pos1 = setProgress();
+//                    if (mMediaPlayer != null) {
+//                        mMediaPlayer.seekTo(CurrentTime * 1000);
+//                        mMediaPlayer.pause();
+//                    }
+//                    btnStop.setVisibility(View.INVISIBLE);
+//                    btnStart.setVisibility(View.VISIBLE);
+//                    isVideoStop = true;
+//                    mHandler.removeMessages(SHOW_CONTROLLER);
+//                    mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+//                    break;
                 default:
                     break;
             }
@@ -164,7 +157,6 @@ public class FragmentVideoPreview extends Fragment {
         } else {
             fileName = url.substring(32);
         }
-//        setRetainInstance(true);
     }
 
     @Override
@@ -270,9 +262,6 @@ public class FragmentVideoPreview extends Fragment {
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
 //            if (!mIsLiveStreaming) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
-//            Log.e(TAG, "prepare: mMediaPlayer.getCurrentPosition()" + mMediaPlayer.getCurrentPosition() );
-//            mMediaPlayer.seekTo(lastTime);
-//            sbMediaCtrlBar.setProgress(lastTime);
 //            }
             return;
         }
@@ -305,10 +294,6 @@ public class FragmentVideoPreview extends Fragment {
         super.onResume();
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-//            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (myThreadTimecount != null) {
-                myThreadTimecount.resumeThread();//恢复线程运行
-            }
             btnStop.setVisibility(View.VISIBLE);
             btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
@@ -321,12 +306,9 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.pause();
-            if (myThreadTimecount != null) {
-                myThreadTimecount.pauseThread();//恢复线程运行
-            }
-        }
+//        if (mMediaPlayer != null) {
+//            mMediaPlayer.pause();
+//        }
         isVideoStop = true;
     }
 
@@ -344,11 +326,9 @@ public class FragmentVideoPreview extends Fragment {
             long duration = mMediaPlayer.getDuration();
             durationtime = (int) (duration / 1000);
             /*
-            * 视屏播放后开始进度条初始化
-            * */
+             * 视屏播放后开始进度条初始化
+             * */
             sbMediaCtrlBar.setMax(durationtime);
-//            sbMediaCtrlBar.setThumbOffset(1);
-//            sbMediaCtrlBar.setMax(1000);
             sbMediaCtrlBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -370,7 +350,6 @@ public class FragmentVideoPreview extends Fragment {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    long duration = mMediaPlayer.getDuration();
                     mMediaPlayer.seekTo(seekBar.getProgress() * 1000);
                     CurrentTime = seekBar.getProgress();
                     mHandler.removeMessages(SHOW_PROGRESS);
@@ -378,9 +357,6 @@ public class FragmentVideoPreview extends Fragment {
                     mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
                 }
             });
-            myThreadTimecount = new MyThreadTimecount();
-//            myThreadTimecount.start();
-
         }
     };
 
@@ -391,8 +367,6 @@ public class FragmentVideoPreview extends Fragment {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
-//                    mMediaPlayer.seekTo(CurrentTime * 1000);//解决播放回退
-
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
@@ -400,7 +374,12 @@ public class FragmentVideoPreview extends Fragment {
                     LoadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
-//                    showToastTips(meta.toString());
+//                    旋转刷新
+                    if (lastTime != 0) {
+                        mMediaPlayer.seekTo((lastTime + 1) * 1000);
+                        sbMediaCtrlBar.setProgress((lastTime + 1));
+                        lastTime = 0;
+                    }
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
@@ -438,22 +417,6 @@ public class FragmentVideoPreview extends Fragment {
             showControlBar();
             //                播放完成再更新进度条
             mHandler.removeMessages(SHOW_PROGRESS);
-
-//            CurrentTime =0;
-//            durationtime =0;
-//            long pos = setProgress();
-//            mMediaPlayer.seekTo(CurrentTime * 1000);
-//            mMediaPlayer.pause();
-//            if (myThreadTimecount !=null) {
-//                myThreadTimecount.pauseThread();//暂停线程运行
-//            }
-//
-//            btnStop.setVisibility(View.INVISIBLE);
-//            btnStart.setVisibility(View.VISIBLE);
-//            isVideoStop = true;
-//            mHandler.removeMessages(SHOW_CONTROLLER);
-//            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
-
         }
     };
 
@@ -475,9 +438,6 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();
-                if (myThreadTimecount != null) {
-                    myThreadTimecount.pauseThread();//暂停线程运行
-                }
 
                 btnStop.setVisibility(View.INVISIBLE);
                 btnStart.setVisibility(View.VISIBLE);
@@ -487,9 +447,6 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_VideoZoom:
                 mMediaPlayer.pause();
-                if (myThreadTimecount != null) {
-                    myThreadTimecount.pauseThread();//暂停线程运行
-                }
 
                 btnStop.setVisibility(View.INVISIBLE);
                 btnStart.setVisibility(View.VISIBLE);
@@ -498,13 +455,10 @@ public class FragmentVideoPreview extends Fragment {
                 intent.putExtra("fileName", fileName);
                 intent.putExtra("CurrentTime", CurrentTime);
                 intent.putExtra("url", url);
-                startActivityForResult(intent,0);
+                startActivityForResult(intent, 0);
                 break;
             case R.id.btn_start:
                 mMediaPlayer.start();
-                if (myThreadTimecount != null) {
-                    myThreadTimecount.resumeThread();//恢复线程运行
-                }
 
                 btnStop.setVisibility(View.VISIBLE);
                 btnStart.setVisibility(View.INVISIBLE);
@@ -524,18 +478,13 @@ public class FragmentVideoPreview extends Fragment {
         if (mMediaPlayer == null) {
             return 0;
         }
-//        if (lastTime != 0) {
-//            mMediaPlayer.seekTo(lastTime);
-//            lastTime = 0;
-//        }
         long currentPosition = mMediaPlayer.getCurrentPosition();
-        //Log.e(TAG, "setProgress: getCurrentPosition:" + currentPosition);
         long duration = mMediaPlayer.getDuration();
-        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null && !isVideoStop) {
+        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
             tvCurrentTime.setText(generateTime(currentPosition));
             tvEndTime.setText(generateTime(duration));
             if (duration > 0) {
-                sbMediaCtrlBar.setProgress((int)(currentPosition/1000));
+                sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
             }
         }
         return currentPosition;
@@ -576,7 +525,6 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ouTthread = true;
 //        替换为如下一行
 //        release();
         new MyTheard().start();
@@ -602,93 +550,22 @@ public class FragmentVideoPreview extends Fragment {
         }
     }
 
-    private class MyThreadTimecount extends Thread {
-        private final Object lock = new Object();
-        private boolean pause = false;
-
-        /**
-         * 调用这个方法实现暂停线程
-         */
-        void pauseThread() {
-            pause = true;
-        }
-
-        /**
-         * 调用这个方法实现恢复线程的运行
-         */
-        void resumeThread() {
-            pause = false;
-            synchronized (lock) {
-                lock.notifyAll();
-            }
-        }
-
-        /**
-         * 注意：这个方法只能在run方法里调用，不然会阻塞主线程，导致页面无响应
-         */
-        void onPause() {
-            synchronized (lock) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            try {
-                int index = 0;
-                while (!ouTthread) {
-                    // 让线程处于暂停等待状态
-                    while (pause) {
-                        onPause();
-                    }
-                    try {
-                        System.out.println(index);
-                        Log.i(TAG, "time count = " + CurrentTime);
-                        if (CurrentTime > durationtime) {
-                            CurrentTime = 0;
-                            mHandler.sendEmptyMessage(SHOW_PROGRESS);
-                            mHandler.sendEmptyMessage(SHOW_END);
-
-                        } else {
-                            mHandler.sendEmptyMessage(SHOW_PROGRESS);
-
-                        }
-                        ++index;
-                        ++CurrentTime;
-                        Thread.sleep(1000);
-
-                    } catch (InterruptedException e) {
-                        //捕获到异常之后，执行break跳出循环
-                        break;
-                    }
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
+/*    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0){
+        if (requestCode == 0) {
             if (data != null) {
-                CurrentTime =(data.getIntExtra("CurrentTime",0));
+                CurrentTime = (data.getIntExtra("CurrentTime", 0));
             }
         }
-    }
+    }*/
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         lastTime = sbMediaCtrlBar.getProgress();
-        outState.putInt("lastTime",lastTime);
+        outState.putInt("lastTime", lastTime);
     }
 
 }

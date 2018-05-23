@@ -767,13 +767,13 @@ public abstract class CmdChannel {
                                 int value = parser.getInt("sensor");
                                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSENSOR_ALERT, value);
                             }
-                            if (parser.has("sdcard")) {
-                                int value = parser.getInt("sdcard");
-                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_BYDSDCARD_ALERT, value);
-                            }
                             if (parser.has("record")) {
                                 int value = parser.getInt("record");
                                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_APP_STATE_INIT, value);
+                            }
+                            if (parser.has("sdcard")) {
+                                int value = parser.getInt("sdcard");
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SDCARD_STATE_INIT, value);
                             }
                             if (parser.has("eventrecord")) {
                                 int value = parser.getInt("eventrecord");

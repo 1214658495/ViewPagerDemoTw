@@ -78,8 +78,7 @@ public class ActivityRTVideo extends AppCompatActivity {
 
     private int durationtime = 0 ;
     private int CurrentTime = 0;
-    private MyThreadTimecount myThreadTimecount;
-    private  boolean ouTthread = false ;
+    private boolean mDragging;
 //    private AudioManager audioManager;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -88,6 +87,10 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (msg.what) {
                 case SHOW_PROGRESS1:
                     long pos = setProgress();
+                    if (!mDragging) {
+                        msg = obtainMessage(SHOW_PROGRESS1);
+                        sendMessageDelayed(msg, 1000 - (pos % 1000));
+                    }
                     break;
                 case SHOW_CONTROLLER1:
                     showControlBar();
@@ -100,9 +103,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                         mMediaPlayer.seekTo(CurrentTime * 1000);
                         mMediaPlayer.pause();
                     }
-                    if (myThreadTimecount !=null) {
-                        myThreadTimecount.pauseThread();//暂停线程运行
-                    }
+
 
                     btnStop.setVisibility(View.INVISIBLE);
                     btnStart.setVisibility(View.VISIBLE);
@@ -198,39 +199,11 @@ public class ActivityRTVideo extends AppCompatActivity {
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-////        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-////            View decorView = getWindow().getDecorView();
-////            decorView.setSystemUiVisibility(
-////                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-////                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-////                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-////                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-////                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-////                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-////        }
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            View decorView = getWindow().getDecorView();
-//            decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        }
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//    }
-
     @Override
     public void onResume() {
         super.onResume();
         if (mMediaPlayer!=null && isVideoStop) {
             mMediaPlayer.start();
-//            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (myThreadTimecount != null) {
-                myThreadTimecount.resumeThread();//恢复线程运行
-            }
             btnStop.setVisibility(View.VISIBLE);
             btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
@@ -244,9 +217,6 @@ public class ActivityRTVideo extends AppCompatActivity {
         super.onPause();
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
-            if (myThreadTimecount != null) {
-                myThreadTimecount.pauseThread();//恢复线程运行
-            }
         }
         isVideoStop = true;
     }
@@ -254,13 +224,12 @@ public class ActivityRTVideo extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ouTthread =true;
 //        release();
         new MyTheard().start();
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
         unbinder.unbind();
-
+        mHandler.removeMessages(SHOW_PROGRESS1);
     }
 
 
@@ -270,77 +239,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             release();
         }
     }
-    private class MyThreadTimecount extends Thread {
-        private final Object lock = new Object();
-        private boolean pause = false;
 
-        /**
-         * 调用这个方法实现暂停线程
-         */
-        void pauseThread() {
-            pause = true;
-        }
-
-        /**
-         * 调用这个方法实现恢复线程的运行
-         */
-        void resumeThread() {
-            pause = false;
-            synchronized (lock) {
-                lock.notifyAll();
-            }
-        }
-
-        /**
-         * 注意：这个方法只能在run方法里调用，不然会阻塞主线程，导致页面无响应
-         */
-        void onPause() {
-            synchronized (lock) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            try {
-                int index = 0;
-                while (!ouTthread) {
-                    // 让线程处于暂停等待状态
-                    while (pause) {
-                        onPause();
-                    }
-                    try {
-                        System.out.println(index);
-                        Log.i(TAG, "time count = " + CurrentTime  );
-                        if (CurrentTime>durationtime)
-                        {
-                            CurrentTime =0;
-                            mHandler.sendEmptyMessage(SHOW_PROGRESS1);
-                            mHandler.sendEmptyMessage(SHOW_END1);
-
-                        }else {
-                            mHandler.sendEmptyMessage(SHOW_PROGRESS1);
-
-                        }
-                        Thread.sleep(1010);
-                        ++index;
-                        ++CurrentTime;
-
-                    } catch (InterruptedException e) {
-                        //捕获到异常之后，执行break跳出循环
-                        break;
-                    }
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-    }
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -359,10 +258,12 @@ public class ActivityRTVideo extends AppCompatActivity {
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
         long duration = mMediaPlayer.getDuration();
-        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null&&!isVideoStop) {
-            tvCurrentTime.setText(generateTime(CurrentTime*1000));
+        if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
+            tvCurrentTime.setText(generateTime(currentPosition));
             tvEndTime.setText(generateTime(duration));
-            sbMediaCtrlBar.setProgress((int) CurrentTime);
+            if (duration > 0) {
+                sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
+            }
         }
 
         return currentPosition;
@@ -467,7 +368,8 @@ public class ActivityRTVideo extends AppCompatActivity {
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-
+                    mHandler.removeMessages(SHOW_PROGRESS1);
+                    mDragging = false;
                 }
 
                 @Override
@@ -475,10 +377,11 @@ public class ActivityRTVideo extends AppCompatActivity {
                     long duration = mMediaPlayer.getDuration();
                     mMediaPlayer.seekTo(seekBar.getProgress() * 1000);
                     CurrentTime = seekBar.getProgress();
+                    mHandler.removeMessages(SHOW_PROGRESS1);
+                    mDragging = false;
+                    mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS1, 500);
                 }
             });
-            myThreadTimecount = new MyThreadTimecount();
-            myThreadTimecount.start();
 
 
         }
@@ -491,7 +394,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
-                    mMediaPlayer.seekTo(CurrentTime * 1000);
+//                    mMediaPlayer.seekTo(CurrentTime * 1000);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
@@ -534,6 +437,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             // TODO: 2017/12/18 播放结束的逻辑交互处理
             isVideoStop = true;
             showControlBar();
+            mHandler.removeMessages(SHOW_PROGRESS1);
         }
     };
 
@@ -548,18 +452,14 @@ public class ActivityRTVideo extends AppCompatActivity {
                     //release();
                     }
                 }
-                Intent intent = new Intent();
-                intent.putExtra("CurrentTime",CurrentTime);
-                setResult(RESULT_OK, intent);
+//                Intent intent = new Intent();
+//                intent.putExtra("CurrentTime",CurrentTime);
+//                setResult(RESULT_OK, intent);
                 this.finish();
 
                 break;
             case R.id.btn_stop3_activity:
                 mMediaPlayer.pause();
-                if (myThreadTimecount !=null) {
-                    myThreadTimecount.pauseThread();//暂停线程运行
-                }
-
                 btnStop.setVisibility(View.INVISIBLE);
                 btnStart.setVisibility(View.VISIBLE);
                 isVideoStop = true;
@@ -569,9 +469,6 @@ public class ActivityRTVideo extends AppCompatActivity {
 
             case R.id.btn_start3_activity:
                 mMediaPlayer.start();
-                if (myThreadTimecount !=null) {
-                    myThreadTimecount.resumeThread();//恢复线程运行
-                }
 
                 btnStop.setVisibility(View.VISIBLE);
                 btnStart.setVisibility(View.INVISIBLE);
@@ -586,9 +483,9 @@ public class ActivityRTVideo extends AppCompatActivity {
                         //release();
                     }
                 }
-                Intent intent1 = new Intent();
-                intent1.putExtra("CurrentTime",CurrentTime);
-                setResult(RESULT_OK, intent1);
+//                Intent intent1 = new Intent();
+//                intent1.putExtra("CurrentTime",CurrentTime);
+//                setResult(RESULT_OK, intent1);
                 this.finish();
                 break;
             default:
@@ -603,7 +500,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             System.gc();
         }
     }
-
+/*
     @Override
     public void onBackPressed() {
 //        if (mMediaPlayer != null) {
@@ -617,5 +514,5 @@ public class ActivityRTVideo extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         super.onBackPressed();
 //        this.finish();
-    }
+    }*/
 }

@@ -109,7 +109,7 @@ public class FragmentRTVideo extends Fragment {
     }
 
     private void initData() {
-        mRemoteCam.appStatus();
+//        mRemoteCam.appStatus();
         mRemoteCam.micStatus();
         mRemoteCam.getSystemState();
 
