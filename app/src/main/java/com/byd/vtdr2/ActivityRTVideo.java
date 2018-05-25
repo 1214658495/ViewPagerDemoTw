@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -27,7 +26,6 @@ import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -60,18 +58,13 @@ public class ActivityRTVideo extends AppCompatActivity {
     private LinearLayout llBarEditVideo;
     private ImageButton btnStart;
 
-    private ArrayList<ImageView> imageLists;
-    private ArrayList<String> urlsList;
     private String url;
     private String fileName;
-    //    private SurfaceHolder surfaceHolder;
-//    private IjkMediaPlayer player;
     private AVOptions mAVOptions;
     private PLMediaPlayer mMediaPlayer;
 
     private static final int SHOW_PROGRESS1 = 0;
     private static final int SHOW_CONTROLLER1 = 1;
-    private static final int SHOW_END1 = 3;
 
     private boolean isShowControl;
     private boolean isVideoStop;
@@ -79,7 +72,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     private int durationtime = 0 ;
     private int CurrentTime = 0;
     private boolean mDragging;
-//    private AudioManager audioManager;
+    private int lastTime = 0;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -87,36 +80,19 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (msg.what) {
                 case SHOW_PROGRESS1:
                     long pos = setProgress();
-                    if (!mDragging) {
+                   // if (!mDragging) {
                         msg = obtainMessage(SHOW_PROGRESS1);
                         sendMessageDelayed(msg, 1000 - (pos % 1000));
-                    }
+                   // }
                     break;
                 case SHOW_CONTROLLER1:
                     showControlBar();
-                    break;
-                case SHOW_END1:
-                    CurrentTime =0;
-                    long pos1 = setProgress();
-                    // TODO: 2018/4/10 闪退
-                    if (mMediaPlayer != null) {
-                        mMediaPlayer.seekTo(CurrentTime * 1000);
-                        mMediaPlayer.pause();
-                    }
-
-
-                    btnStop.setVisibility(View.INVISIBLE);
-                    btnStart.setVisibility(View.VISIBLE);
-                    isVideoStop = true;
-                    mHandler.removeMessages(SHOW_CONTROLLER1);
-                    mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
                     break;
                 default:
                     break;
             }
         }
     };
-
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -125,7 +101,6 @@ public class ActivityRTVideo extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_rtvideo);
-
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         if (url.contains("LOCK")) {
@@ -134,7 +109,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             fileName = url.substring(32);
         }
         CurrentTime = intent.getIntExtra("CurrentTime",0);
-
+        lastTime = CurrentTime;
         unbinder = ButterKnife.bind(this);
         tvCurrentTime = findViewById(R.id.tv_currentTime_activity);
         tvEndTime = findViewById(R.id.tv_endTime_activity);
@@ -158,14 +133,11 @@ public class ActivityRTVideo extends AppCompatActivity {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 releaseWithoutStop();
-//                使用如下多次点击视频会有闪退
-//                new MyTheard().start();
             }
         });
         svVideoPlayView.setOnClickListener(new View.OnClickListener() {
@@ -176,25 +148,17 @@ public class ActivityRTVideo extends AppCompatActivity {
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
             }
         });
-
-        mHandler.sendEmptyMessage(SHOW_PROGRESS1);
-        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
-
         mAVOptions = new AVOptions();
-
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
-
         // 1 -> hw codec enable, 0 -> disable [recommended]
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, 0);
-
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
-
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
@@ -207,6 +171,9 @@ public class ActivityRTVideo extends AppCompatActivity {
             btnStop.setVisibility(View.VISIBLE);
             btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
+
+            mHandler.sendEmptyMessage(SHOW_PROGRESS1);
+
             mHandler.removeMessages(SHOW_CONTROLLER1);
             mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
         }
@@ -217,6 +184,8 @@ public class ActivityRTVideo extends AppCompatActivity {
         super.onPause();
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
+            mHandler.removeMessages(SHOW_PROGRESS1);
+
         }
         isVideoStop = true;
     }
@@ -224,7 +193,6 @@ public class ActivityRTVideo extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        release();
         new MyTheard().start();
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
@@ -257,6 +225,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             return 0;
         }
         long currentPosition = mMediaPlayer.getCurrentPosition();
+
         long duration = mMediaPlayer.getDuration();
         if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
             tvCurrentTime.setText(generateTime(currentPosition));
@@ -307,16 +276,13 @@ public class ActivityRTVideo extends AppCompatActivity {
             }
         }
         isShowControl = !isShowControl;
-//
     }
 
     private void prepare() {
 
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
-//            if (!mIsLiveStreaming) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
-//            }
             return;
         }
 
@@ -357,10 +323,10 @@ public class ActivityRTVideo extends AppCompatActivity {
             sbMediaCtrlBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    CurrentTime = progress;
                     if (!fromUser) {
                         return;
                     }
-                    CurrentTime = progress;
                     long newposition = ( progress) * 1000;
                     String time = generateTime(newposition);
                     tvCurrentTime.setText(time);
@@ -383,7 +349,14 @@ public class ActivityRTVideo extends AppCompatActivity {
                 }
             });
 
-
+            //                    旋转刷新
+            if (lastTime != 0) {
+                mMediaPlayer.seekTo((lastTime + 1) * 1000);
+                sbMediaCtrlBar.setProgress((lastTime + 1));
+                lastTime = 0;
+            }
+            mHandler.sendEmptyMessage(SHOW_PROGRESS1);
+            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
         }
     };
 
@@ -394,15 +367,12 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     LoadingView.setVisibility(View.VISIBLE);
-//                    mMediaPlayer.seekTo(CurrentTime * 1000);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
-                    // TODO: 2018/3/12   java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.LinearLayout.setVisibility(int)' on a null object reference
                     LoadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
-//                    showToastTips(meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
@@ -449,12 +419,11 @@ public class ActivityRTVideo extends AppCompatActivity {
                 if (mMediaPlayer != null) {
                     if (mMediaPlayer.isPlaying()) {
                         mMediaPlayer.stop();
-                    //release();
                     }
                 }
-//                Intent intent = new Intent();
-//                intent.putExtra("CurrentTime",CurrentTime);
-//                setResult(RESULT_OK, intent);
+                Intent intent = new Intent();
+                intent.putExtra("CurrentTime",CurrentTime);
+                setResult(RESULT_OK, intent);
                 this.finish();
 
                 break;
@@ -480,12 +449,11 @@ public class ActivityRTVideo extends AppCompatActivity {
                 if (mMediaPlayer != null) {
                     if (mMediaPlayer.isPlaying()) {
                         mMediaPlayer.stop();
-                        //release();
                     }
                 }
-//                Intent intent1 = new Intent();
-//                intent1.putExtra("CurrentTime",CurrentTime);
-//                setResult(RESULT_OK, intent1);
+                Intent intent1 = new Intent();
+                intent1.putExtra("CurrentTime",CurrentTime);
+                setResult(RESULT_OK, intent1);
                 this.finish();
                 break;
             default:

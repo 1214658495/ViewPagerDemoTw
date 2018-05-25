@@ -81,7 +81,7 @@ public class MyApplication extends Application {
         themeManager = ThemeManager.getInstance();
 
 //如下为运动模式功能开启代码
-    /*    mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
         mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
 
         int mode = mBYDAutoEnergyDevice.getOperationMode();
@@ -94,7 +94,7 @@ public class MyApplication extends Application {
             //运动模式
             themeManager.updateTheme(Theme.SPORT);
             SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
-        }*/
+        }
 
     }
 

@@ -18,7 +18,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -30,7 +29,6 @@ import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -52,86 +50,52 @@ public class FragmentVideoPreview extends Fragment {
     SurfaceView svVideoPlayView;
     @BindView(R.id.ib_playVideo)
     ImageButton ibPlayVideo;
-
-    //    @BindView(R.id.loadingView)
     private LinearLayout LoadingView;
     @BindView(R.id.btn_back_to_videoGridview)
     ImageButton btnBackToVideoGridview;
     @BindView(R.id.tv_title_video)
     TextView tvTitleVideo;
-
-    //    @BindView(R.id.rl_bar_showVideoTitle)
-//    RelativeLayout rlBarShowVideoTitle;
     private RelativeLayout rlBarShowVideoTitle;
-    //    @BindView(R.id.btn_stop)
     private ImageButton btnStop;
-    //    @BindView(R.id.tv_currentTime)
-//    TextView tvCurrentTime;
     private TextView tvCurrentTime;
     @BindView(R.id.sb_mediaCtrlBar)
     SeekBar sbMediaCtrlBar;
-    //    @BindView(R.id.tv_endTime)
-//    TextView tvEndTime;
     private TextView tvEndTime;
     @BindView(R.id.btn_VideoZoom)
     ImageButton btnVideoZoom;
-    //    @BindView(R.id.ll_bar_editVideo)
-//    LinearLayout llBarEditVideo;
     private LinearLayout llBarEditVideo;
-    //    @BindView(R.id.btn_start)
     private ImageButton btnStart;
-
-    private ArrayList<ImageView> imageLists;
-    private ArrayList<String> urlsList;
     private String url;
     private String fileName;
-    //    private SurfaceHolder surfaceHolder;
-//    private IjkMediaPlayer player;
     private AVOptions mAVOptions;
     private PLMediaPlayer mMediaPlayer;
 
     private static final int SHOW_PROGRESS = 0;
     private static final int SHOW_CONTROLLER = 1;
     private static final int SHOW_END = 3;
-
     private boolean isShowControl;
     private boolean isVideoStop;
-
     private int durationtime = 0;
     public static int CurrentTime = 0;
-    //    private AudioManager audioManager;
     public boolean reload = false;
     private boolean mDragging;
     private int lastTime;
 
-    private boolean isShowPlayer;
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SHOW_PROGRESS:
                     long pos = setProgress();
-                    if (!mDragging) {
+
+                    //if (!mDragging) {
                         msg = obtainMessage(SHOW_PROGRESS);
                         sendMessageDelayed(msg, 1000 - (pos % 1000));
-                    }
+                   // }
                     break;
                 case SHOW_CONTROLLER:
                     showControlBar();
                     break;
-//                case SHOW_END:
-//                    CurrentTime = 0;
-//                    long pos1 = setProgress();
-//                    if (mMediaPlayer != null) {
-//                        mMediaPlayer.seekTo(CurrentTime * 1000);
-//                        mMediaPlayer.pause();
-//                    }
-//                    btnStop.setVisibility(View.INVISIBLE);
-//                    btnStart.setVisibility(View.VISIBLE);
-//                    isVideoStop = true;
-//                    mHandler.removeMessages(SHOW_CONTROLLER);
-//                    mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
-//                    break;
                 default:
                     break;
             }
@@ -141,7 +105,6 @@ public class FragmentVideoPreview extends Fragment {
     public static FragmentVideoPreview newInstance(String url) {
         FragmentVideoPreview fragmentVideoPreview = new FragmentVideoPreview();
         Bundle bundle = new Bundle();
-//        bundle.putStringArrayList("urlsList", urlsList);
         bundle.putString("url", url);
         fragmentVideoPreview.setArguments(bundle);
         return fragmentVideoPreview;
@@ -150,7 +113,6 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        urlsList = getArguments().getStringArrayList("urlsList");
         url = getArguments().getString("url");
         if (url.contains("LOCK")) {
             fileName = url.substring(31);
@@ -180,7 +142,6 @@ public class FragmentVideoPreview extends Fragment {
 
     private void initData() {
         tvTitleVideo.setText(fileName);
-
         svVideoPlayView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -195,8 +156,6 @@ public class FragmentVideoPreview extends Fragment {
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 releaseWithoutStop();
-//                使用如下多次点击视频会有闪退
-//                new MyTheard().start();
             }
         });
         svVideoPlayView.setOnClickListener(new View.OnClickListener() {
@@ -207,25 +166,17 @@ public class FragmentVideoPreview extends Fragment {
                 mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
             }
         });
-
-        mHandler.sendEmptyMessage(SHOW_PROGRESS);
-        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
-
         mAVOptions = new AVOptions();
-
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
-
         // 1 -> hw codec enable, 0 -> disable [recommended]
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, 0);
-
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
-
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
@@ -260,9 +211,7 @@ public class FragmentVideoPreview extends Fragment {
 
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
-//            if (!mIsLiveStreaming) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
-//            }
             return;
         }
 
@@ -297,6 +246,8 @@ public class FragmentVideoPreview extends Fragment {
             btnStop.setVisibility(View.VISIBLE);
             btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
+            mHandler.sendEmptyMessage(SHOW_PROGRESS);
+
             mHandler.removeMessages(SHOW_CONTROLLER);
             mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
         }
@@ -306,10 +257,12 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-//        if (mMediaPlayer != null) {
-//            mMediaPlayer.pause();
-//        }
         isVideoStop = true;
+        if (mMediaPlayer!= null) {
+            mMediaPlayer.pause();
+        }
+        mHandler.removeMessages(SHOW_PROGRESS);
+
     }
 
     @Override
@@ -332,10 +285,10 @@ public class FragmentVideoPreview extends Fragment {
             sbMediaCtrlBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    CurrentTime = progress;
                     if (!fromUser) {
                         return;
                     }
-                    CurrentTime = progress;
                     long newposition = (progress) * 1000;
                     String time = generateTime(newposition);
                     tvCurrentTime.setText(time);
@@ -345,7 +298,6 @@ public class FragmentVideoPreview extends Fragment {
                 public void onStartTrackingTouch(SeekBar seekBar) {
                     mHandler.removeMessages(SHOW_PROGRESS);
                     mDragging = false;
-
                 }
 
                 @Override
@@ -357,6 +309,15 @@ public class FragmentVideoPreview extends Fragment {
                     mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
                 }
             });
+
+            //                    旋转刷新
+            if (lastTime != 0) {
+                mMediaPlayer.seekTo((lastTime + 1) * 1000);
+                sbMediaCtrlBar.setProgress((lastTime + 1));
+                lastTime = 0;
+            }
+            mHandler.sendEmptyMessage(SHOW_PROGRESS);
+            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
         }
     };
 
@@ -374,12 +335,6 @@ public class FragmentVideoPreview extends Fragment {
                     LoadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
                     Log.i(TAG, "meta: " + meta.toString());
-//                    旋转刷新
-                    if (lastTime != 0) {
-                        mMediaPlayer.seekTo((lastTime + 1) * 1000);
-                        sbMediaCtrlBar.setProgress((lastTime + 1));
-                        lastTime = 0;
-                    }
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
@@ -410,9 +365,6 @@ public class FragmentVideoPreview extends Fragment {
         @Override
         public void onCompletion(PLMediaPlayer mp) {
             Log.e(TAG, "Play Completed !");
-//            showToastTips("Play Completed !");
-//            finish();
-            // TODO: 2017/12/18 播放结束的逻辑交互处理
             isVideoStop = true;
             showControlBar();
             //                播放完成再更新进度条
@@ -424,12 +376,9 @@ public class FragmentVideoPreview extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
-//                当未添加到返回栈时使用如下
-//                getFragmentManager().beginTransaction().remove(this).commit();
                 if (mMediaPlayer != null) {
                     if (mMediaPlayer.isPlaying()) {
                         mMediaPlayer.stop();
-//                    release();
                     }
                 }
                 reload = false;
@@ -438,7 +387,6 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();
-
                 btnStop.setVisibility(View.INVISIBLE);
                 btnStart.setVisibility(View.VISIBLE);
                 isVideoStop = true;
@@ -447,7 +395,6 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_VideoZoom:
                 mMediaPlayer.pause();
-
                 btnStop.setVisibility(View.INVISIBLE);
                 btnStart.setVisibility(View.VISIBLE);
                 isVideoStop = true;
@@ -459,7 +406,6 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_start:
                 mMediaPlayer.start();
-
                 btnStop.setVisibility(View.VISIBLE);
                 btnStart.setVisibility(View.INVISIBLE);
                 isVideoStop = false;
@@ -525,8 +471,6 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        替换为如下一行
-//        release();
         new MyTheard().start();
         AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
@@ -550,16 +494,22 @@ public class FragmentVideoPreview extends Fragment {
         }
     }
 
-/*    @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (data != null) {
-                CurrentTime = (data.getIntExtra("CurrentTime", 0));
+                if (mMediaPlayer !=null && sbMediaCtrlBar!= null) {
+                    CurrentTime = (data.getIntExtra("CurrentTime", 0));
+                    mMediaPlayer.seekTo((CurrentTime + 1) * 1000);
+                    sbMediaCtrlBar.setProgress((CurrentTime + 1));
+                    mHandler.sendEmptyMessage(SHOW_PROGRESS);
+                    mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+                }
             }
         }
-    }*/
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
