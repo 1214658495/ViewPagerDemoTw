@@ -63,13 +63,14 @@
 
         android:orientation="horizontal">
 
-        <com.byd.vtdr2.widget.ThemeLightButton
+        <com.byd.vtdr.widget.ThemeLightButton
             android:id="@+id/btn_dialogSure"
             style="@style/ButtonTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/immediately_format"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_11" />
 
         <ImageView
@@ -78,13 +79,14 @@
             android:layout_gravity="center"
             android:src="@mipmap/line_between_choose" />
 
-        <com.byd.vtdr2.widget.ThemeLightButton
+        <com.byd.vtdr.widget.ThemeLightButton
             android:id="@+id/btn_dialogCancel"
             style="@style/ButtonTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/later_format"
+            android:textAllCaps="false"
             android:textSize="@dimen/sp_11" />
     </LinearLayout>
 

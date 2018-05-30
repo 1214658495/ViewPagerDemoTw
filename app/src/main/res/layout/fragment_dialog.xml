@@ -48,7 +48,7 @@
 
         android:orientation="horizontal">
 
-        <com.byd.vtdr2.widget.ThemeLightButton
+        <com.byd.vtdr.widget.ThemeLightButton
             android:id="@+id/btn_dialogSure"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
@@ -63,7 +63,7 @@
             android:layout_gravity="center"
             android:src="@mipmap/line_between_choose" />
 
-        <com.byd.vtdr2.widget.ThemeLightButton
+        <com.byd.vtdr.widget.ThemeLightButton
             android:id="@+id/btn_dialogCancel"
             style="@style/ButtonStyle"
             android:layout_width="0dp"
