@@ -43,7 +43,7 @@
     <string name="format_finished">存储卡格式化已完成</string>
     <string name="format_fail">存储卡格式化失败</string>
     <string name="downloading">正在导出</string>
-    <string name="Download_completed">导出完成！</string>
+    <string name="Download_completed">导出至"行车记录仪"目录</string>
     <string name="Download_fail">导出失败</string>
     <string name="File_downloaded">文件已导出</string>
     <string name="open_permissions">请打开app的存储权限</string>
@@ -75,6 +75,7 @@
     <string name="version_newest">当前已是最新版本</string>
     <string name="storage_card_formatting">存储卡格式化中</string>
     <string name="delete_fail">删除失败</string>
+    <string name="delete_success">删除成功</string>
     <string name="open_voice">打开录音</string>
     <string name="close_voice">关闭录音</string>
     <string name="voice_settingfail">录音开关失败</string>
@@ -83,4 +84,6 @@
     <string name="select_file">请先选择文件</string>
     <string name="LockVideo_end">锁定视频完成</string>
     <string name="video_locking_format_later">正在锁定视频，请稍后再格式化</string>
+    <string name="export_address">文件将被导出到本地-行车记录仪文件夹</string>
+    <string name="deleting">删除中</string>
 </resources>

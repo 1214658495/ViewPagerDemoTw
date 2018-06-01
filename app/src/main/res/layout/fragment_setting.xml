@@ -74,7 +74,7 @@
     <!--android:textColor="@color/white"-->
     <!--android:textSize="@dimen/x32" />-->
 
-    <com.byd.vtdr.widget.ThemeLightButton
+    <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_memoryCard_format"
         style="@style/ButtonStyle"
         android:gravity="start|center"
@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
-    <com.byd.vtdr.widget.ThemeLightButton
+    <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_appVersion"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"

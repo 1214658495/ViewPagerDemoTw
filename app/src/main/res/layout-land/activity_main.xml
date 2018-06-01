@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_all_land"
-    tools:context="com.byd.vtdr.MainActivity">
+    tools:context="com.byd.vtdr2.MainActivity">
     <!--android:background="@mipmap/bg_all_land"-->
 
     <!--android:background="@mipbg_all_port_ver"-->
     <!--style="@style/ButtonStyle"-->
     <!--android:drawableStart="@drawable/btn_tab_back_selector"-->
 
-    <com.byd.vtdr.widget.ThemeLightButton
+    <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         app:layout_constraintLeft_toLeftOf="@id/btn_back"
         app:layout_constraintTop_toBottomOf="@id/btn_back">
 
-        <com.byd.vtdr.widget.ThemeLightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_realTimeVideo"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:text="@string/live_video"
             android:textSize="@dimen/sp_11" />
 
-        <com.byd.vtdr.widget.ThemeLightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_playbackList"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"
@@ -70,7 +70,7 @@
             android:text="@string/playback_list"
             android:textSize="@dimen/sp_11" />
 
-        <com.byd.vtdr.widget.ThemeLightRadioButton
+        <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_setting"
             style="@style/RadioButtonStyle"
             android:layout_width="match_parent"

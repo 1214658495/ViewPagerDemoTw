@@ -39,7 +39,7 @@
     <string name="format_finished">Format Finished</string>
     <string name="format_fail">Format Fail,Confirm To Reformat?</string>
     <string name="downloading">Exporting</string>
-    <string name="Download_completed">Export Completed</string>
+    <string name="Download_completed">Exported To Local</string>
     <string name="Download_fail">Export Fail</string>
     <string name="File_downloaded">File Exported</string>
     <string name="open_permissions">Please Open The App\'s Storage Permissions</string>
@@ -70,6 +70,7 @@
     <string name="version_newest">Version Is Newest</string>
     <string name="storage_card_formatting">Formatting</string>
     <string name="delete_fail">Delete Fail</string>
+    <string name="delete_success">Delete Success</string>
     <string name="open_voice">Open Voice</string>
     <string name="close_voice">Close Voice</string>
     <string name="voice_settingfail">Voice Setting Fail</string>
@@ -78,5 +79,7 @@
     <string name="select_file">Please Select First</string>
     <string name="LockVideo_end">LockVideo End</string>
     <string name="video_locking_format_later">Video Locking,Please Format Later</string>
+    <string name="export_address">File Export To Local-All-行车记录仪</string>
+    <string name="deleting">删除中</string>
 
 </resources>
