@@ -63,64 +63,42 @@ public class ActivityImagesViewPager extends AppCompatActivity {
     private int currentItem;
 
     private static final int FADE_OUT = 1;
+    private final MyHandler mHandler = new MyHandler(this);
 
-    public class MyHandler extends Handler {
+    public static class MyHandler extends Handler {
         private WeakReference<ActivityImagesViewPager> mActivityViewPager;
 
         MyHandler(ActivityImagesViewPager activityImagesViewPager) {
             mActivityViewPager = new WeakReference<>(activityImagesViewPager);
-
         }
 
         @Override
         public void handleMessage(Message msg) {
-//            ActivityImagesViewPager activityViewPager = mActivityViewPager.get();
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case FADE_OUT:
-                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
-                        rlBarShowTitle.setVisibility(View.INVISIBLE);
-                    }
+            ActivityImagesViewPager activityViewPager = mActivityViewPager.get();
+            if (activityViewPager != null) {
+//            super.handleMessage(msg);
+                switch (msg.what) {
+                    case FADE_OUT:
+                        if (activityViewPager.rlBarShowTitle.getVisibility() == View.VISIBLE) {
+                            activityViewPager.rlBarShowTitle.setVisibility(View.INVISIBLE);
+                        }
 
-                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
-                        llBarEditPhoto.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-                default:
-                    break;
+                        if (activityViewPager.llBarEditPhoto.getVisibility() == View.VISIBLE) {
+                            activityViewPager.llBarEditPhoto.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
-
-    private final MyHandler mHandler = new MyHandler(this);
-
-
-//    private Handler mHandler = new Handler(){
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case FADE_OUT:
-//                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
-//                        rlBarShowTitle.setVisibility(View.INVISIBLE);
-//                    }
-//
-//                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
-//                        llBarEditPhoto.setVisibility(View.INVISIBLE);
-//                    }
-//                    break;
-//                    default:
-//                        break;
-//            }
-//        }
-//    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.layout_images_viewpager);
         ButterKnife.bind(this);
@@ -191,7 +169,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
             case R.id.btn_share_preview:
                 break;
             case R.id.btn_delete_preview:
-                MyDialog myDialog = MyDialog.newInstance(0,getString(R.string.confirm_delete));
+                MyDialog myDialog = MyDialog.newInstance(0, getString(R.string.confirm_delete));
                 myDialog.show(getFragmentManager(), "delete");
                 myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
                     @Override
@@ -218,11 +196,11 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
     public class MyImagesPagerAdapter extends PagerAdapter {
 
-//        private ArrayList<String> imageUrls;
+        //        private ArrayList<String> imageUrls;
         private ArrayList<Model> mPhotoLists;
         private AppCompatActivity activity;
 
-        public MyImagesPagerAdapter(ArrayList<Model> mPhotoLists, AppCompatActivity activity) {
+        MyImagesPagerAdapter(ArrayList<Model> mPhotoLists, AppCompatActivity activity) {
 //            this.imageUrls = imageUrls;
             this.mPhotoLists = mPhotoLists;
             this.activity = activity;
@@ -233,7 +211,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 //            String url = imageUrls.get(position);
 //            String url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
 //            model.getName();
-            String url  = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + mPhotoLists.get(position).getName();
+            String url = "http://" + ServerConfig.VTDRIP + "/SD0/PHOTO/" + mPhotoLists.get(position).getName();
             PhotoView photoView = new PhotoView(activity);
             Glide.with(activity)
                     .load(url)
@@ -295,5 +273,11 @@ public class ActivityImagesViewPager extends AppCompatActivity {
         public int getItemPosition(Object object) {
             return POSITION_NONE;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 }

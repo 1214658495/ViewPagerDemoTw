@@ -55,7 +55,6 @@ public class FragmentPhotoPreview extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static CustomDialog customDialog = null;
 
-    // TODO: Rename and change types of parameters
     private ArrayList<Model> mParam1;
     private int mParam2;
     Unbinder unbinder;
@@ -158,6 +157,12 @@ public class FragmentPhotoPreview extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        mHandler.removeCallbacksAndMessages(null);
+        super.onDestroyView();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -234,30 +239,30 @@ public class FragmentPhotoPreview extends Fragment {
 
     private final MyHandler mHandler = new MyHandler(this);
 
-    public class MyHandler extends Handler {
-        private WeakReference<FragmentPhotoPreview> mActivityViewPager;
+    public static class MyHandler extends Handler {
+        private WeakReference<FragmentPhotoPreview> mFragmentPhotoPreview;
 
-        MyHandler(FragmentPhotoPreview activityImagesViewPager) {
-            mActivityViewPager = new WeakReference<>(activityImagesViewPager);
-
+        MyHandler(FragmentPhotoPreview fragmentPhotoPreview) {
+            mFragmentPhotoPreview = new WeakReference<>(fragmentPhotoPreview);
         }
 
         @Override
         public void handleMessage(Message msg) {
-//            ActivityImagesViewPager activityViewPager = mActivityViewPager.get();
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case FADE_OUT:
-                    if (rlBarShowTitle.getVisibility() == View.VISIBLE) {
-                        rlBarShowTitle.setVisibility(View.INVISIBLE);
-                    }
+            FragmentPhotoPreview fragmentPhotoPreview = mFragmentPhotoPreview.get();
+            if (fragmentPhotoPreview != null) {
+                switch (msg.what) {
+                    case FADE_OUT:
+                        if (fragmentPhotoPreview.rlBarShowTitle.getVisibility() == View.VISIBLE) {
+                            fragmentPhotoPreview.rlBarShowTitle.setVisibility(View.INVISIBLE);
+                        }
 
-                    if (llBarEditPhoto.getVisibility() == View.VISIBLE) {
-                        llBarEditPhoto.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-                default:
-                    break;
+                        if (fragmentPhotoPreview.llBarEditPhoto.getVisibility() == View.VISIBLE) {
+                            fragmentPhotoPreview.llBarEditPhoto.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -267,7 +272,7 @@ public class FragmentPhotoPreview extends Fragment {
         private ArrayList<Model> mPhotoLists;
         private MainActivity activity;
 
-        public MyImagesPagerAdapter(ArrayList<Model> mPhotoLists, FragmentPhotoPreview activity) {
+        MyImagesPagerAdapter(ArrayList<Model> mPhotoLists, FragmentPhotoPreview activity) {
 //            this.imageUrls = imageUrls;
             this.mPhotoLists = mPhotoLists;
             this.activity = (MainActivity) getActivity();

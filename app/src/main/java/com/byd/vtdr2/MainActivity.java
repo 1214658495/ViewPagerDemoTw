@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
     private boolean isMicOn;
     private ThemeManager themeManager;
     MyApplication myApplication;
-    private boolean hasCard;
+    private static boolean hasCard;
     private int valueEventRecord;
     private boolean isLocking;
     private boolean isCardInsert;
@@ -1065,7 +1065,11 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_FRIMWORK_VERSION:
                 String str1 = (String) param;
-                fragmentSetting.getfirmwareVersion(str1);
+                if ("null".equals(str1)) {
+                    showToastTips("固件版本获取失败");
+                } else {
+                    showConfirmDialog(getString(R.string.firmware_version) + " " + str1);
+                }
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_APP_STATE:
                 appStateStr = (String) param;
@@ -1122,6 +1126,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 int isFormatSD = (int) param;
                 switch (isFormatSD) {
                     case 0:
+                        if (customDialog != null && !isFinishing()) {
+                            customDialog.dismiss();
+                        }
                         showToastTips(getString(R.string.format_finished));
                         if (fragment == fragmentRTVideo) {
                             fragmentRTVideo.setImagerAple_SD(false);
@@ -1134,6 +1141,9 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         showToastTips(getString(R.string.video_locking_format_later));
                         break;
                     case -1:
+                        if (customDialog != null && !isFinishing()) {
+                            customDialog.dismiss();
+                        }
                         showToastTips(getString(R.string.format_fail));
                         if (fragment == fragmentRTVideo) {
                             fragmentRTVideo.setImagerAple_SD(true);

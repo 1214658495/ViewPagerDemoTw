@@ -34,11 +34,9 @@
         <!--<activity android:name="com.byd.vtdr2.MainActivity"-->
             <!--/>-->
         <activity android:name="com.byd.vtdr2.ActivityImagesViewPager"
-            android:screenOrientation="landscape"/>
-        <activity android:name="com.byd.vtdr2.ActivityVideoViewPager" />
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize"/>
         <activity android:name="com.byd.vtdr2.ActivityRTVideo"
-            android:screenOrientation="landscape"
-            />
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.byd.vtdr2.fileProvider"

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@mipmap/bg_setting"
+    android:layout_marginEnd="@dimen/dp_20"
     android:layout_marginStart="@dimen/dp_20"
-    android:layout_marginEnd="@dimen/dp_20">
+    android:background="@mipmap/bg_setting">
 
     <ImageView
         android:id="@+id/iv_line_settingtext"
@@ -22,8 +22,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        style="@style/TextStyle"
         android:id="@+id/tv_textSetting"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_40"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_bg_settingtext"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_bg_settingtext" />
-    <!--</RelativeLayout>-->
+
     <com.byd.lighttextview.LightButton
         android:id="@+id/btn_default_setting"
         style="@style/ButtonStyle"
@@ -54,60 +54,28 @@
         android:src="@mipmap/line_settingtext"
         app:layout_constraintBottom_toBottomOf="@+id/iv_bg_settingtext" />
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@mipmap/bg_settingdetail"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="@dimen/x60"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="@dimen/x84"-->
-    <!--android:text="@string/system"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="@dimen/x32" />-->
-
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_memoryCard_format"
         style="@style/ButtonStyle"
-        android:gravity="start|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:gravity="start|center"
         android:text="@string/storageCard_format"
         android:textAllCaps="false"
-        android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/tv_textSetting" />
-
-    <!--<com.byd.lighttextview.LightButton-->
-    <!--style="@style/ButtonTabStyle"-->
-    <!--android:layout_marginEnd="@dimen/x82"-->
-    <!--android:text="系统升级" />-->
-    <!--</LinearLayout>-->
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
         android:src="@mipmap/line_settingpartdetail"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="@dimen/x55"-->
-    <!--android:orientation="horizontal">-->
-
     <TextView
-        style="@style/TextStyle"
         android:id="@+id/tv_version"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/version"
@@ -115,58 +83,59 @@
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
-    <com.byd.lighttextview.LightButton
-        android:id="@+id/btn_firmwareVersion"
-        style="@style/ButtonStyle"
-        android:gravity="start|center"
+    <TextView
+        android:id="@+id/tv_appVersionDetail"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_6"
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
+        app:layout_constraintTop_toBottomOf="@id/tv_version" />
+
+    <com.byd.vtdr2.widget.ThemeLightButton
+        android:id="@+id/btn_firmwareVersion"
+        style="@style/ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|center"
         android:text="@string/firmware_version"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_28"
         android:textAllCaps="false"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_version" />
+        app:layout_constraintStart_toEndOf="@id/btn_memoryCard_format"
+        app:layout_constraintTop_toBottomOf="@id/tv_textSetting" />
 
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_appVersion"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="start|center"
         android:text="@string/app_version"
         android:textAllCaps="false"
-        android:gravity="start|center"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/tv_version"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
     <ImageView
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion"
-        android:src="@mipmap/line_settingpartdetail" />
+        android:src="@mipmap/line_settingpartdetail"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion" />
 
     <com.byd.lighttextview.LightButton
         android:id="@+id/update_test"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="start|center"
         android:text="@string/check_version"
         android:textAllCaps="false"
         android:visibility="gone"
-        android:gravity="start|center"
         app:layout_constraintStart_toEndOf="@id/btn_appVersion"
         app:layout_constraintTop_toTopOf="@id/btn_appVersion" />
-
-    <!--<Button-->
-        <!--style="@style/ButtonStyle"-->
-        <!--android:id="@+id/update_test"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="测试横竖屏"-->
-        <!--android:visibility="gone"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textSize="@dimen/sp_11"-->
-        <!--app:layout_constraintStart_toStartOf="@id/tv_textSetting"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/btn_appVersion" />-->
 
 </android.support.constraint.ConstraintLayout>

@@ -40,7 +40,7 @@
         android:background="@mipmap/bg_text_item"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sv_videoPlayView_activity">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btn_back_to_videoGridview"
@@ -89,7 +89,7 @@
         android:background="@mipmap/bg_text_item"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/sv_videoPlayView_activity"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/sv_videoPlayView_activity"
         app:layout_constraintRight_toRightOf="@id/sv_videoPlayView_activity">
 

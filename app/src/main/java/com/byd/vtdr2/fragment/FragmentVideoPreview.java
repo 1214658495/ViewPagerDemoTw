@@ -89,9 +89,9 @@ public class FragmentVideoPreview extends Fragment {
                     long pos = setProgress();
 
                     //if (!mDragging) {
-                        msg = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(msg, 1000 - (pos % 1000));
-                   // }
+                    msg = obtainMessage(SHOW_PROGRESS);
+                    sendMessageDelayed(msg, 1000 - (pos % 1000));
+                    // }
                     break;
                 case SHOW_CONTROLLER:
                     showControlBar();
@@ -243,13 +243,13 @@ public class FragmentVideoPreview extends Fragment {
         super.onResume();
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-            btnStop.setVisibility(View.VISIBLE);
-            btnStart.setVisibility(View.INVISIBLE);
+//            btnStop.setVisibility(View.VISIBLE);
+//            btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
             mHandler.sendEmptyMessage(SHOW_PROGRESS);
 
-            mHandler.removeMessages(SHOW_CONTROLLER);
-            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+//            mHandler.removeMessages(SHOW_CONTROLLER);
+//            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
         }
 
     }
@@ -258,11 +258,10 @@ public class FragmentVideoPreview extends Fragment {
     public void onPause() {
         super.onPause();
         isVideoStop = true;
-        if (mMediaPlayer!= null) {
+        if (mMediaPlayer != null) {
             mMediaPlayer.pause();
         }
         mHandler.removeMessages(SHOW_PROGRESS);
-
     }
 
     @Override
@@ -312,8 +311,8 @@ public class FragmentVideoPreview extends Fragment {
 
             //                    旋转刷新
             if (lastTime != 0) {
-                mMediaPlayer.seekTo((lastTime + 1) * 1000);
-                sbMediaCtrlBar.setProgress((lastTime + 1));
+                mMediaPlayer.seekTo((lastTime) * 1000);
+                sbMediaCtrlBar.setProgress((lastTime));
                 lastTime = 0;
             }
             mHandler.sendEmptyMessage(SHOW_PROGRESS);
@@ -394,8 +393,8 @@ public class FragmentVideoPreview extends Fragment {
                 break;
             case R.id.btn_VideoZoom:
                 mMediaPlayer.pause();
-                btnStop.setVisibility(View.INVISIBLE);
-                btnStart.setVisibility(View.VISIBLE);
+//                btnStop.setVisibility(View.INVISIBLE);
+//                btnStart.setVisibility(View.VISIBLE);
                 isVideoStop = true;
                 Intent intent = new Intent(view.getContext(), ActivityRTVideo.class);
                 intent.putExtra("fileName", fileName);
@@ -428,9 +427,7 @@ public class FragmentVideoPreview extends Fragment {
         if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
             tvCurrentTime.setText(generateTime(currentPosition));
             tvEndTime.setText(generateTime(duration));
-            if (duration > 0) {
-                sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
-            }
+            sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
         }
         return currentPosition;
     }
@@ -500,7 +497,7 @@ public class FragmentVideoPreview extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (data != null) {
-                if (mMediaPlayer !=null && sbMediaCtrlBar!= null) {
+                if (mMediaPlayer != null && sbMediaCtrlBar != null) {
                     CurrentTime = (data.getIntExtra("CurrentTime", 0));
                     mMediaPlayer.seekTo((CurrentTime) * 1000);
                     sbMediaCtrlBar.setProgress(CurrentTime);

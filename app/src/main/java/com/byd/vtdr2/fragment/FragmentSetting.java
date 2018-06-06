@@ -12,12 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.widget.ThemeLightButton;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +41,7 @@ public class FragmentSetting extends Fragment {
     ThemeLightButton btnMemoryCardFormat;
 
     @BindView(R.id.btn_firmwareVersion)
-    LightButton btnFirmwareVersion;
+    ThemeLightButton btnFirmwareVersion;
     @BindView(R.id.btn_appVersion)
     ThemeLightButton btnAppVersion;
     @BindView(R.id.btn_default_setting)
@@ -46,10 +49,13 @@ public class FragmentSetting extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.update_test)
     LightButton btnUpdateTest;
+    @BindView(R.id.tv_appVersionDetail)
+    TextView tvAppVersionDetail;
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
     public boolean reload = false;
+
     public static FragmentSetting newInstance() {
         FragmentSetting fragmentSetting = new FragmentSetting();
 
@@ -73,6 +79,7 @@ public class FragmentSetting extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         unbinder = ButterKnife.bind(this, view);
+        tvAppVersionDetail.setText(getAppVersion(Objects.requireNonNull(getContext())));
         return view;
     }
 
@@ -100,7 +107,7 @@ public class FragmentSetting extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion,R.id.update_test})
+    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.update_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_default_setting:
@@ -125,10 +132,7 @@ public class FragmentSetting extends Fragment {
                 mListener.onFragmentAction(IFragmentListener.ACTION_FRIMWORK_VERSION, null);
                 break;
             case R.id.btn_appVersion:
-                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
-//                String ver = getAppVersion(getContext());
-//                myDialog = MyDialog.newInstance(1, "AppSkinApplication" + getString(R.string.version) + ver);
-//                myDialog.show(getActivity().getFragmentManager(), "memoryCard");
+                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION, null);
                 break;
             case R.id.update_test:
 //                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
@@ -138,19 +142,11 @@ public class FragmentSetting extends Fragment {
         }
     }
 
-    /**
-     * 获取当前应用程序的版本号。
-     */
-    public void getfirmwareVersion(String str) {
-        myDialog = MyDialog.newInstance(1, getString(R.string.firmware_version) + str);
-        myDialog.show(getActivity().getFragmentManager(), "memoryCard");
-    }
-
-    public String getAppVersion(Context context) {
+    private String getAppVersion(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 //            return info.versionCode;
-            return info.versionName;
+            return "V" + info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

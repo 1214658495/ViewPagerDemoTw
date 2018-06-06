@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_preview_stop_big_selector"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/sv_videoPlayView"
         app:layout_constraintEnd_toEndOf="@id/sv_videoPlayView"
         app:layout_constraintStart_toStartOf="@id/sv_videoPlayView"

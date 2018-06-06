@@ -3,6 +3,7 @@ package com.byd.vtdr2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,10 +35,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static android.content.ContentValues.TAG;
-
 public class ActivityRTVideo extends AppCompatActivity {
-//类名若要更改，需提交给5部，不然无法实现全屏
+    private static final String TAG = "ActivityRTVideo";
+    //类名若要更改，需提交给5部，不然无法实现全屏
     Unbinder unbinder;
     @BindView(R.id.sv_videoPlayView_activity)
     SurfaceView svVideoPlayView;
@@ -69,7 +69,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     private boolean isShowControl;
     private boolean isVideoStop;
 
-    private int durationtime = 0 ;
+    private int durationtime = 0;
     private int CurrentTime = 0;
     private boolean mDragging;
     private int lastTime = 0;
@@ -83,10 +83,10 @@ public class ActivityRTVideo extends AppCompatActivity {
             switch (msg.what) {
                 case SHOW_PROGRESS1:
                     long pos = setProgress();
-                   // if (!mDragging) {
-                        msg = obtainMessage(SHOW_PROGRESS1);
-                        sendMessageDelayed(msg, 1000 - (pos % 1000));
-                   // }
+                    // if (!mDragging) {
+                    msg = obtainMessage(SHOW_PROGRESS1);
+                    sendMessageDelayed(msg, 1000 - (pos % 1000));
+                    // }
                     break;
                 case SHOW_CONTROLLER1:
                     showControlBar();
@@ -102,7 +102,7 @@ public class ActivityRTVideo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_rtvideo);
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
@@ -111,7 +111,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         } else {
             fileName = url.substring(32);
         }
-        CurrentTime = intent.getIntExtra("CurrentTime",0);
+        CurrentTime = intent.getIntExtra("CurrentTime", 0);
         lastTime = CurrentTime;
         unbinder = ButterKnife.bind(this);
         tvCurrentTime = findViewById(R.id.tv_currentTime_activity);
@@ -124,6 +124,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         initData();
 
     }
+
     private void initData() {
 
         tvTitleVideo.setText(fileName);
@@ -171,10 +172,10 @@ public class ActivityRTVideo extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (mMediaPlayer!=null && isVideoStop) {
+        if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-            btnStop.setVisibility(View.VISIBLE);
-            btnStart.setVisibility(View.INVISIBLE);
+//            btnStop.setVisibility(View.VISIBLE);
+//            btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
 
             mHandler.sendEmptyMessage(SHOW_PROGRESS1);
@@ -233,9 +234,7 @@ public class ActivityRTVideo extends AppCompatActivity {
         if (tvCurrentTime != null && tvEndTime != null && sbMediaCtrlBar != null) {
             tvCurrentTime.setText(generateTime(currentPosition));
             tvEndTime.setText(generateTime(duration));
-            if (duration > 0) {
-                sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
-            }
+            sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
         }
 
         return currentPosition;
@@ -255,6 +254,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             return String.format(Locale.US, "%02d:%02d", minutes, seconds);
         }
     }
+
     private void showControlBar() {
         if (mMediaPlayer == null) {
             return;
@@ -295,7 +295,7 @@ public class ActivityRTVideo extends AppCompatActivity {
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
-            /*mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);*/
+//            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
             mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
@@ -317,10 +317,10 @@ public class ActivityRTVideo extends AppCompatActivity {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
             long duration = mMediaPlayer.getDuration();
-            durationtime = (int)(duration/1000) ;
+            durationtime = (int) (duration / 1000);
             /*
-            * 视屏播放后开始进度条初始化
-            * */
+             * 视屏播放后开始进度条初始化
+             * */
             sbMediaCtrlBar.setMax(durationtime);
             sbMediaCtrlBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -329,7 +329,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                     if (!fromUser) {
                         return;
                     }
-                    long newposition = ( progress) * 1000;
+                    long newposition = (progress) * 1000;
                     String time = generateTime(newposition);
                     tvCurrentTime.setText(time);
                 }
@@ -353,8 +353,8 @@ public class ActivityRTVideo extends AppCompatActivity {
 
             //                    旋转刷新
             if (lastTime != 0) {
-                mMediaPlayer.seekTo((lastTime + 1) * 1000);
-                sbMediaCtrlBar.setProgress((lastTime + 1));
+                mMediaPlayer.seekTo((lastTime) * 1000);
+                sbMediaCtrlBar.setProgress((lastTime));
                 lastTime = 0;
             }
             mHandler.sendEmptyMessage(SHOW_PROGRESS1);
@@ -413,26 +413,26 @@ public class ActivityRTVideo extends AppCompatActivity {
         }
     };
 
-  /*  private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
+/*    private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
         @Override
         public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height, int videoSar, int videoDen) {
             Log.d(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
             // resize the display window to fit the screen
-//            if (width != 0 && height != 0) {
-//                float ratioW = (float) width / (float) mSurfaceWidth;
-//                float ratioH = (float) height / (float) mSurfaceHeight;
-//                float ratio = Math.max(ratioW, ratioH);
-//                width = (int) Math.ceil((float) width / ratio);
-//                height = (int) Math.ceil((float) height / ratio);
-//                FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(width, height);
-//                layout.gravity = Gravity.CENTER;
-//                svVideoPlayView.setLayoutParams(layout);
-//            }
+            if (width != 0 && height != 0) {
+                float ratioW = (float) width / (float) mSurfaceWidth;
+                float ratioH = (float) height / (float) mSurfaceHeight;
+                float ratio = Math.max(ratioW, ratioH);
+                width = (int) Math.ceil((float) width / ratio);
+                height = (int) Math.ceil((float) height / ratio);
+                FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(width, height);
+                layout.gravity = Gravity.CENTER;
+                svVideoPlayView.setLayoutParams(layout);
+            }
         }
     };*/
 
     @OnClick({R.id.btn_back_to_videoGridview, R.id.btn_stop3_activity, R.id
-            .btn_start3_activity,R.id.btn_VideoZoom})
+            .btn_start3_activity, R.id.btn_VideoZoom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_videoGridview:
@@ -442,7 +442,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                     }
                 }
                 Intent intent = new Intent();
-                intent.putExtra("CurrentTime",CurrentTime);
+                intent.putExtra("CurrentTime", CurrentTime);
                 setResult(RESULT_OK, intent);
                 this.finish();
 
@@ -473,7 +473,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                     }
                 }
                 Intent intent1 = new Intent();
-                intent1.putExtra("CurrentTime",CurrentTime);
+                intent1.putExtra("CurrentTime", CurrentTime);
                 setResult(RESULT_OK, intent1);
                 this.finish();
                 break;
@@ -481,6 +481,7 @@ public class ActivityRTVideo extends AppCompatActivity {
                 break;
         }
     }
+
     public void releaseWithoutStop() {
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(null);
@@ -489,12 +490,24 @@ public class ActivityRTVideo extends AppCompatActivity {
             System.gc();
         }
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra("CurrentTime",CurrentTime);
+        intent.putExtra("CurrentTime", CurrentTime);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
         this.finish();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.e(TAG, "onConfigurationChanged: ORIENTATION_PORTRAIT");
+        } else {
+            Log.e(TAG, "onConfigurationChanged: ORIENTATION_LANDSCAPE");
+        }
+    }
+
 }
