@@ -3,14 +3,12 @@ package com.byd.vtdr2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ActivityRTVideo extends AppCompatActivity {
+public class ActivityRTVideo extends BaseActivity {
     private static final String TAG = "ActivityRTVideo";
     //类名若要更改，需提交给5部，不然无法实现全屏
     Unbinder unbinder;
@@ -43,37 +41,33 @@ public class ActivityRTVideo extends AppCompatActivity {
     SurfaceView svVideoPlayView;
     @BindView(R.id.ib_playVideo3_activity)
     ImageButton ibPlayVideo;
-    private LinearLayout LoadingView;
     @BindView(R.id.btn_back_to_videoGridview)
     ImageButton btnBackToVideoGridview;
     @BindView(R.id.tv_title_video_activity)
     TextView tvTitleVideo;
-    private RelativeLayout rlBarShowVideoTitle;
-    private ImageButton btnStop;
-    private TextView tvCurrentTime;
     @BindView(R.id.sb_mediaCtrlBar_activity)
     SeekBar sbMediaCtrlBar;
 
+    private RelativeLayout rlBarShowVideoTitle;
+    private ImageButton btnStop;
+    private TextView tvCurrentTime;
+    private LinearLayout LoadingView;
     private TextView tvEndTime;
     private LinearLayout llBarEditVideo;
     private ImageButton btnStart;
-
     private String url;
     private String fileName;
     private AVOptions mAVOptions;
     private PLMediaPlayer mMediaPlayer;
-
     private static final int SHOW_PROGRESS1 = 0;
     private static final int SHOW_CONTROLLER1 = 1;
-
     private boolean isShowControl;
     private boolean isVideoStop;
+    private boolean mDragging;
 
     private int durationtime = 0;
     private int CurrentTime = 0;
-    private boolean mDragging;
     private int lastTime = 0;
-
     private int mSurfaceWidth = 0;
     private int mSurfaceHeight = 0;
 
@@ -158,9 +152,9 @@ public class ActivityRTVideo extends AppCompatActivity {
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
+        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 64 * 1024);
         // Some optimization with buffering mechanism when be set to 1
-        mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
+        mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);//2018/06/14  0 to 1
         // 1 -> hw codec enable, 0 -> disable [recommended]
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, 0);
         // whether start play automatically after prepared, default value is 1
@@ -174,12 +168,8 @@ public class ActivityRTVideo extends AppCompatActivity {
         super.onResume();
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-//            btnStop.setVisibility(View.VISIBLE);
-//            btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
-
             mHandler.sendEmptyMessage(SHOW_PROGRESS1);
-
             mHandler.removeMessages(SHOW_CONTROLLER1);
             mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
         }
@@ -198,11 +188,13 @@ public class ActivityRTVideo extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new MyTheard().start();
+        release();
+//        new MyTheard().start();
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
         unbinder.unbind();
         mHandler.removeMessages(SHOW_PROGRESS1);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 
@@ -216,14 +208,12 @@ public class ActivityRTVideo extends AppCompatActivity {
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
-//            如下被屏蔽，改为了在onDestroy中单线程执行
-// TODO: 2018/3/12 导致内存越来越大
+            // TODO: 2018/3/12 导致内存越来越大
             mMediaPlayer.release();
             mMediaPlayer = null;
             System.gc();
         }
     }
-
     private long setProgress() {
         // TODO: 2017/12/15 setprogress 的逻辑、handler的运行原理。
         if (mMediaPlayer == null) {
@@ -236,17 +226,14 @@ public class ActivityRTVideo extends AppCompatActivity {
             tvEndTime.setText(generateTime(duration));
             sbMediaCtrlBar.setProgress((int) (currentPosition / 1000));
         }
-
         return currentPosition;
     }
 
     private static String generateTime(long position) {
         int totalSeconds = (int) (position / 1000);
-
         int seconds = totalSeconds % 60;
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
-
         if (hours > 0) {
             return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes,
                     seconds);
@@ -288,15 +275,14 @@ public class ActivityRTVideo extends AppCompatActivity {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
             return;
         }
-
         try {
-            mMediaPlayer = new PLMediaPlayer(this, mAVOptions);
+            mMediaPlayer = new PLMediaPlayer(getApplicationContext(), mAVOptions);
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
 //            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
-            mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+            mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
             mMediaPlayer.prepareAsync();
@@ -342,7 +328,6 @@ public class ActivityRTVideo extends AppCompatActivity {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    long duration = mMediaPlayer.getDuration();
                     mMediaPlayer.seekTo(seekBar.getProgress() * 1000);
                     CurrentTime = seekBar.getProgress();
                     mHandler.removeMessages(SHOW_PROGRESS1);
@@ -413,24 +398,6 @@ public class ActivityRTVideo extends AppCompatActivity {
         }
     };
 
-/*    private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
-        @Override
-        public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height, int videoSar, int videoDen) {
-            Log.d(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
-            // resize the display window to fit the screen
-            if (width != 0 && height != 0) {
-                float ratioW = (float) width / (float) mSurfaceWidth;
-                float ratioH = (float) height / (float) mSurfaceHeight;
-                float ratio = Math.max(ratioW, ratioH);
-                width = (int) Math.ceil((float) width / ratio);
-                height = (int) Math.ceil((float) height / ratio);
-                FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(width, height);
-                layout.gravity = Gravity.CENTER;
-                svVideoPlayView.setLayoutParams(layout);
-            }
-        }
-    };*/
-
     @OnClick({R.id.btn_back_to_videoGridview, R.id.btn_stop3_activity, R.id
             .btn_start3_activity, R.id.btn_VideoZoom})
     public void onViewClicked(View view) {
@@ -490,7 +457,6 @@ public class ActivityRTVideo extends AppCompatActivity {
             System.gc();
         }
     }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
@@ -498,16 +464,6 @@ public class ActivityRTVideo extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         super.onBackPressed();
         this.finish();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Log.e(TAG, "onConfigurationChanged: ORIENTATION_PORTRAIT");
-        } else {
-            Log.e(TAG, "onConfigurationChanged: ORIENTATION_LANDSCAPE");
-        }
     }
 
 }

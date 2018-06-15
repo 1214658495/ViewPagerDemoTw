@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/**
+ * @author byd_tw
+ */
 public class Utils {
 
     public static boolean isNetworkAvailable(Context context) {

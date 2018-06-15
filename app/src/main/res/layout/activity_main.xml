@@ -40,7 +40,7 @@
     <RadioGroup
         android:id="@+id/rg_group"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_30"
         android:orientation="horizontal"

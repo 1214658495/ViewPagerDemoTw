@@ -1,6 +1,7 @@
 package com.byd.vtdr2;
 
 import android.app.Application;
+import android.content.Context;
 import android.hardware.bydauto.energy.AbsBYDAutoEnergyListener;
 import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.Message;
 
 import com.byd.vtdr2.widget.Theme;
 import com.byd.vtdr2.widget.ThemeManager;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,8 +29,11 @@ public class MyApplication extends Application {
     private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
     public boolean isRescod;
-    private Handler modelChange = new Handler() {
+    private RemoteCam mRemoteCam;
+    public boolean isRemoteCreate;
+    private RefWatcher refWatcher;
 
+    private Handler modelChange = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
@@ -42,7 +48,6 @@ public class MyApplication extends Application {
                 EventBus.getDefault().post(new MessageEvent());
             }
         }
-
     };
 
     AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
@@ -57,13 +62,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        SkinCircleImageViewManager.init(this);
-//        SkinMaterialManager.init(this);
-//        SkinConstraintManager.init(this);
-//        SkinCardViewManager.init(this);
-//        SkinFlycoTabLayoutManager.init(this);
-//        SkinCompatManager.init(this).loadSkin();
-//        SkinCompatManager.init(this)
         SkinCompatManager.withoutActivity(this)
 //                .addStrategy(new CustomSDCardLoader())          // 自定义加载策略，指定SDCard路径
 //                .addInflater(new SkinMaterialViewInflater())    // material design
@@ -80,8 +78,8 @@ public class MyApplication extends Application {
 
         themeManager = ThemeManager.getInstance();
 
-//如下为运动模式功能开启代码
-        mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
+        //如下为运动模式功能开启代码
+  /*      mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
         mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
 
         int mode = mBYDAutoEnergyDevice.getOperationMode();
@@ -94,16 +92,41 @@ public class MyApplication extends Application {
             //运动模式
             themeManager.updateTheme(Theme.SPORT);
             SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+        }*/
+
+        mRemoteCam = new RemoteCam(this);
+
+        refWatcher = setupLeakCanary();
+
+    }
+
+    private RefWatcher setupLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return RefWatcher.DISABLED;
         }
-
+        return LeakCanary.install(this);
     }
 
-    public void setisRescod(boolean is)
-    {
-        isRescod = is ;
+    public static RefWatcher getRefWatcher(Context context) {
+        MyApplication myApplication = (MyApplication) context.getApplicationContext();
+        return myApplication.refWatcher;
     }
-    public boolean getisRescod()
-    {
+
+    public void setisRescod(boolean is) {
+        isRescod = is;
+    }
+
+    public boolean getisRescod() {
         return isRescod;
+    }
+
+    public void setRemoteCam(RemoteCam remoteCam) {
+        mRemoteCam = remoteCam;
+    }
+
+    public RemoteCam getRemoteCam() {
+        return mRemoteCam;
     }
 }

@@ -31,10 +31,12 @@ import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
- * Created by byd_tw on 2017/11/28.
+ *
+ * @author byd_tw
+ * @date 2017/11/28
  */
 
-public class ActivityImagesViewPager extends AppCompatActivity {
+public class ActivityImagesViewPager extends BaseActivity {
     //类名若要更改，需提交给5部，不然无法实现全屏
     private static final String TAG = "ActivityImagesViewPager";
     @BindView(R.id.vp_viewPager)
@@ -63,7 +65,7 @@ public class ActivityImagesViewPager extends AppCompatActivity {
     private int currentItem;
 
     private static final int FADE_OUT = 1;
-    private final MyHandler mHandler = new MyHandler(this);
+    private MyHandler mHandler = new MyHandler(this);
 
     public static class MyHandler extends Handler {
         private WeakReference<ActivityImagesViewPager> mActivityViewPager;
@@ -76,7 +78,6 @@ public class ActivityImagesViewPager extends AppCompatActivity {
         public void handleMessage(Message msg) {
             ActivityImagesViewPager activityViewPager = mActivityViewPager.get();
             if (activityViewPager != null) {
-//            super.handleMessage(msg);
                 switch (msg.what) {
                     case FADE_OUT:
                         if (activityViewPager.rlBarShowTitle.getVisibility() == View.VISIBLE) {
@@ -277,7 +278,23 @@ public class ActivityImagesViewPager extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+        mHandler = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Intent intent = new Intent(ServerConfig.BORADCAST_ACTION_TAKEPHOTO);
+      /*  Intent intent = new Intent(ServerConfig.BORADCAST_ACTION_EXIT);
+//        intent.setAction(ServerConfig.BORADCAST_ACTION_EXIT);
+//        intent.setAction(ServerConfig.BORADCAST_ACTION_TAKEPHOTO);
+        intent.setPackage("com.byd.vtdr2");
+//        intent.putExtra("extra_key_command", "extra_command_takephoto");
+        intent.putExtra("extra_key_command", "extra_command_exit");
+        sendBroadcast(intent);*/
+        super.onBackPressed();
     }
 }

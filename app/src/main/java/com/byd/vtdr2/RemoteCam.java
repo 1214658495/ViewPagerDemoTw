@@ -50,10 +50,8 @@ public class RemoteCam
 
     public Boolean uiStatusSessionFlag;
     public static final int CAM_CONNECTIVITY_INVALID = 0;
-    public static final int CAM_CONNECTIVITY_BT_BT = 1;
     public static final int CAM_CONNECTIVITY_BLE_WIFI = 2;
     public static final int CAM_CONNECTIVITY_WIFI_WIFI = 3;
-    public static final int CAM_CONNECTIVITY_BT_WIFI = 4;
     public static final int CAM_CONNECTIVITY_BLE = 5;
 
     public String connectionMode;

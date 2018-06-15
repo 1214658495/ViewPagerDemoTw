@@ -80,6 +80,7 @@
     <string name="LockVideo_end">LockVideo End</string>
     <string name="video_locking_format_later">Video Locking,Please Format Later</string>
     <string name="export_address">File Export To Local-All-行车记录仪</string>
-    <string name="deleting">删除中</string>
+    <string name="deleting">deleting</string>
+    <string name="get_firmware_version_fail">Get Firmware Version Fail</string>
 
 </resources>

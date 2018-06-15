@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/dp_20"
     android:layout_marginStart="@dimen/dp_20"
-    android:background="@mipmap/bg_setting">
+    >
 
     <ImageView
         android:id="@+id/iv_line_settingtext"
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/line_settingpartdetail"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
     <TextView
@@ -80,6 +80,7 @@
         android:layout_height="wrap_content"
         android:text="@string/version"
         android:textSize="@dimen/sp_10"
+        android:layout_marginTop="@dimen/dp_11"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
@@ -88,10 +89,11 @@
         style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_6"
-        android:textSize="@dimen/sp_10"
-        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
-        app:layout_constraintTop_toBottomOf="@id/tv_version" />
+        android:textSize="@dimen/sp_9"
+        android:layout_marginStart="@dimen/dp_5"
+        app:layout_constraintStart_toEndOf="@id/tv_textSetting"
+        app:layout_constraintBottom_toBottomOf="@id/tv_version"
+        app:layout_constraintTop_toTopOf="@id/tv_version" />
 
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_firmwareVersion"
@@ -103,7 +105,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginStart="@dimen/dp_28"
         android:textAllCaps="false"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/btn_memoryCard_format"
         app:layout_constraintTop_toBottomOf="@id/tv_textSetting" />
 
@@ -123,8 +125,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/line_settingpartdetail"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@id/btn_firmwareVersion" />
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
     <com.byd.lighttextview.LightButton
         android:id="@+id/update_test"

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -50,14 +51,11 @@ public class FragmentVideoPreview extends Fragment {
     SurfaceView svVideoPlayView;
     @BindView(R.id.ib_playVideo)
     ImageButton ibPlayVideo;
-    private LinearLayout LoadingView;
     @BindView(R.id.btn_back_to_videoGridview)
     ImageButton btnBackToVideoGridview;
     @BindView(R.id.tv_title_video)
     TextView tvTitleVideo;
-    private RelativeLayout rlBarShowVideoTitle;
-    private ImageButton btnStop;
-    private TextView tvCurrentTime;
+
     @BindView(R.id.sb_mediaCtrlBar)
     SeekBar sbMediaCtrlBar;
     private TextView tvEndTime;
@@ -69,10 +67,13 @@ public class FragmentVideoPreview extends Fragment {
     private String fileName;
     private AVOptions mAVOptions;
     private PLMediaPlayer mMediaPlayer;
+    private RelativeLayout rlBarShowVideoTitle;
+    private ImageButton btnStop;
+    private TextView tvCurrentTime;
+    private ProgressBar loadingView;
 
     private static final int SHOW_PROGRESS = 0;
     private static final int SHOW_CONTROLLER = 1;
-    private static final int SHOW_END = 3;
     private boolean isShowControl;
     private boolean isVideoStop;
     private int durationtime = 0;
@@ -87,7 +88,6 @@ public class FragmentVideoPreview extends Fragment {
             switch (msg.what) {
                 case SHOW_PROGRESS:
                     long pos = setProgress();
-
                     //if (!mDragging) {
                     msg = obtainMessage(SHOW_PROGRESS);
                     sendMessageDelayed(msg, 1000 - (pos % 1000));
@@ -129,7 +129,7 @@ public class FragmentVideoPreview extends Fragment {
         tvEndTime = view.findViewById(R.id.tv_endTime);
         rlBarShowVideoTitle = view.findViewById(R.id.rl_bar_showVideoTitle);
         llBarEditVideo = view.findViewById(R.id.ll_bar_editVideo);
-        LoadingView = view.findViewById(R.id.loadingView);
+        loadingView = view.findViewById(R.id.loadingView);
         btnStart = view.findViewById(R.id.btn_start);
         btnStop = view.findViewById(R.id.btn_stop);
         if (savedInstanceState != null) {
@@ -170,7 +170,7 @@ public class FragmentVideoPreview extends Fragment {
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
+        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 64 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
         // 1 -> hw codec enable, 0 -> disable [recommended]
@@ -216,14 +216,13 @@ public class FragmentVideoPreview extends Fragment {
         }
 
         try {
-            mMediaPlayer = new PLMediaPlayer(getActivity(), mAVOptions);
+            mMediaPlayer = new PLMediaPlayer(getActivity().getApplicationContext(), mAVOptions);
 
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
-
-            mMediaPlayer.setWakeMode(getActivity(), PowerManager.PARTIAL_WAKE_LOCK);
+            mMediaPlayer.setWakeMode(getActivity().getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.setDisplay(svVideoPlayView.getHolder());
             mMediaPlayer.prepareAsync();
@@ -243,15 +242,9 @@ public class FragmentVideoPreview extends Fragment {
         super.onResume();
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
-//            btnStop.setVisibility(View.VISIBLE);
-//            btnStart.setVisibility(View.INVISIBLE);
             isVideoStop = false;
             mHandler.sendEmptyMessage(SHOW_PROGRESS);
-
-//            mHandler.removeMessages(SHOW_CONTROLLER);
-//            mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
         }
-
     }
 
     @Override
@@ -326,14 +319,13 @@ public class FragmentVideoPreview extends Fragment {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
-                    LoadingView.setVisibility(View.VISIBLE);
+                    loadingView.setVisibility(View.VISIBLE);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     // TODO: 2018/3/12   java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.LinearLayout.setVisibility(int)' on a null object reference
-                    LoadingView.setVisibility(View.GONE);
+                    loadingView.setVisibility(View.GONE);
                     HashMap<String, String> meta = mMediaPlayer.getMetadata();
-                    Log.i(TAG, "meta: " + meta.toString());
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
@@ -453,6 +445,7 @@ public class FragmentVideoPreview extends Fragment {
         unbinder.unbind();
         reload = false;
         mHandler.removeMessages(SHOW_PROGRESS);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 
@@ -468,16 +461,18 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new MyTheard().start();
-        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        audioManager.abandonAudioFocus(null);
+        release();
+//        new MyTheard().start();
+
+            AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            audioManager.abandonAudioFocus(null);
+
     }
 
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
-//            如下被屏蔽，改为了在onDestroy中单线程执行
-// TODO: 2018/3/12 导致内存越来越大
+            // TODO: 2018/3/12 导致内存越来越大
             mMediaPlayer.release();
             mMediaPlayer = null;
             System.gc();
@@ -507,7 +502,6 @@ public class FragmentVideoPreview extends Fragment {
             }
         }
     }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

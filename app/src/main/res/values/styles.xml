@@ -11,7 +11,7 @@
     <style name="AppWelcome" parent="Theme.AppCompat">
         <!-- Customize your theme here.Theme.AppCompat.Light.NoActionBar.android:Theme.Material.NoActionBar -->
         <!--如下为启动页，但系统默认不做加载-->
-        <item name="android:windowBackground">@drawable/bg_welcome</item>
+        <!--<item name="android:windowBackground">@drawable/bg_welcome</item>-->
         <!--<item name="android:background">@android:color/transparent</item>-->
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">@android:color/black</item>
@@ -35,9 +35,11 @@
 
         <item name="android:fontFamily">plagiata</item>
         <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
+        <!--使用如下取消自带的选择符号-->
         <item name="android:button">@null</item>
-        <!--不使用如下保证背光不会消失-->
+        <!--&lt;!&ndash;使用如下取消点击光效&ndash;&gt;-->
         <item name="android:background">@android:color/transparent</item>
+        <!--<item name="android:background">@null</item>-->
 
     </style>
 

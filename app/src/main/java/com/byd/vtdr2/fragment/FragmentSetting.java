@@ -15,10 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.byd.lighttextview.LightButton;
+import com.byd.vtdr2.MyApplication;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.widget.ThemeLightButton;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Objects;
 
@@ -65,14 +67,6 @@ public class FragmentSetting extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // retain this fragment
-//        setRetainInstance(true);
-//        if (savedInstanceState != null) {
-//            myDialog = (MyDialog) getActivity().getFragmentManager().findFragmentByTag("default_setting");
-//            if (myDialog != null) {
-//                myDialog.setOnDialogButtonClickListener((MyDialog.OnDialogButtonClickListener) this);
-//            }
-//        }
     }
 
     @Override
@@ -99,6 +93,13 @@ public class FragmentSetting extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
+        refWatcher.watch(this);
     }
 
     @Override

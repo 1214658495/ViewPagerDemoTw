@@ -27,16 +27,15 @@
         <activity android:name="com.byd.vtdr2.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name="com.byd.vtdr2.MainActivity"-->
-            <!--/>-->
         <activity android:name="com.byd.vtdr2.ActivityImagesViewPager"
             android:configChanges="orientation|keyboard|layoutDirection|screenSize"/>
         <activity android:name="com.byd.vtdr2.ActivityRTVideo"
             android:configChanges="orientation|keyboard|layoutDirection|screenSize" />
+        <activity android:name=".BaseActivity" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.byd.vtdr2.fileProvider"

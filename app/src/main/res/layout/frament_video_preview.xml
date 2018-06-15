@@ -19,23 +19,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4" />
 
-    <LinearLayout
+
+    <ProgressBar
         android:id="@+id/loadingView"
-        android:layout_width="0dp"
+        style="@style/ProgressBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/sv_videoPlayView"
         app:layout_constraintEnd_toEndOf="@id/sv_videoPlayView"
         app:layout_constraintStart_toStartOf="@id/sv_videoPlayView"
-        app:layout_constraintTop_toTopOf="@id/sv_videoPlayView">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ProgressBarStyle"/>
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="@id/sv_videoPlayView" />
 
     <RelativeLayout
         android:id="@+id/rl_bar_showVideoTitle"
@@ -103,10 +96,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="6"
             android:maxHeight="@dimen/dp_2"
-            android:splitTrack="false"
             android:progressDrawable="@drawable/seekbar_bg"
-            android:thumb="@mipmap/ic_seekbar_thumb"
-            />
+            android:splitTrack="false"
+            android:thumb="@mipmap/ic_seekbar_thumb" />
 
 
         <TextView
@@ -129,8 +121,8 @@
             style="@style/TextRobotoStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="02:00"
             android:layout_marginEnd="@dimen/dp_5"
+            android:text="02:00"
             android:textSize="@dimen/sp_10"
             android:visibility="visible" />
 
@@ -138,8 +130,8 @@
             android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/btn_preview_delete_selector" />
+            android:background="@drawable/btn_preview_delete_selector"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btn_VideoZoom"

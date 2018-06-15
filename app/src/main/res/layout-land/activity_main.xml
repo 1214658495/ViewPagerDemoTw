@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:background="@mipmap/bg_all_land"
     tools:context="com.byd.vtdr2.MainActivity">
-    <!--android:background="@mipmap/bg_all_land"-->
-
-    <!--android:background="@mipbg_all_port_ver"-->
-    <!--style="@style/ButtonStyle"-->
-    <!--android:drawableStart="@drawable/btn_tab_back_selector"-->
 
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
@@ -81,30 +76,6 @@
             android:text="@string/setting"
             android:textSize="@dimen/sp_11" />
     </RadioGroup>
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_line_hor_tomenu"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="@dimen/dp_22"-->
-    <!--android:src="@mipmap/line_hor_tomenu"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/btn_back"-->
-    <!--android:visibility="gone"/>-->
-
-    <!--<com.bydauto.myviewpager.view.NoScrollViewPager-->
-    <!--android:id="@+id/vp_main"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_marginEnd="@dimen/dp_100"-->
-    <!--android:layout_marginStart="@dimen/dp_30"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintLeft_toRightOf="@id/btn_back"-->
-    <!--app:layout_constraintTop_toTopOf="@id/btn_back">-->
-
-    <!--</com.bydauto.myviewpager.view.NoScrollViewPager>-->
 
     <FrameLayout
         android:id="@+id/fl_main"

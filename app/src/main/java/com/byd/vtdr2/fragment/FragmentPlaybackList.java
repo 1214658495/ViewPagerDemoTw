@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,7 +54,6 @@ import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.adapter.MyFragmentPagerAdapter;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.utils.DownloadUtil;
-import com.byd.vtdr2.view.AddSingleButtonDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
 import com.byd.vtdr2.widget.LightTextView;
@@ -63,6 +63,7 @@ import com.byd.vtdr2.widget.ThemeLightButton;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
 import com.byd.vtdr2.widget.ThemeManager;
 import com.jakewharton.disklrucache.DiskLruCache;
+import com.squareup.leakcanary.RefWatcher;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,6 +82,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -176,9 +178,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     private int doingDownFileCounts;
     private Intent shareIntent;
     private int lastPosition = -1;
-    public static MyTheard resush;
+//    public static MyThread resush;
     MyApplication myApplication;
     public static boolean isLockVideo;
+    private static final int NOTIFY_LIST_UPDATE = 1;
+    private UpdateListHandler updateListHandler = new UpdateListHandler(this);
+    private RefreshListThread refreshListThread;
 
     public static FragmentPlaybackList newInstance() {
         FragmentPlaybackList fragmentPlaybackList = new FragmentPlaybackList();
@@ -237,10 +242,13 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
 
         initData();
-        if (resush == null) {
+//        if (resush == null) {
+        if (refreshListThread == null) {
             rueshcontrol = true;
-            resush = new MyTheard();
-            resush.start();
+//            resush = new MyThread();
+            refreshListThread = new RefreshListThread(this);
+            refreshListThread.start();
+//            resush.start();
         }
 
         return view;
@@ -578,8 +586,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView: ");
         rueshcontrol = false;
-        resush.interrupt();
-        resush = null;
+//        resush.interrupt();
+//        resush = null;
+        refreshListThread.interrupt();
+        refreshListThread = null;
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
         if (mAdapter != null) {
@@ -588,6 +598,13 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            mAdapter.isClickedMap.clear();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
+        refWatcher.watch(this);
     }
 
     @Override
@@ -670,7 +687,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 fragmentPhotoPreview.setArguments(bundle);
 
                 fragmentTransaction.add(flVideoPlayPreview.getId(), fragmentPhotoPreview,
-                        "fragmentVideoDetail")
+                        "fragmentPhotoPreview")
                         .addToBackStack(null).commitAllowingStateLoss();
             }
         } else {
@@ -872,67 +889,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     @OnClick(R.id.ib_search)
     public void onViewClicked() {
-//        progressDialogFragment = ProgressDialogFragment.newInstance("正在搜索...");
-//        progressDialogFragment.show(getActivity().getFragmentManager(),"text");
-//        progressDialogFragment.setOnDialogButtonClickListener(new ProgressDialogFragment.OnDialogButtonClickListener() {
-//            @Override
-//            public void okButtonClick() {
-//
-//            }
-//
-//            @Override
-//            public void cancelButtonClick() {
-//
-//            }
-//        });
-        /*myDialogTest = MyDialog.newInstance(2, "正在搜索");
-        myDialogTest.show(getActivity().getFragmentManager(), "test");
-        myDialogTest.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
-            @Override
-            public void okButtonClick() {
-
-            }
-
-            @Override
-            public void cancelButtonClick() {
-
-            }
-        });*/
-//        Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
-    }
-
-    public void showTipDialog(String msg) {
-        if (myDialog != null) {
-            myDialog.dismiss();
-        }
-        if (progressDialogFragment != null) {
-            progressDialogFragment.dismiss();
-        }
-        myDialog = MyDialog.newInstance(1, msg);
-        myDialog.show(getActivity().getFragmentManager(), "showTipDialog");
-    }
-
-    public void showAddSingleButtonDialogFrgPL(String msg) {
-        android.app.FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-        AddSingleButtonDialog addSingleButtonDialog = AddSingleButtonDialog.newInstance(msg);
-        if (addSingleButtonDialog != null) {
-//                        DialogFragment dialogFragment = addSingleButtonDialog;
-            if (!addSingleButtonDialog.isAdded()) {
-                fragmentTransaction.add(addSingleButtonDialog, AddSingleButtonDialog.class.getName());
-                fragmentTransaction.commitAllowingStateLoss();
-            }
-        }
-        addSingleButtonDialog.setOnDialogButtonClickListener(new AddSingleButtonDialog.OnDialogButtonClickListener() {
-            @Override
-            public void okButtonClick() {
-
-            }
-
-            @Override
-            public void cancelButtonClick() {
-
-            }
-        });
     }
 
     private void share(String content, Uri uri) {
@@ -1016,7 +972,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             taskCollection1 = new HashSet<>();
             // 获取应用程序最大可用内存
             int maxMemory = (int) Runtime.getRuntime().maxMemory();
-//            Log.e(TAG, "PhotoWallAdapter: maxMemory:192-512" + maxMemory);
             int cacheSize = maxMemory / 8;
             // 设置图片缓存大小为程序最大可用内存的1/8
             mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
@@ -1049,7 +1004,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //            String url = getItem(position);
             Model model = getItem(position);
 //            Log.e(TAG, "getView: url" + url);
-//            Log.e(TAG, "getView: currentRadioButton" + currentRadioButton);
             View view;
 //        ImageView imageView = null;
             if (convertView == null) {
@@ -1388,68 +1342,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             notifyDataSetChanged();
         }
 
-
-//        class YuvBitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
-//
-//            private String imageUrl;
-//
-//            @Override
-//            protected Bitmap doInBackground(String... params) {
-//                Log.e(TAG, "----YuvBitmapWorkerTaskdoInBackground: ");
-//                imageUrl = params[0];
-//
-//
-//                Bitmap bitmap = downloadYuvBitmap(params[0]);
-//                if (bitmap != null) {
-//                    addBitmapToMemoryCache(params[0], bitmap);
-//                }
-//                return bitmap;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(Bitmap bitmap) {
-//                super.onPostExecute(bitmap);
-//                ImageView imageView = mPhotoWall.findViewWithTag(imageUrl);
-//                if (imageView != null && bitmap != null) {
-//                    imageView.setImageBitmap(bitmap);
-//                }
-//                taskCollection1.remove(this);
-//            }
-//
-//            private Bitmap downloadYuvBitmap(String param) {
-//                int timecount = 0;
-//                Log.e(TAG, "downloadYuvBitmap: 开始");
-//                Bitmap bitmap = null;
-//                mRemoteCam.getThumb(param);
-//                // TODO: 2018/1/26 加判断已获得了数据
-//                while (!isYuvDownload) {
-//                    if (isThumbGetFail) {
-//                        // TODO: 2017/10/26 loadfail how to deal
-//                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
-//                        isThumbGetFail = false;
-//                        return bitmap;
-////                        break;
-//                    }
-//                    try {
-//                        Thread.sleep(200);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    timecount++;
-//                    if (timecount == 3) {
-////                        break;
-//                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
-//                        return bitmap;
-//                    }
-//                }
-//
-//                isYuvDownload = false;
-//                Log.e(TAG, "downloadYuvBitmap: 接收到数据");
-//                bitmap = mRemoteCam.getDataChannel().rxYuvStreamUpdate();
-//                return bitmap;
-//            }
-//        }
-
         class YuvBitmapWorkerTaskCashe extends AsyncTask<String, Void, Bitmap> {
 
             private String imageUrl;
@@ -1720,16 +1612,18 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
      * rueshcontrol 控制线程停止
      *
      * */
-    private Handler handlerUpdate = new Handler();
+
+
+    /* private Handler handlerUpdate = new Handler();*/
     public boolean rueshcontrol = false;
 
-    // TODO: 2018/4/8 后台去刷还有问题！！！！！！！！！！！！！！！！！！！！！！
-    public class MyTheard extends Thread {
+  /*  // TODO: 2018/4/8 后台去刷还有问题！！！！！！！！！！！！！！！！！！！！！！
+    public class MyThread extends Thread {
         @Override
         public void run() {
             while (rueshcontrol) {
                 try {
-                    MyTheard.sleep(1000 * 180);
+                    MyThread.sleep(1000 * 180);
                     if (currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
                         mPWD = "/tmp/SD0/PHOTO";
                         if (rueshcontrol && !isMultiChoose) {
@@ -1740,9 +1634,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         if (rueshcontrol && !isMultiChoose) {
                             listDirContents(mPWD);
                         }
-
                     } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-
                         mPWD = "/tmp/SD0/EVENT";
                         if (rueshcontrol && !isMultiChoose) {
                             listDirContents(mPWD);
@@ -1759,6 +1651,69 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+            }
+        }
+    }*/
+
+    private static class RefreshListThread extends Thread {
+        private WeakReference<FragmentPlaybackList> fragmentPlaybackListWeakReference;
+
+        RefreshListThread(FragmentPlaybackList fragmentPlaybackList) {
+            fragmentPlaybackListWeakReference = new WeakReference<>(fragmentPlaybackList);
+        }
+
+        @Override
+        public void run() {
+            FragmentPlaybackList fragmentPlaybackListReference = fragmentPlaybackListWeakReference.get();
+            while (fragmentPlaybackListReference.rueshcontrol) {
+                try {
+                    RefreshListThread.sleep(1000 * 180);
+                    if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/PHOTO";
+                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                        }
+                    } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/NORMAL";
+                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                        }
+                    } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/EVENT";
+                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                        }
+                    }
+                    if (fragmentPlaybackListReference.mAdapter != null && fragmentPlaybackListReference.rueshcontrol) {
+                        fragmentPlaybackListReference.updateListHandler.sendEmptyMessage(NOTIFY_LIST_UPDATE);
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static class UpdateListHandler extends Handler {
+        private WeakReference<FragmentPlaybackList> fragmentPlaybackListWeakReference;
+
+        UpdateListHandler(FragmentPlaybackList fragmentPlaybackList) {
+            fragmentPlaybackListWeakReference = new WeakReference<>(fragmentPlaybackList);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FragmentPlaybackList fragmentPlaybackListUpdateReference = fragmentPlaybackListWeakReference.get();
+
+            if (fragmentPlaybackListUpdateReference != null) {
+                switch (msg.what) {
+                    case NOTIFY_LIST_UPDATE:
+                        fragmentPlaybackListUpdateReference.mAdapter.notifyDataSetChanged();
+                        break;
+                    default:
+                        break;
                 }
             }
         }

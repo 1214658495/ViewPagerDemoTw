@@ -25,23 +25,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byd.vtdr2.MainActivity;
+import com.byd.vtdr2.MyApplication;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * Created by byd_tw on 2017/11/1.
+ *
+ * @author byd_tw
+ * @date 2017/11/1
  */
 
 public class FragmentRTVideo extends Fragment {
@@ -165,21 +170,13 @@ public class FragmentRTVideo extends Fragment {
         }
 
         try {
-            mMediaPlayer = new PLMediaPlayer(getActivity(), mAVOptions);//getActivity()
+            mMediaPlayer = new PLMediaPlayer(Objects.requireNonNull(getActivity()).getApplicationContext(), mAVOptions);
             mMediaPlayer.setDebugLoggingEnabled(false);
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
-//            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
-//            mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnErrorListener(mOnErrorListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
-            mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
-
-            // set replay if completed
-            // mMediaPlayer.setLooping(true);
-
 //            如下更改第一个参数
-            mMediaPlayer.setWakeMode(getActivity(), PowerManager.PARTIAL_WAKE_LOCK);
-
+            mMediaPlayer.setWakeMode(getActivity().getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.setDisplay(svRecordVideo.getHolder());
             mMediaPlayer.prepareAsync();
@@ -252,12 +249,7 @@ public class FragmentRTVideo extends Fragment {
         }
     };
 
-    private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
-        @Override
-        public void onBufferingUpdate(PLMediaPlayer mp, int percent) {
-//            Log.d(TAG, "onBufferingUpdate: " + percent + "%");
-        }
-    };
+
 
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
@@ -410,6 +402,9 @@ public class FragmentRTVideo extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         release();
+        RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
+        refWatcher.watch(this);
+//        svRecordVideo.getHolder().addCallback(null);
 //        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 //        audioManager.abandonAudioFocus(null);
     }
