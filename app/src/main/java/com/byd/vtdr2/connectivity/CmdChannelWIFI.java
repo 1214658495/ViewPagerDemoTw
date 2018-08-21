@@ -10,12 +10,9 @@ import com.byd.vtdr2.ServerConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Arrays;
 
 //import com.ambarella.remotecamera.CommonUtility;
 
@@ -23,7 +20,7 @@ import java.util.Arrays;
  * Created by jli on 9/10/14.
  */
 public class CmdChannelWIFI extends CmdChannel {
-    private static final String TAG="CmdChannelWIFI";
+    private static final String TAG = "CmdChannelWIFI";
     private static final int CONN_TIME_OUT = 3000;
     private static final int READ_TIME_OUT = 3000;
     private static final int WAKEUP_MAX_TRY = 1;
@@ -76,7 +73,7 @@ public class CmdChannelWIFI extends CmdChannel {
         return false;
     }
 
-    static public boolean wakeup(WifiManager mgr, String cmd,
+   /* static public boolean wakeup(WifiManager mgr, String cmd,
                                  int srcPort, int dstPort) {
 
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_START, null);
@@ -93,7 +90,7 @@ public class CmdChannelWIFI extends CmdChannel {
             return false;
         }
 
-        for (int i = 0;  i < WAKEUP_MAX_TRY; i++) {
+        for (int i = 0; i < WAKEUP_MAX_TRY; i++) {
             try {
                 Log.e(TAG, "bcAddr is " + bcAddr.toString());
                 DatagramSocket socket = new DatagramSocket(srcPort);
@@ -120,7 +117,7 @@ public class CmdChannelWIFI extends CmdChannel {
 
         mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);
         return false;
-    }
+    }*/
 
     public static boolean isSocketAvailable() {
         try {
@@ -128,11 +125,11 @@ public class CmdChannelWIFI extends CmdChannel {
             socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, ServerConfig.cmdPort), 2000);
             socket.close();
             socket = null;
-            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK, null);
+            /*mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_WAKEUP_OK, null);*/
             return true;
         } catch (IOException e) {
             Log.e(CommonUtility.LOG_TAG, e.getMessage());
-            mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);
+           /* mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_ERROR_WAKEUP, null);*/
             Log.e(TAG, "isSocketAvailable: Can't connect to socket");
             String message = "CONNECT_FAIL";
         }

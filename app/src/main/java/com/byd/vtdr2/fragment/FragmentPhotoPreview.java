@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +28,6 @@ import com.byd.vtdr2.ActivityImagesViewPager;
 import com.byd.vtdr2.MainActivity;
 import com.byd.vtdr2.Model;
 import com.byd.vtdr2.R;
-import com.byd.vtdr2.RemoteCam;
 import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.utils.DownloadUtil;
@@ -49,11 +50,10 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 
 public class FragmentPhotoPreview extends Fragment {
+    private static final String TAG = "FragmentPhotoPreview";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static CustomDialog customDialog = null;
+    private CustomDialog customDialog = null;
 
     private ArrayList<Model> mParam1;
     private int mParam2;
@@ -76,10 +76,9 @@ public class FragmentPhotoPreview extends Fragment {
     ImageButton btnZoom;
     @BindView(R.id.ll_bar_editPhoto)
     LinearLayout llBarEditPhoto;
-    private static RemoteCam mRemoteCam;
     private MyImagesPagerAdapter myImagesPagerAdapter;
     private ArrayList<Model> photoLists;
-    private static int currentItem;
+    private int currentItem;
     private static final int FADE_OUT = 1;
     private IFragmentListener mListener;
     public boolean reload = false;
@@ -90,9 +89,9 @@ public class FragmentPhotoPreview extends Fragment {
         return fragmentPhotoPreview;
     }
 
-    public void setRemoteCam(RemoteCam mRemoteCam) {
+   /* public void setRemoteCam(RemoteCam mRemoteCam) {
         this.mRemoteCam = mRemoteCam;
-    }
+    }*/
 
     public FragmentPhotoPreview() {
         // Required empty public constructor
@@ -102,8 +101,8 @@ public class FragmentPhotoPreview extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        Bundle bundle = getArguments();//从activity传过来的Bundle
+//        setRetainInstance(true);
+        Bundle bundle = getArguments();
         if (bundle != null) {
             photoLists = (ArrayList<Model>) bundle.getSerializable("mPhotoList");
             currentItem = (bundle.getInt("position"));
@@ -152,6 +151,11 @@ public class FragmentPhotoPreview extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -163,26 +167,12 @@ public class FragmentPhotoPreview extends Fragment {
         super.onDestroyView();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
     private void initData() {
         myImagesPagerAdapter = new MyImagesPagerAdapter(photoLists, this);
         vpViewPager.setAdapter(myImagesPagerAdapter);
         vpViewPager.setCurrentItem(currentItem, false);
-        vpViewPager.setOffscreenPageLimit(0);
+        vpViewPager.setOffscreenPageLimit(1);
 //        tvVpIndex.setText(currentItem + 1 + "/" + urlList.size());
         tvTitlePhoto.setText(photoLists.get(currentItem).getName());
         tvVpIndex.setText(currentItem + 1 + "/" + photoLists.size());
@@ -212,10 +202,12 @@ public class FragmentPhotoPreview extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back_to_gridview:
-                // TODO: 2017/11/29 删除完成了，需要去更新gridview
                 reload = false;
+                // TODO: 2017/11/29 删除完成了，需要去更新gridview
                 ((MainActivity) getActivity()).updateCardData();
-                getActivity().getSupportFragmentManager().popBackStack();
+                /* getActivity().getSupportFragmentManager().popBackStack();*/
+//                getFragmentManager().beginTransaction().remove(this).commit();
+                getParentFragment().getChildFragmentManager().popBackStack();
                 break;
             case R.id.btn_share_preview:
                 sharePhoto();
@@ -383,16 +375,19 @@ public class FragmentPhotoPreview extends Fragment {
                 String fileHead;
                 fileHead = "/tmp/SD0/PHOTO/";
                 customDialogOR = false;
-
-                mRemoteCam.deleteFile((String) (fileHead + photoLists.get(currentItem)
-                        .getName()));
+                // TODO: 2018/8/13  photoLists为空的情况
+                Log.e(TAG, "onClick: photoLists"+photoLists + "currentItem" + currentItem);
+                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE, fileHead + photoLists.get(currentItem).getName(),1);
+                /*mRemoteCam.deleteFile((String) (fileHead + photoLists.get(currentItem)
+                        .getName()));*/
                 photoLists.remove(currentItem);
-
+                Log.e(TAG, "onClick: photoLists remove "+photoLists + "currentItem" + currentItem);
                 if (currentItem == 0 && photoLists.size() == 0) {
                     customDialog.dismiss();
                     reload = false;
                     ((MainActivity) getActivity()).updateCardData();
-                    getActivity().getSupportFragmentManager().popBackStack();
+//                    getActivity().getFragmentManager().popBackStack();
+                    getParentFragment().getChildFragmentManager().popBackStack();
 
                 } else {
                     if (currentItem == photoLists.size()) {
@@ -401,6 +396,7 @@ public class FragmentPhotoPreview extends Fragment {
                         tvTitlePhoto.setText(photoLists.get(currentItem).getName());
                         myImagesPagerAdapter.notifyDataSetChanged();
                         // ((MainActivity)getActivity()).updateCardData();
+                        Log.e(TAG, "onClick: photoLists currentItem-- "+photoLists + "currentItem" + currentItem);
 
                         customDialog.dismiss();
                     } else {

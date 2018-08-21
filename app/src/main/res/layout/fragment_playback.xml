@@ -23,7 +23,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/btn_tab_recordvideo_selector"
+            android:checked="true"
+            android:drawableStart="@drawable/btn_pl_recordvideo_selector"
             android:text="@string/record_video"
             android:textSize="@dimen/sp_10" />
 
@@ -33,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/btn_tab_lockvideo_selector"
+            android:drawableStart="@drawable/btn_pl_lockvideo_selector"
             android:text="@string/lock_video"
             android:textSize="@dimen/sp_10" />
 
@@ -43,7 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/btn_tab_images_selector"
+            android:drawableStart="@drawable/btn_pl_images_selector"
             android:text="@string/photo"
             android:textSize="@dimen/sp_10" />
     </RadioGroup>
@@ -169,7 +170,6 @@
         android:id="@+id/gv_dataList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/dp_70"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_24"
         android:fastScrollAlwaysVisible="true"

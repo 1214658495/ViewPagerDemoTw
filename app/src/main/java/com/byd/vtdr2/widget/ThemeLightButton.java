@@ -5,8 +5,6 @@ package com.byd.vtdr2.widget;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.util.AttributeSet;
-import android.util.Log;
-
 
 import com.byd.vtdr2.R;
 /**#
@@ -42,12 +40,38 @@ public class ThemeLightButton extends LightButton implements ITheme {
 			if(!isEnabled()){
 				colorStateList = getResources().getColorStateList(R.color.service_item_confirm_color);
 			}else{
-				if(theme == Theme.NORMAL){
-					setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
-					colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
-				}else{
-					setLight(getResources().getColor(R.color.sport_color), 10);
-					colorStateList = getResources().getColorStateList(R.color.press_selector_text_sport);
+				switch (theme) {
+					case Theme.NORMAL:
+						setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
+						colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
+						break;
+					case Theme.SPORT:
+						setLight(getResources().getColor(R.color.sport_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.press_selector_text_sport);
+						break;
+					case Theme.HAD_NORMAL:
+						setLight(getResources().getColor(R.color.lightone), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.HAD_SPORT:
+						setLight(getResources().getColor(R.color.hadsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.STAR_NORMAL:
+						setLight(getResources().getColor(R.color.starnormal_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.STAR_SPORT:
+						setLight(getResources().getColor(R.color.starsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					default:
+						setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
+						colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
+
+						break;
 				}
 			}
 			setTextColor(colorStateList);//设置文本的颜色

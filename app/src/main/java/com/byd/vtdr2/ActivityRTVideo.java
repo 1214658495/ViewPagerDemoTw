@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -70,6 +72,10 @@ public class ActivityRTVideo extends BaseActivity {
     private int lastTime = 0;
     private int mSurfaceWidth = 0;
     private int mSurfaceHeight = 0;
+    private AudioManager audioManager;
+    private TelephonyManager telephonyManager;
+    private MyPhoneListener myPhoneListener;
+    private boolean isRinging;
 
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -98,6 +104,7 @@ public class ActivityRTVideo extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_rtvideo);
+        unbinder = ButterKnife.bind(this);
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         if (url.contains("LOCK")) {
@@ -107,7 +114,6 @@ public class ActivityRTVideo extends BaseActivity {
         }
         CurrentTime = intent.getIntExtra("CurrentTime", 0);
         lastTime = CurrentTime;
-        unbinder = ButterKnife.bind(this);
         tvCurrentTime = findViewById(R.id.tv_currentTime_activity);
         tvEndTime = findViewById(R.id.tv_endTime_activity);
         rlBarShowVideoTitle = findViewById(R.id.rl_bar_showVideoTitle_activity);
@@ -159,13 +165,53 @@ public class ActivityRTVideo extends BaseActivity {
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, 0);
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
-        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+        myPhoneListener = new MyPhoneListener();
     }
+    //    如下声音焦点的监听并未使用
+    private AudioManager.OnAudioFocusChangeListener mAudioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    //长时间丢失焦点,当其他应用申请的焦点为AUDIOFOCUS_GAIN时，
+                    //会触发此回调事件，例如播放QQ音乐，网易云音乐等
+                    //通常需要暂停音乐播放，若没有暂停播放就会出现和其他音乐同时输出声音
+                    Log.d(TAG, "AUDIOFOCUS_LOSS");
+//                    stop();
+                    //释放焦点，该方法可根据需要来决定是否调用
+                    //若焦点释放掉之后，将不会再自动获得
+//                    mAudioManager.abandonAudioFocus(mAudioFocusChange);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    //短暂性丢失焦点，当其他应用申请AUDIOFOCUS_GAIN_TRANSIENT或AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE时，
+                    //会触发此回调事件，例如播放短视频，拨打电话等。
+                    //通常需要暂停音乐播放
+//                    stop();
+                    Log.d(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    //短暂性丢失焦点并作降音处理
+                    Log.d(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    //当其他应用申请焦点之后又释放焦点会触发此回调
+                    //可重新播放音乐
+                    Log.d(TAG, "AUDIOFOCUS_GAIN");
+//                    start();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onResume() {
         super.onResume();
+        audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        telephonyManager.listen(myPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
             isVideoStop = false;
@@ -186,15 +232,23 @@ public class ActivityRTVideo extends BaseActivity {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        audioManager.abandonAudioFocus(mAudioFocusListener);
+        telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
+//        stop后（即app退到后台）置标志位，监听到到电话 播放器也不会播放
+        isRinging = false;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         release();
 //        new MyTheard().start();
-        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.abandonAudioFocus(null);
         unbinder.unbind();
         mHandler.removeMessages(SHOW_PROGRESS1);
         mHandler.removeCallbacksAndMessages(null);
+        myPhoneListener = null;
     }
 
 
@@ -464,6 +518,55 @@ public class ActivityRTVideo extends BaseActivity {
         setResult(RESULT_OK, intent);
         super.onBackPressed();
         this.finish();
+    }
+
+    private class MyPhoneListener extends PhoneStateListener {
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            switch (state) {
+                //空闲状态。
+                case TelephonyManager.CALL_STATE_IDLE:
+//                    电话挂断继续播放
+                    if (isRinging && mMediaPlayer != null) {
+//                        失去焦点为啥还可以监听？
+                        mMediaPlayer.start();
+                        btnStop.setVisibility(View.VISIBLE);
+                        btnStart.setVisibility(View.INVISIBLE);
+                        isVideoStop = false;
+                        mHandler.removeMessages(SHOW_CONTROLLER1);
+                        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
+//                开始播放再更新进度条
+                        mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS1, 500);
+                        isRinging = false;
+                    }
+                    //继续播放音乐
+                    Log.v("myService", "空闲状态");
+                    break;
+                //铃响状态。
+                case TelephonyManager.CALL_STATE_RINGING:
+                    //暂停播放音乐
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        isRinging = true;
+                        mMediaPlayer.pause();
+                        btnStop.setVisibility(View.INVISIBLE);
+                        btnStart.setVisibility(View.VISIBLE);
+                        isVideoStop = true;
+                        mHandler.removeMessages(SHOW_CONTROLLER1);
+                        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER1, 3000);
+                    }
+                    Log.v("myService", "铃响状态");
+                    break;
+                //通话状态
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+
+                    Log.v("myService", "通话状态");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

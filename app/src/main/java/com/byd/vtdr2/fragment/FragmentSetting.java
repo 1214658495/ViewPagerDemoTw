@@ -15,12 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.byd.lighttextview.LightButton;
-import com.byd.vtdr2.MyApplication;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.widget.ThemeLightButton;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Objects;
 
@@ -53,15 +51,23 @@ public class FragmentSetting extends Fragment {
     LightButton btnUpdateTest;
     @BindView(R.id.tv_appVersionDetail)
     TextView tvAppVersionDetail;
+    @BindView(R.id.tv_textSetting)
+    TextView tvTextSetting;
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
     public boolean reload = false;
+    private int clickNum;
 
+    /*private static FragmentSetting fragmentSetting;
     public static FragmentSetting newInstance() {
-        FragmentSetting fragmentSetting = new FragmentSetting();
-
+        if (fragmentSetting == null) {
+            fragmentSetting = new FragmentSetting();
+        }
         return fragmentSetting;
+    }*/
+    public static FragmentSetting newInstance() {
+        return new FragmentSetting();
     }
 
     @Override
@@ -79,7 +85,7 @@ public class FragmentSetting extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
-        Log.e("CAM_Commands:", "onAttach");
+        Log.e("FragmentSetting:", "onAttach");
         super.onAttach(activity);
         try {
             mListener = (IFragmentListener) activity;
@@ -98,8 +104,9 @@ public class FragmentSetting extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
-        refWatcher.watch(this);
+//        内存检测
+       /* RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
+        refWatcher.watch(this);*/
     }
 
     @Override
@@ -108,7 +115,7 @@ public class FragmentSetting extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.update_test})
+    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.update_test,R.id.tv_textSetting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_default_setting:
@@ -137,6 +144,16 @@ public class FragmentSetting extends Fragment {
                 break;
             case R.id.update_test:
 //                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
+                break;
+            case R.id.tv_textSetting:
+                clickNum++;
+//                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
+                if (clickNum == 3) {
+                    if (mListener != null) {
+                        mListener.onFragmentAction(IFragmentListener.ACTION_FRIMWORK_VERSION, null);
+                    }
+                    clickNum = 0;
+                }
                 break;
             default:
                 break;

@@ -2,6 +2,7 @@ package com.byd.vtdr2.connectivity;
 
 /**
  * Created by jli on 9/19/14.
+ * 通过这个接口，实现指令通道/数据通道里 触发动作后回调给MainActivity去执行相应动作。
  */
 public interface IChannelListener {
     final static int MSG_MASK = 0x7FFFFF00;

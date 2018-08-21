@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -30,6 +31,7 @@ import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -38,13 +40,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static android.content.ContentValues.TAG;
+import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by byd_tw on 2017/11/1.
  */
 
 public class FragmentVideoPreview extends Fragment {
+    private static final String TAG = "FragmentVideoPreview";
 
     Unbinder unbinder;
     @BindView(R.id.sv_videoPlayView)
@@ -81,8 +84,42 @@ public class FragmentVideoPreview extends Fragment {
     public boolean reload = false;
     private boolean mDragging;
     private int lastTime;
+    private MyHandle mHandler = new MyHandle(this);
+    private AudioManager audioManager;
+    private TelephonyManager telephonyManager;
+    private MyPhoneListener myPhoneListener;
+    private boolean isRinging;
 
-    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+    private static class MyHandle extends Handler {
+        private WeakReference<FragmentVideoPreview> weakReference;
+
+        MyHandle(FragmentVideoPreview context) {
+            weakReference = new WeakReference<>(context);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FragmentVideoPreview fragmentVideoPreview = weakReference.get();
+            if (fragmentVideoPreview != null) {
+                switch (msg.what) {
+                    case SHOW_PROGRESS:
+                        long pos = fragmentVideoPreview.setProgress();
+                        //if (!mDragging) {
+                        msg = obtainMessage(SHOW_PROGRESS);
+                        sendMessageDelayed(msg, 1000 - (pos % 1000));
+                        // }
+                        break;
+                    case SHOW_CONTROLLER:
+                        fragmentVideoPreview.showControlBar();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+   /* protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -100,7 +137,7 @@ public class FragmentVideoPreview extends Fragment {
                     break;
             }
         }
-    };
+    };*/
 
     public static FragmentVideoPreview newInstance(String url) {
         FragmentVideoPreview fragmentVideoPreview = new FragmentVideoPreview();
@@ -177,9 +214,50 @@ public class FragmentVideoPreview extends Fragment {
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, 0);
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
-        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+//        audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        telephonyManager = (TelephonyManager) getContext().getSystemService(TELEPHONY_SERVICE);
+        myPhoneListener = new MyPhoneListener();
+
     }
+
+    //    如下声音焦点的监听并未使用
+    private AudioManager.OnAudioFocusChangeListener mAudioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    //长时间丢失焦点,当其他应用申请的焦点为AUDIOFOCUS_GAIN时，
+                    //会触发此回调事件，例如播放QQ音乐，网易云音乐等
+                    //通常需要暂停音乐播放，若没有暂停播放就会出现和其他音乐同时输出声音
+                    Log.d(TAG, "AUDIOFOCUS_LOSS");
+//                    stop();
+                    //释放焦点，该方法可根据需要来决定是否调用
+                    //若焦点释放掉之后，将不会再自动获得
+//                    mAudioManager.abandonAudioFocus(mAudioFocusChange);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    //短暂性丢失焦点，当其他应用申请AUDIOFOCUS_GAIN_TRANSIENT或AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE时，
+                    //会触发此回调事件，例如播放短视频，拨打电话等。
+                    //通常需要暂停音乐播放
+//                    stop();
+                    Log.d(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    //短暂性丢失焦点并作降音处理
+                    Log.d(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    //当其他应用申请焦点之后又释放焦点会触发此回调
+                    //可重新播放音乐
+                    Log.d(TAG, "AUDIOFOCUS_GAIN");
+//                    start();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     private void showControlBar() {
         if (mMediaPlayer == null) {
@@ -240,6 +318,8 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        telephonyManager.listen(myPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         if (mMediaPlayer != null && isVideoStop) {
             mMediaPlayer.start();
             isVideoStop = false;
@@ -260,6 +340,10 @@ public class FragmentVideoPreview extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        audioManager.abandonAudioFocus(mAudioFocusListener);
+        telephonyManager.listen(null, PhoneStateListener.LISTEN_CALL_STATE);
+//        stop后（即app退到后台）置标志位，监听到到电话 播放器也不会播放
+        isRinging = false;
     }
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
@@ -373,7 +457,8 @@ public class FragmentVideoPreview extends Fragment {
                     }
                 }
                 reload = false;
-                getActivity().getSupportFragmentManager().popBackStack();
+//                getActivity().getSupportFragmentManager().popBackStack();
+                getParentFragment().getChildFragmentManager().popBackStack();
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();
@@ -445,27 +530,31 @@ public class FragmentVideoPreview extends Fragment {
         unbinder.unbind();
         reload = false;
         mHandler.removeMessages(SHOW_PROGRESS);
-        mHandler.removeCallbacksAndMessages(null);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+        mHandler = null;
+        myPhoneListener = null;
+
     }
 
 
     public void releaseWithoutStop() {
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(null);
-            System.gc();
+            /*System.gc();
             Runtime.getRuntime().runFinalization();
-            System.gc();
+            System.gc();*/
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        release();
-//        new MyTheard().start();
+//        release();
+        new MyTheard().start();
 
-            AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-            audioManager.abandonAudioFocus(null);
+//        audioManager.abandonAudioFocus(mAudioFocusListener);
 
     }
 
@@ -502,11 +591,60 @@ public class FragmentVideoPreview extends Fragment {
             }
         }
     }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         lastTime = sbMediaCtrlBar.getProgress();
         outState.putInt("lastTime", lastTime);
+        super.onSaveInstanceState(outState);
     }
 
+    private class MyPhoneListener extends PhoneStateListener {
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            switch (state) {
+                //空闲状态。
+                case TelephonyManager.CALL_STATE_IDLE:
+//                    电话挂断继续播放
+                    if (isRinging && mMediaPlayer != null) {
+//                        失去焦点为啥还可以监听？
+                        mMediaPlayer.start();
+                        btnStop.setVisibility(View.VISIBLE);
+                        btnStart.setVisibility(View.INVISIBLE);
+                        isVideoStop = false;
+                        mHandler.removeMessages(SHOW_CONTROLLER);
+                        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+//                开始播放再更新进度条
+                        mHandler.sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
+                        isRinging = false;
+                    }
+                    //继续播放音乐
+                    Log.v("myService", "空闲状态");
+                    break;
+                //铃响状态。
+                case TelephonyManager.CALL_STATE_RINGING:
+                    //暂停播放音乐
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        isRinging = true;
+                        mMediaPlayer.pause();
+                        btnStop.setVisibility(View.INVISIBLE);
+                        btnStart.setVisibility(View.VISIBLE);
+                        isVideoStop = true;
+                        mHandler.removeMessages(SHOW_CONTROLLER);
+                        mHandler.sendEmptyMessageDelayed(SHOW_CONTROLLER, 3000);
+                    }
+                    Log.v("myService", "铃响状态");
+                    break;
+                //通话状态
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+
+                    Log.v("myService", "通话状态");
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }

@@ -165,13 +165,14 @@ public class RemoteCam
 
     public void wakeUp() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
                 String cmd = "amba discovery";
                 switch (mConnectivityType) {
                     case CAM_CONNECTIVITY_WIFI_WIFI:
                         WifiManager mgr = (WifiManager) mContext
                                 .getSystemService(Context.WIFI_SERVICE);
-                        CmdChannelWIFI.wakeup(mgr, cmd, 7877, 7877);
+                       /* CmdChannelWIFI.wakeup(mgr, cmd, 7877, 7877);*/
                         break;
                     default:
                         break;
@@ -188,8 +189,9 @@ public class RemoteCam
     public void standBy() {
         worker.execute(new Runnable() {
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.standBy();
             }
         });
@@ -220,9 +222,11 @@ public class RemoteCam
 
     public void stopSession() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 //getram: set connection status for UI update
                 mCmdChannel.stopSession();
 //                if (mCmdChannel.stopSession())
@@ -233,9 +237,11 @@ public class RemoteCam
 
     public void getAllSettings() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getAllSettings();
             }
         });
@@ -243,9 +249,11 @@ public class RemoteCam
 
     public void getSettingOptions(final String setting) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getSettingOptions(setting);
             }
         });
@@ -253,9 +261,11 @@ public class RemoteCam
 
     public void setSetting(final String setting) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.setSetting(setting);
             }
         });
@@ -263,9 +273,11 @@ public class RemoteCam
 
     public void listDir(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.listDir(path);
             }
         });
@@ -274,9 +286,11 @@ public class RemoteCam
 
     public void changeFolder(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.changeDirectory(path);
             }
         });
@@ -284,9 +298,11 @@ public class RemoteCam
 
     public void deleteFile(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.deleteFile(path);
             }
         });
@@ -294,9 +310,11 @@ public class RemoteCam
 
     public void burnFW(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.burnFW(path);
             }
         });
@@ -304,9 +322,11 @@ public class RemoteCam
 
     public void setZoom(final String type, final int level) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.setZoom(type, level);
             }
         });
@@ -314,9 +334,11 @@ public class RemoteCam
 
     public void getZoomInfo(final String type) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mZoomInfoType = type;
                 mCmdChannel.getZoomInfo(type);
             }
@@ -325,9 +347,11 @@ public class RemoteCam
 
     public void setBitRate(final int bitRate) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.setBitRate(bitRate);
             }
         });
@@ -337,9 +361,11 @@ public class RemoteCam
         int pos = path.lastIndexOf('/');
         mGetFileName = path.substring(pos + 1, path.length()) + ".thumb";
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToDataChannel() || !connectToCmdChannel())
+                if (!connectToDataChannel() || !connectToCmdChannel()) {
                     return;
+                }
                 /*int len = path.length();
                 String surfix = path.substring(len-3, len).toLowerCase();
                 String type = surfix.equals("jpg") ? "thumb" : "IDR";*/
@@ -363,9 +389,11 @@ public class RemoteCam
         int pos = path.lastIndexOf('/');
         mGetFileName = path.substring(pos + 1, path.length());
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel() || !connectToDataChannel())
+                if (!connectToCmdChannel() || !connectToDataChannel()) {
                     return;
+                }
                 mCmdChannel.getFile(path);
             }
         });
@@ -373,9 +401,11 @@ public class RemoteCam
 
     public void putFile(final String srcFile, final String dstFile) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel() || !connectToDataChannel())
+                if (!connectToCmdChannel() || !connectToDataChannel()) {
                     return;
+                }
 
                 mListener.onChannelEvent(IChannelListener.DATA_CHANNEL_EVENT_PUT_MD5, null);
                 File file = new File(srcFile);
@@ -390,8 +420,9 @@ public class RemoteCam
                     }
                     byte[] hash = md.digest();
                     StringBuilder sb = new StringBuilder();
-                    for (byte b : hash)
+                    for (byte b : hash) {
                         sb.append(String.format("%02x", b & 0xff));
+                    }
                     md5 = sb.toString();
                     in.close();
                 } catch (Exception e) {
@@ -409,9 +440,11 @@ public class RemoteCam
         int pos = path.lastIndexOf('/');
         mGetFileName = path.substring(pos + 1, path.length());
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getInfo(path);
             }
         });
@@ -419,9 +452,11 @@ public class RemoteCam
 
     public void setMediaAttribute(final String path, final int flag) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.setMediaAttribute(path, flag);
             }
         });
@@ -429,9 +464,11 @@ public class RemoteCam
 
     public void cancelGetFile(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.cancelGetFile(path);
                 mDataChannel.cancelGetFile();
             }
@@ -440,9 +477,11 @@ public class RemoteCam
 
     public void cancelPutFile(final String path) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 int xfer_size = mDataChannel.cancelPutFile();
                 mCmdChannel.cancelPutFile(path, xfer_size);
             }
@@ -451,9 +490,11 @@ public class RemoteCam
 
     public void startVF() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.resetViewfinder();
             }
         });
@@ -461,9 +502,11 @@ public class RemoteCam
 
     public void stopVF() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.stopViewfinder();
             }
         });
@@ -471,9 +514,11 @@ public class RemoteCam
 
     public void getRecordTime() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getRecordTime();
             }
         });
@@ -481,9 +526,11 @@ public class RemoteCam
 
     public void getBatteryLevel() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getBatteryLevel();
             }
         });
@@ -491,9 +538,11 @@ public class RemoteCam
 
     public void takePhoto() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.takePhoto();
             }
         });
@@ -501,9 +550,11 @@ public class RemoteCam
 
     public void stopPhoto() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.stopPhoto();
             }
         });
@@ -512,9 +563,11 @@ public class RemoteCam
     //    madd
     public void lockVideo() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.lockVideo();
             }
         });
@@ -523,9 +576,11 @@ public class RemoteCam
     //    madd
     public void frimworkVersion() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.frimworkVersion();
             }
         });
@@ -533,9 +588,11 @@ public class RemoteCam
 
     public void startRecord() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.startRecord();
             }
         });
@@ -543,9 +600,11 @@ public class RemoteCam
 
     public void stopRecord() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.stopRecord();
             }
         });
@@ -579,9 +638,11 @@ public class RemoteCam
 
     public void forceSplit() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.forceSplit();
             }
         });
@@ -589,9 +650,11 @@ public class RemoteCam
 
     public void formatSD(final String slot) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.formatSD(slot);
             }
         });
@@ -613,9 +676,11 @@ public class RemoteCam
     //madd;
     public void appStatus() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.appStatus();
             }
         });
@@ -624,9 +689,11 @@ public class RemoteCam
     //madd;
     public void micStatus() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.micStatus();
             }
         });
@@ -636,11 +703,14 @@ public class RemoteCam
         mMediaInfoStep = 0;
         mMediaInfoReply = "";
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
-                if (!mCmdChannel.getNumFiles("photo"))
+                }
+                if (!mCmdChannel.getNumFiles("photo")) {
                     return;
+                }
                 mCmdChannel.getNumFiles("video");
                 mCmdChannel.getNumFiles("total");
                 mCmdChannel.getSpace("free");
@@ -652,9 +722,11 @@ public class RemoteCam
 
     public void getTotalFileCount() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getNumFiles("total");
             }
         });
@@ -662,9 +734,11 @@ public class RemoteCam
 
     public void getAllVideoFilesCount() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getNumFiles("video");
             }
         });
@@ -672,9 +746,11 @@ public class RemoteCam
 
     public void getAllPhotoFilesCount() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getNumFiles("photo");
             }
         });
@@ -682,9 +758,11 @@ public class RemoteCam
 
     public void getTotalDiskSpace() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getSpace("total");
             }
         });
@@ -692,9 +770,11 @@ public class RemoteCam
 
     public void getTotalFreeSpace() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getSpace("free");
             }
         });
@@ -703,6 +783,7 @@ public class RemoteCam
     //    madd
     public void getSystemState() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
                 if (!connectToCmdChannel()) {
                     return;
@@ -715,9 +796,11 @@ public class RemoteCam
 
     public void sendCommand(final String command) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.sendRequest(command);
             }
         });
@@ -758,9 +841,11 @@ public class RemoteCam
 
     public void getDeviceInfo() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getDevInfo();
             }
         });
@@ -768,9 +853,11 @@ public class RemoteCam
 
     public void getPWD() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getCurrentWorkingDir();
             }
         });
@@ -778,9 +865,11 @@ public class RemoteCam
 
     public void getWifiSettings() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.getAmbaWifiSettings();
             }
         });
@@ -788,9 +877,11 @@ public class RemoteCam
 
     public void setWifiSettings(final String param) {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.setWifiSettings(param);
             }
         });
@@ -798,9 +889,11 @@ public class RemoteCam
 
     public void stopWifi() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.stopWifi();
             }
         });
@@ -808,9 +901,11 @@ public class RemoteCam
 
     public void startWifi() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.startWifi();
             }
         });
@@ -818,9 +913,11 @@ public class RemoteCam
 
     public void restartWifi() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.restartWifi();
             }
         });
@@ -828,9 +925,11 @@ public class RemoteCam
 
     public void restartHttp() {
         worker.execute(new Runnable() {
+            @Override
             public void run() {
-                if (!connectToCmdChannel())
+                if (!connectToCmdChannel()) {
                     return;
+                }
                 mCmdChannel.restartHttp();
             }
         });
@@ -931,12 +1030,17 @@ public class RemoteCam
 //                break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_NUM_FILES:
                 mMediaInfoStep++;
-                if (mMediaInfoStep == 1)
-                    mMediaInfoReply += "\nPhoto Files: ";
-                else if (mMediaInfoStep == 2)
-                    mMediaInfoReply += "\nVideo Files: ";
-                else
-                    mMediaInfoReply += "\nTotal Files: ";
+                switch (mMediaInfoStep) {
+                    case 1:
+                        mMediaInfoReply += "\nPhoto Files: ";
+                        break;
+                    case 2:
+                        mMediaInfoReply += "\nVideo Files: ";
+                        break;
+                    default:
+                        mMediaInfoReply += "\nTotal Files: ";
+                        break;
+                }
                 mMediaInfoReply += (String) param;
                 break;
             case IChannelListener.CMD_CHANNEL_EVENT_GET_DEVINFO:
@@ -984,8 +1088,9 @@ public class RemoteCam
                     Iterator<?> keys = parser.keys();
                     while (keys.hasNext()) {
                         String key = (String) keys.next();
-                        if (key.equals("rval") || key.equals("msg_id"))
+                        if (key.equals("rval") || key.equals("msg_id")) {
                             continue;
+                        }
                         mMediaInfoReply += "\n" + key + ": " + parser.getString(key);
                     }
                     mListener.onChannelEvent(type, mMediaInfoReply);
@@ -998,15 +1103,17 @@ public class RemoteCam
                 mListener.onChannelEvent(type, mZoomInfoType, (String) param);
                 break;
             default:
-                if (mListener != null)
+                if (mListener != null) {
                     mListener.onChannelEvent(type, param);
+                }
         }
     }
 
     private boolean connectToCmdBLE() {
         // check if we are connected already
-        if (mBlueAddrRequested.equals(mBlueAddrConnected))
+        if (mBlueAddrRequested.equals(mBlueAddrConnected)) {
             return true;
+        }
 
         // try to connect
         if (mCmdChannelBLE.connectTo(mBlueAddrRequested, ble_connection_timeout, gatt_autoConnect_flag)) {
@@ -1021,8 +1128,9 @@ public class RemoteCam
 
     private boolean connectToCmdWIFI() {
         // check if we are connected already
-        if (mWifiSSIDRequested.equals(mWifiSSIDConnected))
+        if (mWifiSSIDRequested.equals(mWifiSSIDConnected)) {
             return true;
+        }
         mWifiSSIDConnected = null;
 
         // check if we can connect to cmd channel

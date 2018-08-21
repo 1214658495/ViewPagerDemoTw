@@ -3,7 +3,6 @@ package com.byd.vtdr2.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -32,9 +31,9 @@ import com.byd.vtdr2.ServerConfig;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
@@ -44,7 +43,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- *
+ * 实时播放页面
  * @author byd_tw
  * @date 2017/11/1
  */
@@ -52,22 +51,22 @@ import butterknife.Unbinder;
 public class FragmentRTVideo extends Fragment {
     private static final String TAG = "FragmentRTVideo";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
-    public static ImageButton btnRtCapturePhoto;
-    public static ImageButton ivRtLockVideo;
-    private static ImageView ivRtRecordVideo;
-    private static ImageView ivRtRecordVoice;
+    public ImageButton btnRtCapturePhoto;
+    public ImageButton ivRtLockVideo;
+    private ImageView ivRtRecordVideo;
+    private ImageView ivRtRecordVoice;
     Unbinder unbinder;
     private ProgressBar loadingView;
-    private static TextClock textClock;
-    private static TextView tvCheckSdCard;
+    private TextClock textClock;
+    private TextView tvCheckSdCard;
     private String url = "rtsp://" + ServerConfig.VTDRIP + "/live";
     private AVOptions mAVOptions;
     private PLMediaPlayer mMediaPlayer;
     private IFragmentListener mListener;
     private SurfaceView svRecordVideo;
-    private static ImageView ivIcRecord;
+    private ImageView ivIcRecord;
     private FrameLayout flShotView;
-    private static RemoteCam mRemoteCam;
+    private RemoteCam mRemoteCam;
     private static boolean isRecord;
     private static boolean isMicOn;
     private Toast mToast;
@@ -75,11 +74,41 @@ public class FragmentRTVideo extends Fragment {
     private static long lastClickTime = 0;
     public static long lastClickTime2 = 0;
     private static long lastClickTime3 = 0;
+//    protected Context mContext;
 
+    private MyHandle mHandler = new MyHandle(this);
 
+    /*private static FragmentRTVideo fragmentRTVideo;
+    private static FragmentRTVideo fragmentRTVideo;
     public static FragmentRTVideo newInstance() {
-        FragmentRTVideo fragmentRTVideo = new FragmentRTVideo();
+        if (fragmentRTVideo == null) {
+            fragmentRTVideo = new FragmentRTVideo();
+        }
         return fragmentRTVideo;
+    }*/
+    public static FragmentRTVideo newInstance() {
+        return new FragmentRTVideo();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        Log.e("CAM_Commands:", "onAttach");
+        super.onAttach(activity);
+        try {
+            mListener = (IFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement IFragmentListener");
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        mContext = getActivity();
+        /*mRemoteCam = MyApplication.getRemoteCam(this.getContext());*/
+        mRemoteCam = MyApplication.getInstance().getRemoteCam();
+
     }
 
     @Override
@@ -97,18 +126,29 @@ public class FragmentRTVideo extends Fragment {
         tvCheckSdCard = view.findViewById(R.id.tv_checkSdCord);
         flShotView = view.findViewById(R.id.fl_shotView);
         loadingView = view.findViewById(R.id.loadingView);
-        initData();
+        initData(savedInstanceState);
         return view;
     }
 
-    public void setRemoteCam(RemoteCam mRemoteCam) {
-        FragmentRTVideo.mRemoteCam = mRemoteCam;
+//    public void setRemoteCam(RemoteCam mRemoteCam) {
+//        FragmentRTVideo.mRemoteCam = mRemoteCam;
+//    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        if (savedInstanceState == null) {
+            mRemoteCam.micStatus();
+            mRemoteCam.getSystemState();
+//        }
     }
 
-    private void initData() {
-//        mRemoteCam.appStatus();
-        mRemoteCam.micStatus();
-        mRemoteCam.getSystemState();
+    private void initData(Bundle savedInstanceState) {
+//        if (savedInstanceState == null) {
+       /*     mRemoteCam.micStatus();
+            mRemoteCam.getSystemState();*/
+//        }
 
         ((MainActivity) getActivity()).isDialogShow = false;
         svRecordVideo.getHolder().addCallback(new SurfaceHolder.Callback() {
@@ -192,6 +232,11 @@ public class FragmentRTVideo extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         // prepare();
@@ -250,7 +295,6 @@ public class FragmentRTVideo extends Fragment {
     };
 
 
-
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer mp, int errorCode) {
@@ -264,6 +308,7 @@ public class FragmentRTVideo extends Fragment {
 //                    showToastTips("404 resource not found !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
+                    isNeedReconnect = true;
 //                    showToastTips("Connection refused !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
@@ -299,6 +344,7 @@ public class FragmentRTVideo extends Fragment {
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     break;
                 default:
+                    isNeedReconnect = true;
 //                    showToastTips("unknown error !");
                     break;
             }
@@ -365,11 +411,13 @@ public class FragmentRTVideo extends Fragment {
     public void sendReconnectMessage() {
 //        showToastTips(getString(R.string.Reconnecting));
         loadingView.setVisibility(View.VISIBLE);
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
+        }
     }
 
-    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+   /* protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what != MESSAGE_ID_RECONNECTING) {
@@ -377,33 +425,46 @@ public class FragmentRTVideo extends Fragment {
             }
             prepare();
         }
-    };
+    };*/
 
+    private static class MyHandle extends Handler {
+        private WeakReference<FragmentRTVideo> weakReference;
 
-    @Override
-    public void onAttach(Activity activity) {
-        Log.e("CAM_Commands:", "onAttach");
-        super.onAttach(activity);
-        try {
-            mListener = (IFragmentListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement IFragmentListener");
+        MyHandle(FragmentRTVideo context) {
+            weakReference = new WeakReference<>(context);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FragmentRTVideo fragmentRTVideo = weakReference.get();
+            if (fragmentRTVideo != null) {
+                if (msg.what != MESSAGE_ID_RECONNECTING) {
+                    return;
+                }
+                fragmentRTVideo.prepare();
+            }
         }
     }
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+        mHandler = null;
+//        svRecordVideo.getHolder().removeCallback((SurfaceHolder.Callback) this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         release();
-        RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
-        refWatcher.watch(this);
+//        内存检测
+       /* RefWatcher refWatcher = MyApplication.getRefWatcher(getContext());
+        refWatcher.watch(this);*/
 //        svRecordVideo.getHolder().addCallback(null);
 //        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 //        audioManager.abandonAudioFocus(null);
@@ -491,16 +552,17 @@ public class FragmentRTVideo extends Fragment {
                     if (currentTime - lastClickTime3 > MINI_CLICK_DELAY) {
                         lastClickTime3 = currentTime;
                         isMicOn = !isMicOn;
+
 //                        如下一句为旧协议
-//                        mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
+                        mListener.onFragmentAction(IFragmentListener.ACTION_MIC_ON, isMicOn);
                         // TODO: 2018/5/7 改变切换方式
-                        if (isMicOn) {
+                       /* if (isMicOn) {
                             mRemoteCam.startMic();
                             showToastTips(getString(R.string.open_voice));
                         } else {
                             mRemoteCam.stopMic();
                             showToastTips(getString(R.string.close_voice));
-                        }
+                        }*/
                     }
                 }
                 break;

@@ -7,23 +7,26 @@ import android.util.AttributeSet;
 
 import com.byd.vtdr2.R;
 
-public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox implements ITheme{
-	private Theme mTheme;
-	public ThemeCheckBox(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		mTheme = new Theme();
-		mTheme.set(context, attrs);
-		ThemeManager.getInstance().add(this);
-	}
-	@Override
-	public void setTheme(Theme theme) {
-		// TODO Auto-generated method stub
-		mTheme.set(theme);
-		onThemeChanged(ThemeManager.getInstance().getTheme());
-	}
-	@Override
-	public void onThemeChanged(int theme) {
-		// TODO Auto-generated method stub
+public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox implements ITheme {
+    private Theme mTheme;
+
+    public ThemeCheckBox(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mTheme = new Theme();
+        mTheme.set(context, attrs);
+        ThemeManager.getInstance().add(this);
+    }
+
+    @Override
+    public void setTheme(Theme theme) {
+        // TODO Auto-generated method stub
+        mTheme.set(theme);
+        onThemeChanged(ThemeManager.getInstance().getTheme());
+    }
+
+    @Override
+    public void onThemeChanged(int theme) {
+        // TODO Auto-generated method stub
 	/*	int res = mTheme.get(theme);
 		Drawable selector = getResources().getDrawable(R.drawable.selector_file_sort);
 		Drawable drawable = DrawableCompat.wrap(selector);
@@ -32,16 +35,34 @@ public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox i
 			DrawableCompat.setTint(drawable, getResources().getColor(res));
 			setButtonDrawable(drawable);
 		}*/
-		switch (theme) {
-		case Theme.SPORT:
+        switch (theme) {
+            case Theme.SPORT:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
-			setTextColor(getResources().getColor(R.color.sport_color));
-			break;
-		default:
+                setTextColor(getResources().getColor(R.color.sport_color));
+                break;
+            case Theme.HAD_NORMAL:
+//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+                setTextColor(getResources().getColor(R.color.grey));
+                break;
+            case Theme.HAD_SPORT:
+//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+//                setTextColor(getResources().getColor(R.color.hadsport_color));
+                setTextColor(getResources().getColor(R.color.grey));
+                break;
+            case Theme.STAR_NORMAL:
+//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+                setTextColor(getResources().getColor(R.color.grey));
+                break;
+            case Theme.STAR_SPORT:
+//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+//                setTextColor(getResources().getColor(R.color.hadsport_color));
+                setTextColor(getResources().getColor(R.color.grey));
+                break;
+            default:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.pic_check_box_up));
-			setTextColor(getResources().getColor(R.color.light));
-			break;
-		}
-	}
+                setTextColor(getResources().getColor(R.color.light));
+                break;
+        }
+    }
 
 }

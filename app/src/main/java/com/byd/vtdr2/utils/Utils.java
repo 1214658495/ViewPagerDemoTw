@@ -34,7 +34,8 @@ public class Utils {
     public static boolean isSocketAvailable(Context context) {
         try {
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, 7878), 2000);
+            socket.connect(new InetSocketAddress(ServerConfig.VTDRIP, ServerConfig.cmdPort), 2000);
+            socket.close();
             return true;
         } catch (IOException e) {
             Log.e(CommonUtility.LOG_TAG, e.getMessage());

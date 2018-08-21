@@ -57,6 +57,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/btn_tab_realtimevideo_selector"
             android:gravity="center"
+            android:checked="true"
             android:text="@string/live_video"
             android:textSize="@dimen/sp_11" />
 
@@ -111,6 +112,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_70"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

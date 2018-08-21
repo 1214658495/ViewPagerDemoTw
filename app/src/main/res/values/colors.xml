@@ -10,6 +10,12 @@
     <color name="light">#1cc9ff</color>
     <color name="normal_color">#ff13c7ff</color>
     <color name="sport_color">#fb8218</color>
+
+    <color name="hadnormal_color">#00ebff</color>
+    <color name="hadsport_color">#ff0000</color>
+    <color name="grey">#999999</color>
+    <color name="starnormal_color">#7cfffa</color>
+    <color name="starsport_color">#fec575</color>
     <color name="selector_press">#ff13c7ff</color>
     <color name="service_item_confirm_color">#4d4d4d</color>
 </resources>

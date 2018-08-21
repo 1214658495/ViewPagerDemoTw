@@ -24,7 +24,8 @@
         android:largeHeap="true"
         android:resizeableActivity="false"
         android:theme="@style/AppWelcome">
-        <activity android:name="com.byd.vtdr2.MainActivity">
+        <activity android:name="com.byd.vtdr2.MainActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

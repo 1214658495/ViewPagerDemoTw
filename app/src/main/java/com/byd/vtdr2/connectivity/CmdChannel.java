@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,7 @@ public abstract class CmdChannel {
     private final Object mRxLock = new Object();
     private boolean mReplyReceived;
     final Handler handler = new Handler();
+    private ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 
     /*旧协议*/
 //    private static final int AMBA_GET_SETTING = 0x001;
@@ -183,7 +186,7 @@ public abstract class CmdChannel {
 
     private int mSessionId;
 
-    protected static IChannelListener mListener;
+    protected IChannelListener mListener;
 
     protected abstract String readFromChannel();
 
@@ -197,7 +200,8 @@ public abstract class CmdChannel {
     }
 
     public void startIO() {
-        (new Thread(new QueueRunnable())).start();
+//        (new Thread(new QueueRunnable())).start();
+        worker.execute(new QueueRunnable());
     }
 
     public void reset() {

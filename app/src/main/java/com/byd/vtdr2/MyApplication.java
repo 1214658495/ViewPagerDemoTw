@@ -2,23 +2,16 @@ package com.byd.vtdr2;
 
 import android.app.Application;
 import android.content.Context;
-import android.hardware.bydauto.energy.AbsBYDAutoEnergyListener;
-import android.hardware.bydauto.energy.BYDAutoEnergyDevice;
-import android.os.Handler;
-import android.os.Message;
+import android.content.res.Configuration;
+import android.util.Log;
 
+import com.byd.vtdr2.utils.SysProp;
 import com.byd.vtdr2.widget.Theme;
 import com.byd.vtdr2.widget.ThemeManager;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
-
-import org.greenrobot.eventbus.EventBus;
 
 import skin.support.SkinCompatManager;
 import skin.support.constraint.app.SkinConstraintViewInflater;
-
-import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_ECONOMY;
-import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATION_SPORT;
 
 /**
  * Created by ximsfei on 2017/1/10.
@@ -26,42 +19,28 @@ import static android.hardware.bydauto.energy.BYDAutoEnergyDevice.ENERGY_OPERATI
 
 public class MyApplication extends Application {
     private static final String TAG = "MyApplication";
-    private BYDAutoEnergyDevice mBYDAutoEnergyDevice;
     private ThemeManager themeManager;
     public boolean isRescod;
     private RemoteCam mRemoteCam;
     public boolean isRemoteCreate;
     private RefWatcher refWatcher;
+    private String padVersion;
+    private boolean isNewVersion;
+    private static MyApplication instance;
 
-    private Handler modelChange = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            super.handleMessage(msg);
-            if (msg.what == ENERGY_OPERATION_ECONOMY) {
-                themeManager.updateTheme(Theme.NORMAL);
-                SkinCompatManager.getInstance().restoreDefaultTheme();
-                EventBus.getDefault().post(new MessageEvent());
-            } else if (msg.what == ENERGY_OPERATION_SPORT) {
-                themeManager.updateTheme(Theme.SPORT);
-                SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
-                EventBus.getDefault().post(new MessageEvent());
-            }
-        }
-    };
-
-    AbsBYDAutoEnergyListener absBYDAutoEnergyListener = new AbsBYDAutoEnergyListener() {
-        @Override
-        public void onOperationModeChanged(int type) {
-            // TODO Auto-generated method stub
-            super.onOperationModeChanged(type);
-            modelChange.sendEmptyMessage(type);
-        }
-    };
+    public static MyApplication getInstance() {
+        return instance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
+        /*建议在测试阶段建议设置成true，发布时设置为false。*/
+//        CrashReport.initCrashReport(getApplicationContext(), "c7b49bac36", false);
+//        Bugly.init(getApplicationContext(), "0c07b3a819", false);
+//        Thread.setDefaultUncaughtExceptionHandler(new MYExceptionHandler());
+//        第三方换肤库，实现非自定义控件换肤
         SkinCompatManager.withoutActivity(this)
 //                .addStrategy(new CustomSDCardLoader())          // 自定义加载策略，指定SDCard路径
 //                .addInflater(new SkinMaterialViewInflater())    // material design
@@ -75,44 +54,49 @@ public class MyApplication extends Application {
                 .loadSkin();
 //        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-
         themeManager = ThemeManager.getInstance();
-
-        //如下为运动模式功能开启代码
-  /*      mBYDAutoEnergyDevice = BYDAutoEnergyDevice.getInstance(getApplicationContext());
-        mBYDAutoEnergyDevice.registerListener(absBYDAutoEnergyListener);
-
-        int mode = mBYDAutoEnergyDevice.getOperationMode();
-//        Log.e(TAG, "onCreate: mode:" + mode);
-        if (mode == ENERGY_OPERATION_ECONOMY) {
-            //经济模式
-            themeManager.updateTheme(Theme.NORMAL);
-            SkinCompatManager.getInstance().restoreDefaultTheme();
-        } else if (mode == ENERGY_OPERATION_SPORT) {
-            //运动模式
-            themeManager.updateTheme(Theme.SPORT);
-            SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
-        }*/
+        initView();
 
         mRemoteCam = new RemoteCam(this);
-
-        refWatcher = setupLeakCanary();
-
+/*//        内存泄漏检查
+        refWatcher = setupLeakCanary();*/
+//        获取系统版本
+        padVersion = SysProp.get("apps.setting.product.outswver", "");
+//        Log.e(TAG, "onCreate: version: 4.2.1806080 ");
+        isNewVersion = SysProp.versionCompare(padVersion);
+        Log.e(TAG, "onCreate: version: " + isNewVersion);
     }
 
+    /**
+     * 初始化换肤
+     */
+    private void initView() {
+        int bydTheme = getResources().getConfiguration().byd_theme;
+        changeSkin(bydTheme);
+    }
+
+ /*   *//**
+     * 内存泄露有关功能
+     *
+     * @return
+     *//*
     private RefWatcher setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
             return RefWatcher.DISABLED;
         }
         return LeakCanary.install(this);
     }
 
+    *//**
+     * 内存泄露有关功能
+     *
+     * @param
+     * @return
+     *//*
     public static RefWatcher getRefWatcher(Context context) {
         MyApplication myApplication = (MyApplication) context.getApplicationContext();
         return myApplication.refWatcher;
-    }
+    }*/
 
     public void setisRescod(boolean is) {
         isRescod = is;
@@ -129,4 +113,123 @@ public class MyApplication extends Application {
     public RemoteCam getRemoteCam() {
         return mRemoteCam;
     }
+
+    /*  private RemoteCam setRemoteCam() {
+          mRemoteCam = new RemoteCam(this);
+          return mRemoteCam;
+      }
+  */
+
+    public static RemoteCam getRemoteCam(Context context) {
+        MyApplication myApplication = (MyApplication) context.getApplicationContext();
+        return myApplication.mRemoteCam;
+    }
+
+    /**
+     * 配置改变-换肤或屏幕旋转都会触发
+     *
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        int bydTheme = newConfig.byd_theme;
+        changeSkin(bydTheme);
+    }
+
+    /**
+     * 换肤 改变自定义的Theme控件和非自定义控件。
+     *
+     * @param bydTheme
+     */
+    private void changeSkin(int bydTheme) {
+        switch (bydTheme) {
+            case 1:
+                //经济模式
+                themeManager.updateTheme(Theme.NORMAL);
+                SkinCompatManager.getInstance().restoreDefaultTheme();
+                break;
+            case 2:
+                //运动模式
+                themeManager.updateTheme(Theme.SPORT);
+                SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                break;
+            case 101:
+                //运动模式
+                themeManager.updateTheme(Theme.HAD_NORMAL);
+                SkinCompatManager.getInstance().loadSkin("hadeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                break;
+            case 102:
+                //运动模式
+                themeManager.updateTheme(Theme.HAD_SPORT);
+                SkinCompatManager.getInstance().loadSkin("hadsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                break;
+            case 1011:
+                //运动模式
+                themeManager.updateTheme(Theme.STAR_NORMAL);
+                SkinCompatManager.getInstance().loadSkin("stareco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                break;
+            case 1012:
+                //运动模式
+                themeManager.updateTheme(Theme.STAR_SPORT);
+                SkinCompatManager.getInstance().loadSkin("starsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                break;
+            default:
+                themeManager.updateTheme(Theme.NORMAL);
+                SkinCompatManager.getInstance().restoreDefaultTheme();
+                break;
+        }
+    }
+
+    /**
+     * 当app出现异常就会走下面的方法！！！
+     */
+    /*class MYExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+        @Override
+        public void uncaughtException(Thread thread, Throwable throwable) {
+            if (throwable != null) {
+                final Writer result = new StringWriter();
+                final PrintWriter printWriter = new PrintWriter(result);
+                throwable.printStackTrace(printWriter);
+                String errorReport = result.toString();
+                Log.d("-<<<<>", errorReport);
+
+                //这里吧errorReport post到http去就行了！！！
+                //...
+
+                //或者保存文件到sd卡中
+                saveInFile(errorReport);
+
+                //最后杀死自己             android.os.Process.killProcess(android.os.Process.myPid());
+
+            }
+        }
+    }
+
+    private void saveInFile(String errorReport) {
+        FileOutputStream out = null;
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "CarDV-Log", "error-log.txt");
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            try {
+                out = new FileOutputStream(file);
+                out.write(errorReport.getBytes());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }*/
+
+
 }
