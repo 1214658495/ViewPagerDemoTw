@@ -58,6 +58,12 @@ public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox i
 //                setTextColor(getResources().getColor(R.color.hadsport_color));
                 setTextColor(getResources().getColor(R.color.grey));
                 break;
+            case Theme.BLACKGOLD_NORMAL:
+            case Theme.BLACKGOLD_SPORT:
+            case Theme.EYESHOT_NORMAL:
+            case Theme.EYESHOT_SPORT:
+                setTextColor(getResources().getColor(R.color.grey));
+                break;
             default:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.pic_check_box_up));
                 setTextColor(getResources().getColor(R.color.light));

@@ -9,6 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/skinmi" />
+            <option value="$PROJECT_DIR$/skinmy" />
+            <option value="$PROJECT_DIR$/vtdr2.skin" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

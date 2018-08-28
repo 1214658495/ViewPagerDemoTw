@@ -230,6 +230,12 @@
 
         <attr name="starnormal" format="reference" />
         <attr name="starsport" format="reference" />
+
+        <attr name="blackgoldnormal" format="reference" />
+        <attr name="blackgoldsport" format="reference" />
+
+        <attr name="eyeshotnormal" format="reference" />
+        <attr name="eyeshotsport" format="reference" />
     </declare-styleable>
 
 </resources>

@@ -16,6 +16,11 @@
     <color name="grey">#999999</color>
     <color name="starnormal_color">#7cfffa</color>
     <color name="starsport_color">#fec575</color>
+    <color name="blackgoldnormal_color">#ffb86c</color>
+    <color name="blackgoldsport_color">#e2525d</color>
+    <color name="eyeshotnormal_color">#70f3ff</color>
+    <color name="eyeshotsport_color">#efb76e</color>
+
     <color name="selector_press">#ff13c7ff</color>
     <color name="service_item_confirm_color">#4d4d4d</color>
 </resources>

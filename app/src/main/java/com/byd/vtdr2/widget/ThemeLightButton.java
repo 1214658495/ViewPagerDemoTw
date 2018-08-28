@@ -67,6 +67,24 @@ public class ThemeLightButton extends LightButton implements ITheme {
 //					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
 						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
 						break;
+					case Theme.BLACKGOLD_NORMAL:
+						setLight(getResources().getColor(R.color.blackgoldnormal_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.BLACKGOLD_SPORT:
+						setLight(getResources().getColor(R.color.blackgoldsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.EYESHOT_NORMAL:
+						setLight(getResources().getColor(R.color.eyeshotnormal_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
+					case Theme.EYESHOT_SPORT:
+						setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+						break;
 					default:
 						setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
 						colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色

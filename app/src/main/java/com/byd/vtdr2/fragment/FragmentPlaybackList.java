@@ -226,14 +226,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         int bydTheme = getResources().getConfiguration().byd_theme;
         changeSkin(bydTheme);
         initData();
-//        if (resush == null) {
-        if (refreshListThread == null) {
-            rueshcontrol = true;
-//            resush = new MyThread();
-            refreshListThread = new RefreshListThread(this);
-            refreshListThread.start();
-//            resush.start();
-        }
+
 
         return view;
 
@@ -254,6 +247,20 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         super.onStart();
 //        fragmentManager = getChildFragmentManager();
 //        fragmentManager = getActivity().getSupportFragmentManager();
+//        开始3分钟刷新的线程
+        //        if (resush == null) {
+        if (refreshListThread == null) {
+            rueshcontrol = true;
+//            resush = new MyThread();
+            refreshListThread = new RefreshListThread(this);
+            refreshListThread.start();
+//            resush.start();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -533,16 +540,18 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         super.onStop();
 //        EventBus.getDefault().unregister(this);
         cancelMultiChoose();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.e(TAG, "onDestroyView: ");
+//        取消3分钟刷新的线程
         rueshcontrol = false;
 //        resush.interrupt();
 //        resush = null;
         refreshListThread.interrupt();
         refreshListThread = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.e(TAG, "onDestroyView: ");
+
         unbinder.unbind();
         // 退出程序时结束所有的下载任务
         if (mAdapter != null) {
@@ -810,7 +819,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 } else {
                                     fileHead = "/tmp/SD0/PHOTO/";
                                 }
-                                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE, fileHead + model.getName(),null);
+                                mListener.onFragmentAction(IFragmentListener.ACTION_FS_DELETE, fileHead + model.getName(), null);
                             }
 
                         }
@@ -1011,6 +1020,18 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                             case 1012:
                                 view.setBackgroundColor(Color.parseColor("#fec575"));
                                 break;
+                            case 1021:
+                                view.setBackgroundColor(Color.parseColor("#ffb86c"));
+                                break;
+                            case 1022:
+                                view.setBackgroundColor(Color.parseColor("#e2525d"));
+                                break;
+                            case 1031:
+                                view.setBackgroundColor(Color.parseColor("#70f3ff"));
+                                break;
+                            case 1032:
+                                view.setBackgroundColor(Color.parseColor("#efb76e"));
+                                break;
                             default:
                                 view.setBackgroundColor(Color.parseColor("#1CC9FE"));
                                 break;
@@ -1064,6 +1085,22 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                             case 1012:
                                 nameView.setTextColor(Color.parseColor("#fec575"));
                                 timeView.setTextColor(Color.parseColor("#fec575"));
+                                break;
+                            case 1021:
+                                nameView.setTextColor(Color.parseColor("#ffb86c"));
+                                timeView.setTextColor(Color.parseColor("#ffb86c"));
+                                break;
+                            case 1022:
+                                nameView.setTextColor(Color.parseColor("#e2525d"));
+                                timeView.setTextColor(Color.parseColor("#e2525d"));
+                                break;
+                            case 1031:
+                                nameView.setTextColor(Color.parseColor("#70f3ff"));
+                                timeView.setTextColor(Color.parseColor("#70f3ff"));
+                                break;
+                            case 1032:
+                                nameView.setTextColor(Color.parseColor("#efb76e"));
+                                timeView.setTextColor(Color.parseColor("#efb76e"));
                                 break;
                             default:
                                 nameView.setTextColor(Color.parseColor("#1CC9FE"));
@@ -1681,34 +1718,44 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         @Override
         public void run() {
             FragmentPlaybackList fragmentPlaybackListReference = fragmentPlaybackListWeakReference.get();
-            while (fragmentPlaybackListReference.rueshcontrol) {
-                try {
-                    RefreshListThread.sleep(1000 * 180);
-                    if (!fragmentPlaybackListReference.rueshcontrol) {
-                        break;
-                    }
-                    if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
-                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/PHOTO";
-                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
-                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+            if (fragmentPlaybackListReference != null) {
+                while (fragmentPlaybackListReference.rueshcontrol) {
+                    try {
+                        RefreshListThread.sleep(1000 * 180);
+                        if (!fragmentPlaybackListReference.rueshcontrol) {
+                            break;
                         }
-                    } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
-                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/NORMAL";
-                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
-                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                        if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_CAPTURE_PHOTO) {
+                            fragmentPlaybackListReference.mPWD = "/tmp/SD0/PHOTO";
+                            if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+//                            不在图片预览界面才去刷新
+                                if (fragmentPlaybackListReference.fragmentPhotoPreview == null || !fragmentPlaybackListReference.fragmentPhotoPreview.isVisible()) {
+                                    fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                                }
+                            }
+                        } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_RECORD_VIDEO) {
+                            fragmentPlaybackListReference.mPWD = "/tmp/SD0/NORMAL";
+                            if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+//                            不在视频预览界面才去刷新
+                                if (fragmentPlaybackListReference.fragmentVideoPreview == null || !fragmentPlaybackListReference.fragmentVideoPreview.isVisible()) {
+                                    fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                                }
+                            }
+                        } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
+                            fragmentPlaybackListReference.mPWD = "/tmp/SD0/EVENT";
+                            if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
+                                if (fragmentPlaybackListReference.fragmentVideoPreview == null || !fragmentPlaybackListReference.fragmentVideoPreview.isVisible()) {
+                                    fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
+                                }
+                            }
                         }
-                    } else if (fragmentPlaybackListReference.currentRadioButton == ServerConfig.RB_LOCK_VIDEO) {
-                        fragmentPlaybackListReference.mPWD = "/tmp/SD0/EVENT";
-                        if (fragmentPlaybackListReference.rueshcontrol && !fragmentPlaybackListReference.isMultiChoose) {
-                            fragmentPlaybackListReference.listDirContents(fragmentPlaybackListReference.mPWD);
-                        }
-                    }
 //                    if (fragmentPlaybackListReference.mAdapter != null && fragmentPlaybackListReference.rueshcontrol) {
 //                        fragmentPlaybackListReference.updateListHandler.sendEmptyMessage(NOTIFY_LIST_UPDATE);
 //                    }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -1875,6 +1922,86 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_starsport),
                         null, null, null);
                 tvEditNav.setLight(getResources().getColor(R.color.starsport_color), 20);
+                break;
+            case 1021:
+                //blackgold
+                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldeco),
+                        null, null, null);
+                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldeco),
+                        null, null, null);
+                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldeco),
+                        null, null, null);
+                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldeco),
+                        null, null, null);
+                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldeco),
+                        null, null, null);
+                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldeco),
+                        null, null, null);
+                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldeco),
+                        null, null, null);
+                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldeco),
+                        null, null, null);
+                tvEditNav.setLight(getResources().getColor(R.color.blackgoldnormal_color), 20);
+                break;
+            case 1022:
+                //blackgold运动模式
+                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldsport),
+                        null, null, null);
+                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldsport),
+                        null, null, null);
+                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldsport),
+                        null, null, null);
+                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldsport),
+                        null, null, null);
+                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldsport),
+                        null, null, null);
+                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldsport),
+                        null, null, null);
+                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldsport),
+                        null, null, null);
+                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldsport),
+                        null, null, null);
+                tvEditNav.setLight(getResources().getColor(R.color.blackgoldsport_color), 20);
+                break;
+            case 1031:
+                //eyeshoteco模式
+                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshoteco),
+                        null, null, null);
+                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshoteco),
+                        null, null, null);
+                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshoteco),
+                        null, null, null);
+                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshoteco),
+                        null, null, null);
+                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshoteco),
+                        null, null, null);
+                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshoteco),
+                        null, null, null);
+                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshoteco),
+                        null, null, null);
+                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshoteco),
+                        null, null, null);
+                tvEditNav.setLight(getResources().getColor(R.color.eyeshotnormal_color), 20);
+                break;
+            case 1032:
+                //eyeshotsport运动模式
+                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshotsport),
+                        null, null, null);
+                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshotsport),
+                        null, null, null);
+                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshotsport),
+                        null, null, null);
+                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshotsport),
+                        null, null, null);
+                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshotsport),
+                        null, null, null);
+                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshotsport),
+                        null, null, null);
+                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshotsport),
+                        null, null, null);
+                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshotsport),
+                        null, null, null);
+                tvEditNav.setLight(getResources().getColor(R.color.eyeshotsport_color), 20);
                 break;
             default:
                 //经济模式

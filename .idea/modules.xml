@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VTDR.iml" filepath="$PROJECT_DIR$/VTDR.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skinmi/skinmi.iml" filepath="$PROJECT_DIR$/skinmi/skinmi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skinmy/skinmy.iml" filepath="$PROJECT_DIR$/skinmy/skinmy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vtdr2.skin/vtdr2.skin.iml" filepath="$PROJECT_DIR$/vtdr2.skin/vtdr2.skin.iml" />
     </modules>
   </component>
 </project>

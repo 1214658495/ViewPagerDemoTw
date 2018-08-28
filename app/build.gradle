@@ -12,8 +12,8 @@ android {
         applicationId "com.byd.vtdr2"
         minSdkVersion 22
         targetSdkVersion 27
-        versionCode 23
-        versionName "1.0.23"
+        versionCode 24
+        versionName "1.0.24"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         archivesBaseName = "vtdr" + versionName
         ndk {
@@ -30,11 +30,12 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs = ['src/main/res', 'src/main/res-sport', 'src/main/res-hadeco', 'src/main/res-hadsport', 'src/main/res-stareco', 'src/main/res-starsport']
+            res.srcDirs = ['src/main/res', 'src/main/res-sport', 'src/main/res-hadeco', 'src/main/res-hadsport',
+                           'src/main/res-stareco', 'src/main/res-starsport', 'src/main/res-blackgoldeco', 'src/main/res-blackgoldsport', 'src/main/res-eyeshoteco', 'src/main/res-eyeshotsport']
         }
     }
 }
-
+//
 /*repositories {
     flatDir {
         dirs 'libs'   // aar目录

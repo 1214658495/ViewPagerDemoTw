@@ -68,6 +68,24 @@ public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
 //            colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
                 colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
                 break;
+            case Theme.BLACKGOLD_NORMAL:
+                setLight(getResources().getColor(R.color.blackgoldnormal_color), 10);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                break;
+            case Theme.BLACKGOLD_SPORT:
+                setLight(getResources().getColor(R.color.blackgoldsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                break;
+            case Theme.EYESHOT_NORMAL:
+                setLight(getResources().getColor(R.color.eyeshotnormal_color), 10);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                break;
+            case Theme.EYESHOT_SPORT:
+                setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
+//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                break;
             default:
                 setLight(getResources().getColor(R.color.lightone), 30);
                 colorStateList = getResources().getColorStateList(R.color.check_selector_normal);
