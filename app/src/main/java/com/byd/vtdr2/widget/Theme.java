@@ -31,7 +31,13 @@ public class Theme {
 	public static final int EYESHOT_NORMAL = BLACKGOLD_SPORT + 1;
 	public static final int EYESHOT_SPORT = EYESHOT_NORMAL + 1;
 
-	private static final int COUNT = EYESHOT_SPORT + 1;
+	public static final int BUSSINESS_NORMAL = EYESHOT_SPORT + 1;
+	public static final int BUSSINESS_SPORT = BUSSINESS_NORMAL + 1;
+
+	public static final int ELEGANT_NORMAL = BUSSINESS_SPORT + 1;
+	public static final int ELEGANT_SPORT = ELEGANT_NORMAL + 1;
+
+	private static final int COUNT = ELEGANT_SPORT + 1;
 
 
 	private int[] mThemes;
@@ -59,6 +65,11 @@ public class Theme {
 		mThemes[BLACKGOLD_SPORT] = a.getResourceId(R.styleable.theme_blackgoldsport, 0);
 		mThemes[EYESHOT_NORMAL] = a.getResourceId(R.styleable.theme_eyeshotnormal, 0);
 		mThemes[EYESHOT_SPORT] = a.getResourceId(R.styleable.theme_eyeshotsport, 0);
+
+		mThemes[BUSSINESS_NORMAL] = a.getResourceId(R.styleable.theme_bussinessnormal, 0);
+		mThemes[BUSSINESS_SPORT] = a.getResourceId(R.styleable.theme_bussinesssport, 0);
+		mThemes[ELEGANT_NORMAL] = a.getResourceId(R.styleable.theme_elegantnormal, 0);
+		mThemes[ELEGANT_SPORT] = a.getResourceId(R.styleable.theme_elegantsport, 0);
         a.recycle();
 	}
 	/** 方法名一样，参数不同，重载*/

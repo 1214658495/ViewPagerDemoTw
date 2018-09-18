@@ -8,17 +8,29 @@ import android.util.AttributeSet;
 
 import com.byd.vtdr2.R;
 
+import skin.support.widget.SkinCompatBackgroundHelper;
+import skin.support.widget.SkinCompatCompoundButtonHelper;
+import skin.support.widget.SkinCompatTextHelper;
 
 public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
     private Theme mTheme;
     private Context myContext;
-
+    private SkinCompatTextHelper mTextHelper;
+    private SkinCompatCompoundButtonHelper mCompoundButtonHelper;
+    private SkinCompatBackgroundHelper mBackgroundTintHelper;
     public ThemeLightRadioButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mTheme = new Theme();
         mTheme.set(context, attrs);
         ThemeManager.getInstance().add(this);
         myContext = context;
+/*//        SkinCompatSupportable初始化
+        mCompoundButtonHelper = new SkinCompatCompoundButtonHelper(this);
+//        mCompoundButtonHelper.loadFromAttributes(attrs, R.attr.radioButtonStyle);
+        mBackgroundTintHelper = new SkinCompatBackgroundHelper(this);
+        mBackgroundTintHelper.loadFromAttributes(attrs, 0);
+        mTextHelper = SkinCompatTextHelper.create(this);
+        mTextHelper.loadFromAttributes(attrs, 0);*/
     }
 
     @Override
@@ -44,53 +56,78 @@ public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
         switch (theme) {
             case Theme.NORMAL:
                 setLight(getResources().getColor(R.color.lightone), 30);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_normal);
+//                colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
                 break;
             case Theme.SPORT:
                 setLight(getResources().getColor(R.color.sport_color), 12);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_sport);
+//                colorStateList = getResources().getColorStateList(R.color.check_selector_sport);
                 break;
             case Theme.HAD_NORMAL:
                 setLight(getResources().getColor(R.color.lightone), 30);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
                 break;
             case Theme.HAD_SPORT:
                 setLight(getResources().getColor(R.color.hadsport_color), 8);
-//            colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
                 break;
             case Theme.STAR_NORMAL:
                 setLight(getResources().getColor(R.color.starnormal_color), 8);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
                 break;
             case Theme.STAR_SPORT:
                 setLight(getResources().getColor(R.color.starsport_color), 8);
-//            colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
                 break;
             case Theme.BLACKGOLD_NORMAL:
-                setLight(getResources().getColor(R.color.blackgoldnormal_color), 10);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                setLight(getResources().getColor(R.color.blackgoldnormal_color), 1);
                 break;
             case Theme.BLACKGOLD_SPORT:
-                setLight(getResources().getColor(R.color.blackgoldsport_color), 8);
-//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                setLight(getResources().getColor(R.color.blackgoldsport_color), 1);
                 break;
             case Theme.EYESHOT_NORMAL:
-                setLight(getResources().getColor(R.color.eyeshotnormal_color), 10);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                setLight(getResources().getColor(R.color.eyeshotnormal_color), 1);
                 break;
             case Theme.EYESHOT_SPORT:
-                setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
-//					colorStateList = getResources().getColorStateList(R.color.check_selector_hadsport);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_hadnormal);
+                setLight(getResources().getColor(R.color.eyeshotsport_color), 1);
+                break;
+            case Theme.BUSSINESS_NORMAL:
+                setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
+                break;
+            case Theme.BUSSINESS_SPORT:
+                setLight(getResources().getColor(R.color.bussinesssport_color), 8);
                 break;
             default:
                 setLight(getResources().getColor(R.color.lightone), 30);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_normal);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
                 break;
         }
-        setTextColor(colorStateList);
+//        setTextColor(colorStateList);
     }
+
+  /*  @Override
+    public void setBackgroundResource(@DrawableRes int resId) {
+        super.setBackgroundResource(resId);
+        if (mBackgroundTintHelper != null) {
+            mBackgroundTintHelper.onSetBackgroundResource(resId);
+        }
+    }
+
+    @Override
+    public void setTextAppearance(int resId) {
+        setTextAppearance(getContext(), resId);
+    }
+
+    @Override
+    public void setTextAppearance(Context context, int resId) {
+        super.setTextAppearance(context, resId);
+        if (mTextHelper != null) {
+            mTextHelper.onSetTextAppearance(context, resId);
+        }
+    }
+//    使用第三方库实现换肤
+    @Override
+    public void applySkin() {
+        if (mBackgroundTintHelper != null) {
+            mBackgroundTintHelper.applySkin();
+        }
+        if (mTextHelper != null) {
+            mTextHelper.applySkin();
+        }
+    }*/
 }

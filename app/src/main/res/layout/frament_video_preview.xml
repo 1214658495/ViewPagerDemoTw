@@ -36,8 +36,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@mipmap/bg_text_item"
-        app:layout_constraintLeft_toLeftOf="@id/sv_videoPlayView"
-        app:layout_constraintRight_toRightOf="@id/sv_videoPlayView"
+        app:layout_constraintStart_toStartOf="@id/sv_videoPlayView"
+        app:layout_constraintEnd_toEndOf="@id/sv_videoPlayView"
         app:layout_constraintTop_toTopOf="@id/sv_videoPlayView">
 
         <ImageButton
@@ -88,8 +88,8 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/sv_videoPlayView"
-        app:layout_constraintLeft_toLeftOf="@id/sv_videoPlayView"
-        app:layout_constraintRight_toRightOf="@id/sv_videoPlayView">
+        app:layout_constraintStart_toStartOf="@id/sv_videoPlayView"
+        app:layout_constraintEnd_toEndOf="@id/sv_videoPlayView">
 
         <SeekBar
             android:id="@+id/sb_mediaCtrlBar"

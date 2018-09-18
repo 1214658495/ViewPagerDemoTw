@@ -11,7 +11,7 @@
         android:layout_width="@dimen/dp_33"
         android:layout_height="@dimen/dp_20"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:scaleType="centerCrop" />
 
@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
-        app:layout_constraintLeft_toRightOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_time"
+        app:layout_constraintStart_toEndOf="@id/tv_title"
+        app:layout_constraintEnd_toStartOf="@id/tv_time"
         app:layout_constraintHorizontal_bias="0.94"
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
         android:src="@mipmap/ic_play"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
-        app:layout_constraintLeft_toRightOf="@id/iv_videoPhoto"
+        app:layout_constraintStart_toEndOf="@id/iv_videoPhoto"
         android:layout_marginStart="@dimen/dp_9"
         android:text="2017-09-10-12-13-24.MP4"
         android:textSize="@dimen/sp_8" />
@@ -49,7 +49,7 @@
         android:text="02:00"
         android:textSize="@dimen/sp_8"
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
-        app:layout_constraintRight_toLeftOf="@id/cb_cbx"
+        app:layout_constraintEnd_toStartOf="@id/cb_cbx"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
         app:layout_constraintVertical_bias="0.4" />
 
@@ -65,7 +65,7 @@
         android:focusableInTouchMode="false"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/iv_videoPhoto"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_videoPhoto"
         app:layout_constraintVertical_bias="0.535" />
 

@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">行车记录仪</string>
-    <string name="back">返回</string>
+    <string name="back"> 返回</string>
     <string name="live_video">实时影像</string>
     <string name="playback_list">回放列表</string>
     <string name="setting">设置</string>
 
     <string name="system">系统</string>
     <string name="storageCard_format">存储卡格式化</string>
+
     <string name="cancel">取消</string>
     <string name="share">分享</string>
     <string name="export">导出</string>
@@ -14,15 +15,16 @@
     <string name="selectAll">全选</string>
     <string name="exit">再按一次退出程序</string>
 
-    <string name="appname_tag">程序名称: 行车记录仪</string>
-    <string name="features">特性:</string>
-    <string name="strNewerVer">发现新版本，是否立即升级？</string>
-    <string name="updateNow">升级</string>
-    <string name="isDownLoading">正在更新...</string>
-    <string name="downloadlater">取消</string>
     <string name="record_video">行车视频</string>
     <string name="lock_video">锁定视频</string>
     <string name="photo">图片</string>
+    <!--<string name="appname_tag">程序名称: 行车记录仪</string>-->
+    <!--<string name="features">特性:</string>-->
+    <!--<string name="strNewerVer">发现新版本，是否立即升级？</string>-->
+    <!--<string name="updateNow">升级</string>-->
+    <!--<string name="isDownLoading">正在更新...</string>-->
+    <!--<string name="downloadlater">取消</string>-->
+
     <string name="restore_defaults">默认值</string>
     <string name="version">版本</string>
     <string name="firmware_version">固件版本</string>
@@ -33,7 +35,7 @@
     <string name="LockVideo_fail">锁定视频失败</string>
     <string name="openVideo_fail">开启录像失败</string>
     <string name="closeVideo_fail">关闭录像失败</string>
-    <string name="connect_fail">行车记录仪连接中...</string>
+    <string name="connect_fail">网络连接中...</string>
     <string name="ok">确认</string>
     <string name="close">关闭</string>
     <string name="logo_text">比亚迪行车记录仪</string>

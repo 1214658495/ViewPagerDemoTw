@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.byd.lighttextview.LightButton;
+//import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.MyDialog;
@@ -44,11 +44,11 @@ public class FragmentSetting extends Fragment {
     ThemeLightButton btnFirmwareVersion;
     @BindView(R.id.btn_appVersion)
     ThemeLightButton btnAppVersion;
-    @BindView(R.id.btn_default_setting)
-    LightButton btnDefaultSetting;
+//    @BindView(R.id.btn_default_setting)
+//    LightButton btnDefaultSetting;
     Unbinder unbinder;
-    @BindView(R.id.update_test)
-    LightButton btnUpdateTest;
+//    @BindView(R.id.update_test)
+//    LightButton btnUpdateTest;
     @BindView(R.id.tv_appVersionDetail)
     TextView tvAppVersionDetail;
     @BindView(R.id.tv_textSetting)
@@ -115,24 +115,24 @@ public class FragmentSetting extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_default_setting, R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.update_test,R.id.tv_textSetting})
+    @OnClick({ R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.tv_textSetting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_default_setting:
-                myDialog = MyDialog.newInstance(0, getString(R.string.restore_settings));
-                myDialog.show(getActivity().getFragmentManager(), "default_setting");
-                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
-                    @Override
-                    public void okButtonClick() {
-                        mListener.onFragmentAction(IFragmentListener.ACTION_DEFAULT_SETTING, null);
-                    }
-
-                    @Override
-                    public void cancelButtonClick() {
-                        // TODO: 2018/1/4 点击取消有空指针异常
-                    }
-                });
-                break;
+//            case R.id.btn_default_setting:
+//                myDialog = MyDialog.newInstance(0, getString(R.string.restore_settings));
+//                myDialog.show(getActivity().getFragmentManager(), "default_setting");
+//                myDialog.setOnDialogButtonClickListener(new MyDialog.OnDialogButtonClickListener() {
+//                    @Override
+//                    public void okButtonClick() {
+//                        mListener.onFragmentAction(IFragmentListener.ACTION_DEFAULT_SETTING, null);
+//                    }
+//
+//                    @Override
+//                    public void cancelButtonClick() {
+//                        // TODO: 2018/1/4 点击取消有空指针异常
+//                    }
+//                });
+//                break;
             case R.id.btn_memoryCard_format:
                 mListener.onFragmentAction(IFragmentListener.ACTION_FS_FORMAT_SD, "C:");
                 break;
@@ -142,9 +142,9 @@ public class FragmentSetting extends Fragment {
             case R.id.btn_appVersion:
                 mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION, null);
                 break;
-            case R.id.update_test:
-//                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
-                break;
+//            case R.id.update_test:
+////                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);
+//                break;
             case R.id.tv_textSetting:
                 clickNum++;
 //                mListener.onFragmentAction(IFragmentListener.ACTION_APP_VERSION,null);

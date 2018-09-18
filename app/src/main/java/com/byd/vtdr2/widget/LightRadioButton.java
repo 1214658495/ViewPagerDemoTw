@@ -12,10 +12,13 @@ import android.graphics.Region.Op;
 import android.util.AttributeSet;
 
 import com.byd.vtdr2.R;
+
+import skin.support.widget.SkinCompatRadioButton;
+
 /**
  * @author byd_tw
  */
-public class LightRadioButton extends android.support.v7.widget.AppCompatRadioButton {
+public class LightRadioButton extends SkinCompatRadioButton {
 
 	private int color;
 	private float radius;

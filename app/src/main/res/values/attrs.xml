@@ -236,6 +236,12 @@
 
         <attr name="eyeshotnormal" format="reference" />
         <attr name="eyeshotsport" format="reference" />
+
+        <attr name="bussinessnormal" format="reference" />
+        <attr name="bussinesssport" format="reference" />
+
+        <attr name="elegantnormal" format="reference" />
+        <attr name="elegantsport" format="reference" />
     </declare-styleable>
 
 </resources>

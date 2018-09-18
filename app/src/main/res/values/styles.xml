@@ -24,7 +24,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:fontFamily">plagiata</item>
-        <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
+        <!--<item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>-->
         <item name="android:button">@null</item>
         <item name="android:background">@android:color/transparent</item>
 
@@ -34,7 +34,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:fontFamily">plagiata</item>
-        <item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>
+        <!--<item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>-->
         <!--使用如下取消自带的选择符号-->
         <item name="android:button">@null</item>
         <!--&lt;!&ndash;使用如下取消点击光效&ndash;&gt;-->

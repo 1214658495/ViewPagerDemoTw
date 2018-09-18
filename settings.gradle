@@ -1,1 +1,1 @@
-include ':app', ':vtdr2.skin', ':skinmy', ':skinmi'
+include ':app'

@@ -1,3 +1,4 @@
+/*
 package com.byd.vtdr2.view;
 
 import android.app.Dialog;
@@ -21,10 +22,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+*/
 /**
  * @author byd_tw
  * @date 2017/11/13
- */
+ *//*
+
 
 public class AddSingleButtonDialog extends DialogFragment {
 
@@ -133,11 +136,13 @@ public class AddSingleButtonDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         // 如下在旋转后重建了
-       /* Dialog dialog = getDialog();
+       */
+/* Dialog dialog = getDialog();
         // handles https://code.google.com/p/android/issues/detail?id=17423
         if (dialog != null && getRetainInstance()) {
             dialog.setDismissMessage(null);
-        }*/
+        }*//*
+
         super.onDestroyView();
         unbinder.unbind();
     }
@@ -152,3 +157,4 @@ public class AddSingleButtonDialog extends DialogFragment {
 //
 //    }
 }
+*/

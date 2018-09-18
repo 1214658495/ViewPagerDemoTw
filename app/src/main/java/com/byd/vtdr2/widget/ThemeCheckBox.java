@@ -5,9 +5,10 @@ package com.byd.vtdr2.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.byd.vtdr2.R;
+import skin.support.widget.SkinCompatCheckBox;
 
-public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox implements ITheme {
+//此处未继承LightCheckbox
+public class ThemeCheckBox extends SkinCompatCheckBox implements ITheme {
     private Theme mTheme;
 
     public ThemeCheckBox(Context context, AttributeSet attrs) {
@@ -35,7 +36,7 @@ public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox i
 			DrawableCompat.setTint(drawable, getResources().getColor(res));
 			setButtonDrawable(drawable);
 		}*/
-        switch (theme) {
+        /*switch (theme) {
             case Theme.SPORT:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
                 setTextColor(getResources().getColor(R.color.sport_color));
@@ -64,11 +65,17 @@ public class ThemeCheckBox extends android.support.v7.widget.AppCompatCheckBox i
             case Theme.EYESHOT_SPORT:
                 setTextColor(getResources().getColor(R.color.grey));
                 break;
+            case Theme.BUSSINESS_NORMAL:
+
+                break;
+            case Theme.BUSSINESS_SPORT:
+
+                break;
             default:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.pic_check_box_up));
                 setTextColor(getResources().getColor(R.color.light));
                 break;
-        }
+        }*/
     }
 
 }

@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -59,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import skin.support.annotation.Skinable;
+import skin.support.widget.SkinCompatSupportable;
 
 /**
  * @author byd_tw 若要实现所以activity的换肤，把@Skinable放到BaseActivity中
@@ -66,7 +68,7 @@ import skin.support.annotation.Skinable;
  */
 
 @Skinable
-public class MainActivity extends BaseActivity implements IChannelListener, IFragmentListener {
+public class MainActivity extends BaseActivity implements IChannelListener, IFragmentListener, SkinCompatSupportable {
     private static final String TAG = "MainActivity";
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
     @BindView(R.id.fl_main)
@@ -131,6 +133,7 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         LogcatHelper.getInstance(getApplicationContext()).start();
         setContentView(R.layout.activity_main);
@@ -148,7 +151,7 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
      */
     private void initSkinView() {
         int bydTheme = getResources().getConfiguration().byd_theme;
-        changeSkin(bydTheme);
+//        changeSkin(bydTheme);
     }
 
     /**
@@ -297,7 +300,7 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int bydTheme = newConfig.byd_theme;
-        changeSkin(bydTheme);
+//        changeSkin(bydTheme);
     }
 
     /**
@@ -452,24 +455,6 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
         customDialog.show();
     }
 
-    private void showCrossDialog(String tips) {
-        if (customDialog != null && !isFinishing()) {
-            customDialog.dismiss();
-        }
-        CustomDialog.Builder builder = new CustomDialog.Builder(this);
-        customDialog = builder.cancelTouchOut(true)
-                .view(R.layout.fragment_cross_dialog)
-                .style(R.style.CustomDialog)
-                .setTitle(tips)
-                .addViewOnclick(R.id.btn_closeDialog, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        customDialog.dismiss();
-                    }
-                })
-                .build();
-        customDialog.show();
-    }
 
     /**
      * 弹2个确认button的窗
@@ -1911,258 +1896,306 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
     }*/
 
 
-    /**
-     * 换肤
-     *
-     * @param bydTheme
-     */
-    private void changeSkin(int bydTheme) {
-        switch (bydTheme) {
-            case 1:
-                //经济模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
-                            null, null, null);
-                }
-                break;
-            case 2:
-                //运动模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_sport), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_sport),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport),
-                            null, null, null);
-                }
-                break;
-            case 101:
-                //hadeco模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_hadeco), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadeco), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadeco), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadeco), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_hadeco),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadeco),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadeco),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadeco),
-                            null, null, null);
-                }
-                break;
-            case 102:
-                //had运动模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_hadsport), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadsport), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadsport), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadsport), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_hadsport),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadsport),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadsport),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadsport),
-                            null, null, null);
-                }
-                break;
-            case 1011:
-                //stareco模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_stareco), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_stareco), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_stareco), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_stareco), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_stareco),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_stareco),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_stareco),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_stareco),
-                            null, null, null);
-                }
-                break;
-            case 1012:
-                //star运动模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_starsport), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_starsport), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_starsport), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_starsport), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_starsport),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_starsport),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_starsport),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_starsport),
-                            null, null, null);
-                }
-                break;
-            case 1021:
-                //blackgold经济模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldeco), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldeco), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldeco), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldeco), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldeco),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldeco),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldeco),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldeco),
-                            null, null, null);
-                }
-                break;
-            case 1022:
-                //blackgold运动模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldsport), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldsport), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldsport), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldsport), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldsport),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldsport),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldsport),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldsport),
-                            null, null, null);
-                }
-                break;
-            case 1031:
-                //eyeshoteco模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshoteco), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshoteco), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshoteco), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshoteco), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshoteco),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshoteco),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshoteco),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshoteco),
-                            null, null, null);
-                }
-                break;
-            case 1032:
-                //eyeshotsport运动模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshotsport), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshotsport), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshotsport), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshotsport), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshotsport),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshotsport),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshotsport),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshotsport),
-                            null, null, null);
-                }
-                break;
-            default:
-                //经济模式
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
-                } else {
-                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
-                            null, null, null);
-                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
-                            null, null, null);
-                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
-                            null, null, null);
-                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
-                            null, null, null);
-                }
-                break;
-        }
+    @Override
+    public void applySkin() {
+
     }
 
+    /**
+     * 换肤
+     * @param bydTheme
+     */
+//    private void changeSkin(int bydTheme) {
+//        switch (bydTheme) {
+//            case 1:
+//                //经济模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//            case 2:
+//                //运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_sport), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_sport),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_sport),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_sport),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_sport),
+//                            null, null, null);
+//                }
+//                break;
+//            case 101:
+//                //hadeco模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_hadeco), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadeco), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadeco), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadeco), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_hadeco),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadeco),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadeco),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadeco),
+//                            null, null, null);
+//                }
+//                break;
+//            case 102:
+//                //had运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_hadsport), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadsport), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadsport), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadsport), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_hadsport),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_hadsport),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_hadsport),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_hadsport),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1011:
+//                //stareco模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1012:
+//                //star运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1021:
+//                //blackgold经济模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldeco), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldeco), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldeco), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldeco), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldeco),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldeco),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldeco),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldeco),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1022:
+//                //blackgold运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldsport), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldsport), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldsport), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldsport), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_blackgoldsport),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_blackgoldsport),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_blackgoldsport),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_blackgoldsport),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1031:
+//                //eyeshoteco模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshoteco), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshoteco), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshoteco), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshoteco), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshoteco),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshoteco),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshoteco),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshoteco),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1032:
+//                //eyeshotsport运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshotsport), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshotsport), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshotsport), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshotsport), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector_eyeshotsport),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector_eyeshotsport),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector_eyeshotsport),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector_eyeshotsport),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1041:
+//                //businesseco模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//            case 1042:
+//                //businesssport运动模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//            default:
+//                //经济模式
+//                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_back_selector), null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector), null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector), null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+//                            getResources().getDrawable(R.drawable.btn_tab_setting_selector), null, null);
+//                } else {
+//                    btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_back_selector),
+//                            null, null, null);
+//                    rbRealTimeVideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_realtimevideo_selector),
+//                            null, null, null);
+//                    rbPlaybackList.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_playbacklist_selector),
+//                            null, null, null);
+//                    rbSetting.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_tab_setting_selector),
+//                            null, null, null);
+//                }
+//                break;
+//        }
+//    }
+//
 
     /**
      * 3s检测网络是否正常连接的Runnable

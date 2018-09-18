@@ -15,8 +15,8 @@
         app:layout_constraintHorizontal_weight="1"
         android:src="@mipmap/btn_record_video_on"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_rt_capture_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_rt_capture_photo"
         android:clickable="true"
         android:focusable="true" />
 
@@ -26,9 +26,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iv_rt_record_video"
+        app:layout_constraintStart_toEndOf="@id/iv_rt_record_video"
         android:background="@drawable/btn_rt_capture_photo_selector"
-        app:layout_constraintRight_toLeftOf="@id/iv_rt_lock_video"/>
+        app:layout_constraintEnd_toStartOf="@id/iv_rt_lock_video"/>
 
     <ImageButton
         android:id="@+id/iv_rt_lock_video"
@@ -37,8 +37,8 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/btn_rt_lock_video_selector"
-        app:layout_constraintLeft_toRightOf="@id/btn_rt_capture_photo"
-        app:layout_constraintRight_toLeftOf="@id/iv_rt_record_voice" />
+        app:layout_constraintStart_toEndOf="@id/btn_rt_capture_photo"
+        app:layout_constraintEnd_toStartOf="@id/iv_rt_record_voice" />
 
     <!--android:background="@drawable/btn_rt_record_voice_selector"-->
     <ImageView
@@ -48,8 +48,8 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@mipmap/btn_record_voice_on"
-        app:layout_constraintLeft_toRightOf="@id/iv_rt_lock_video"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_rt_lock_video"
+        app:layout_constraintEnd_toEndOf="parent"
         android:clickable="true"
         android:focusable="true"/>
 
@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_icRecord"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
-        app:layout_constraintLeft_toRightOf="@id/iv_icRecord"
+        app:layout_constraintStart_toEndOf="@id/iv_icRecord"
         android:format24Hour="yyyy/MM/dd HH:mm:ss"
         android:visibility="invisible"
         android:textSize="@dimen/sp_8"/>
@@ -116,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_icRecord"
-        app:layout_constraintRight_toRightOf="@id/sv_recordVideo"
+        app:layout_constraintEnd_toEndOf="@id/sv_recordVideo"
         app:layout_constraintBottom_toBottomOf="@id/iv_icRecord"
         android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_8"

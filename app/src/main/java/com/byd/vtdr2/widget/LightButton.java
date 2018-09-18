@@ -13,11 +13,13 @@ import android.util.AttributeSet;
 
 import com.byd.vtdr2.R;
 
+import skin.support.widget.SkinCompatButton;
+
 //import android.widget.Button;
 
 //import com.byd.lighttextview.Constants.ModeState;
 //import com.byd.utils.Lg;
-public class LightButton extends android.support.v7.widget.AppCompatButton {
+public class LightButton extends SkinCompatButton {
 
 	private int color;
 	private float radius;
@@ -110,7 +112,7 @@ public class LightButton extends android.support.v7.widget.AppCompatButton {
 //	public void ModeinChanged(int modeEvent) {
 //		// TODO Auto-generated method stub
 ////		int mColor = modeEvent == ModeState.EVENT_SPORT ? getResources().getColor(R.color.check_selector_sport) : getResources().getColor(R.color.normal_color);
-//		int mColor = modeEvent == com.byd.vtdr2.widget.Constants.ModeState.EVENT_SPORT ? getResources().getColor(R.color.check_selector_sport) : getResources().getColor(R.color.check_selector_normal);
+//		int mColor = modeEvent == com.byd.vtdr2.widget.Constants.ModeState.EVENT_SPORT ? getResources().getColor(R.color.check_selector_sport) : getResources().getColor(R.color.check_selector_eco);
 ////		Lg.i("kangkang 12-16 add mColor = " + mColor);
 //	}
 }

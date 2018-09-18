@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@mipmap/bg_text_item"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <ImageButton

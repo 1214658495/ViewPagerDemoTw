@@ -20,12 +20,12 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:largeHeap="true"
         android:resizeableActivity="false"
         android:theme="@style/AppWelcome">
         <activity android:name="com.byd.vtdr2.MainActivity"
-            >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

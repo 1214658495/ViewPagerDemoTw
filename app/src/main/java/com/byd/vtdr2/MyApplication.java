@@ -152,50 +152,71 @@ public class MyApplication extends Application {
             case 2:
                 //运动模式
                 themeManager.updateTheme(Theme.SPORT);
-                SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("sport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("stsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 101:
                 //经济模式
                 themeManager.updateTheme(Theme.HAD_NORMAL);
-                SkinCompatManager.getInstance().loadSkin("hadeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("hadeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("hadeco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 102:
                 //运动模式
                 themeManager.updateTheme(Theme.HAD_SPORT);
-                SkinCompatManager.getInstance().loadSkin("hadsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("hadsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("hadsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 1011:
                 //star经济模式
                 themeManager.updateTheme(Theme.STAR_NORMAL);
-                SkinCompatManager.getInstance().loadSkin("stareco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("stareco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("stareco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+
                 break;
             case 1012:
                 //star运动模式
                 themeManager.updateTheme(Theme.STAR_SPORT);
-                SkinCompatManager.getInstance().loadSkin("starsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("starsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("starsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 1021:
                 //blackgold经济模式
                 themeManager.updateTheme(Theme.BLACKGOLD_NORMAL);
-//                SkinCompatManager.getInstance().loadSkin("blackgold2.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
-                SkinCompatManager.getInstance().loadSkin("blackgoldeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("blackgoldeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("blackgoldeco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 1022:
                 //blackgold运动模式
                 themeManager.updateTheme(Theme.BLACKGOLD_SPORT);
-//                SkinCompatManager.getInstance().loadSkin("blackgold2.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
-                SkinCompatManager.getInstance().loadSkin("blackgoldsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("blackgoldsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("blackgoldsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 1031:
                 //eyeshot经济模式
                 themeManager.updateTheme(Theme.EYESHOT_NORMAL);
-                SkinCompatManager.getInstance().loadSkin("eyeshoteco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("eyeshoteco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("eyeshoteco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+
                 break;
             case 1032:
                 //eyeshot运动模式
                 themeManager.updateTheme(Theme.EYESHOT_SPORT);
-                SkinCompatManager.getInstance().loadSkin("eyeshotsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+//                SkinCompatManager.getInstance().loadSkin("eyeshotsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
+                SkinCompatManager.getInstance().loadSkin("eyeshotsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+
                 break;
+//            case 1041:
+//                //business经济模式
+//                themeManager.updateTheme(Theme.BUSSINESS_NORMAL);
+//                SkinCompatManager.getInstance().loadSkin("businesseco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+//                break;
+//            case 1042:
+//                //business运动模式
+//                themeManager.updateTheme(Theme.BUSSINESS_SPORT);
+//                SkinCompatManager.getInstance().loadSkin("businesssport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
+//                break;
+
             default:
                 themeManager.updateTheme(Theme.NORMAL);
                 SkinCompatManager.getInstance().restoreDefaultTheme();

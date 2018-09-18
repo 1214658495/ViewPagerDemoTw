@@ -14,11 +14,11 @@
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
         style="@style/ButtonStyle"
+        android:textColor="@color/check_selector_radiobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_20"
-        android:background="@null"
         android:drawableTop="@drawable/btn_tab_back_selector"
         android:text="@string/back"
         android:textAllCaps="false"
@@ -34,7 +34,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:src="@mipmap/line_ver_toback"
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
-        app:layout_constraintLeft_toRightOf="@id/btn_back"
+        app:layout_constraintStart_toEndOf="@id/btn_back"
         app:layout_constraintTop_toTopOf="@id/btn_back" />
 
     <RadioGroup
@@ -45,13 +45,14 @@
         android:layout_marginStart="@dimen/dp_30"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
-        app:layout_constraintLeft_toRightOf="@id/btn_back"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_back"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btn_back">
 
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_realTimeVideo"
             style="@style/ButtonStyle"
+            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -64,6 +65,7 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_playbackList"
             style="@style/ButtonStyle"
+            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -75,6 +77,7 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_setting"
             style="@style/ButtonStyle"
+            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

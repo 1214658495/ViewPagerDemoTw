@@ -1,6 +1,5 @@
 package com.byd.vtdr2.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
@@ -12,7 +11,10 @@ import android.util.AttributeSet;
 
 import com.byd.vtdr2.R;
 
-public class ThemeTextView extends LightTextView implements ITheme {
+import skin.support.widget.SkinCompatTextView;
+
+//此处未继承LightTextView
+public class ThemeTextView extends SkinCompatTextView implements ITheme {
 	private Theme mTheme;
 	
 	private int color;
@@ -76,7 +78,7 @@ public class ThemeTextView extends LightTextView implements ITheme {
 		setLight(Constants.COLOR_DEFAULT_BLUE, Constants.DEFAULT_RADIUS);
 	}
 
-	@Override
+//	@Override
 	public void setLight(int color, float radius) {
 		this.color = color;
 		this.radius = radius;
@@ -89,18 +91,55 @@ public class ThemeTextView extends LightTextView implements ITheme {
 		onThemeChanged(ThemeManager.getInstance().getTheme());
 	}
 
-	@SuppressLint("NewApi")
+//	@SuppressLint("NewApi")
 	@Override
 	public void onThemeChanged(int theme) {
 		ColorStateList colorStateList;
-		if(theme == Theme.NORMAL){
-			setLight(getResources().getColor(R.color.normal_color), 20);//设置发光的颜色以及半径
-			colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
-		}else{
-			setLight(getResources().getColor(R.color.sport_color), 20);
-			colorStateList = getResources().getColorStateList(R.color.press_selector_text_sport);
-		}		 	
-		setTextColor(colorStateList);
+		switch (theme) {
+			case Theme.NORMAL:
+				setLight(getResources().getColor(R.color.lightone), 20);
+//                colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
+				break;
+			case Theme.SPORT:
+				setLight(getResources().getColor(R.color.sport_color), 3);
+//                colorStateList = getResources().getColorStateList(R.color.check_selector_sport);
+				break;
+			case Theme.HAD_NORMAL:
+				setLight(getResources().getColor(R.color.lightone), 30);
+				break;
+			case Theme.HAD_SPORT:
+				setLight(getResources().getColor(R.color.hadsport_color), 5);
+				break;
+			case Theme.STAR_NORMAL:
+				setLight(getResources().getColor(R.color.starnormal_color), 8);
+				break;
+			case Theme.STAR_SPORT:
+				setLight(getResources().getColor(R.color.starsport_color), 8);
+				break;
+			case Theme.BLACKGOLD_NORMAL:
+				setLight(getResources().getColor(R.color.blackgoldnormal_color), 8);
+				break;
+			case Theme.BLACKGOLD_SPORT:
+				setLight(getResources().getColor(R.color.blackgoldsport_color), 8);
+				break;
+			case Theme.EYESHOT_NORMAL:
+				setLight(getResources().getColor(R.color.eyeshotnormal_color), 8);
+				break;
+			case Theme.EYESHOT_SPORT:
+				setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
+				break;
+			case Theme.BUSSINESS_NORMAL:
+				setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
+				break;
+			case Theme.BUSSINESS_SPORT:
+				setLight(getResources().getColor(R.color.bussinesssport_color), 8);
+				break;
+			default:
+				setLight(getResources().getColor(R.color.lightone), 20);
+				colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
+				break;
+		}
+//		setTextColor(colorStateList);
 	}
 }
 

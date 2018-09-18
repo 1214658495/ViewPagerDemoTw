@@ -65,43 +65,5 @@
         app:layout_constraintBottom_toTopOf="@id/ll_line_choose"
         android:src="@mipmap/line_below_content" />
 
-    <LinearLayout
-        android:id="@+id/ll_line_choose"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.85"
-        android:visibility="gone"
-        android:orientation="horizontal">
-
-        <com.byd.lighttextview.LightButton
-            android:id="@+id/btn_dialogSure"
-            style="@style/ButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ok"
-            android:textSize="@dimen/sp_11"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@mipmap/line_between_choose"
-            android:visibility="gone"/>
-
-        <com.byd.lighttextview.LightButton
-            android:id="@+id/btn_dialogCancel"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel"
-            android:textSize="@dimen/sp_11" />
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

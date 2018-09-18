@@ -55,10 +55,10 @@ import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.utils.DownloadUtil;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
-import com.byd.vtdr2.widget.LightTextView;
 import com.byd.vtdr2.widget.ThemeCheckBox;
 import com.byd.vtdr2.widget.ThemeLightButton;
 import com.byd.vtdr2.widget.ThemeLightRadioButton;
+import com.byd.vtdr2.widget.ThemeTextView;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import org.json.JSONArray;
@@ -124,7 +124,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     @BindView(R.id.ll_editItemBar)
     LinearLayout llEditItemBar;
     @BindView(R.id.tv_editNav)
-    LightTextView tvEditNav;
+//    LightTextView tvEditNav;
+            ThemeTextView tvEditNav;
     //    @BindView(R.id.rl_menu_edit)
 //    RelativeLayout rlMenuEdit;
     @BindView(R.id.iv_line_blowMenuEdit)
@@ -224,7 +225,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         listLoadingView = view.findViewById(R.id.listLoadingView);
         unbinder = ButterKnife.bind(this, view);
         int bydTheme = getResources().getConfiguration().byd_theme;
-        changeSkin(bydTheme);
+//        changeSkin(bydTheme);
         initData();
 
 
@@ -236,6 +237,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fragmentManager = getChildFragmentManager();
+//        屏幕旋转时保证fragmentVideoPreview等变量不为空，保证后退的逻辑OK。
         if (savedInstanceState != null) {
             fragmentVideoPreview = (FragmentVideoPreview) fragmentManager.findFragmentByTag(FragmentVideoPreview.class.getName());
             fragmentPhotoPreview = (FragmentPhotoPreview) fragmentManager.findFragmentByTag(FragmentPhotoPreview.class.getName());
@@ -267,7 +269,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int bydTheme = newConfig.byd_theme;
-        changeSkin(bydTheme);
+//        changeSkin(bydTheme);
     }
 
     private void initData() {
@@ -1801,229 +1803,269 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         }
     }
 
-    private void changeSkin(int bydTheme) {
-        switch (bydTheme) {
-            case 1:
-                //经济模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
-                break;
-            case 2:
-                //运动模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_sport),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_sport),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_sport),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_sport),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_sport),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_sport),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_sport),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_sport),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.sport_color), 22);
-                break;
-            case 101:
-                //hadeco模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadeco),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_hadeco),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_hadeco),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_hadeco),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_hadeco),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_hadeco),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_hadeco),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_hadeco),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
-                break;
-            case 102:
-                //had运动模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadsport),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_hadsport),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_hadsport),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_hadsport),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_hadsport),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_hadsport),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_hadsport),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_hadsport),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.hadsport_color), 22);
-                break;
-            case 1011:
-                //stareco模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_stareco),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_stareco),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_stareco),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_stareco),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_stareco),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_stareco),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_stareco),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_stareco),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.starnormal_color), 20);
-                break;
-            case 1012:
-                //star运动模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_starsport),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_starsport),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_starsport),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_starsport),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_starsport),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_starsport),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_starsport),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_starsport),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.starsport_color), 20);
-                break;
-            case 1021:
-                //blackgold
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldeco),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldeco),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldeco),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldeco),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldeco),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldeco),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldeco),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldeco),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.blackgoldnormal_color), 20);
-                break;
-            case 1022:
-                //blackgold运动模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldsport),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldsport),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldsport),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldsport),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldsport),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldsport),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldsport),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldsport),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.blackgoldsport_color), 20);
-                break;
-            case 1031:
-                //eyeshoteco模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshoteco),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshoteco),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshoteco),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshoteco),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshoteco),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshoteco),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshoteco),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshoteco),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.eyeshotnormal_color), 20);
-                break;
-            case 1032:
-                //eyeshotsport运动模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshotsport),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshotsport),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshotsport),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshotsport),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshotsport),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshotsport),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshotsport),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshotsport),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.eyeshotsport_color), 20);
-                break;
-            default:
-                //经济模式
-                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
-                        null, null, null);
-                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
-                        null, null, null);
-                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
-                        null, null, null);
-                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
-                        null, null, null);
-                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
-                        null, null, null);
-                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
-                        null, null, null);
-                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
-                        null, null, null);
-                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
-                        null, null, null);
-                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
-                break;
-        }
-    }
+//    private void changeSkin(int bydTheme) {
+//        switch (bydTheme) {
+//            case 1:
+//                //经济模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
+//                break;
+//            case 2:
+//                //运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_sport),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_sport),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_sport),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_sport),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_sport),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_sport),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_sport),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_sport),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.sport_color), 22);
+//                break;
+//            case 101:
+//                //hadeco模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadeco),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_hadeco),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_hadeco),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_hadeco),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_hadeco),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_hadeco),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_hadeco),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_hadeco),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
+//                break;
+//            case 102:
+//                //had运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadsport),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_hadsport),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_hadsport),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_hadsport),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_hadsport),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_hadsport),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_hadsport),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_hadsport),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.hadsport_color), 22);
+//                break;
+//            case 1011:
+//                //stareco模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+////                tvEditNav.setLight(getResources().getColor(R.color.starnormal_color), 20);
+//                break;
+//            case 1012:
+//                //star运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+////                tvEditNav.setLight(getResources().getColor(R.color.starsport_color), 20);
+//                break;
+//            case 1021:
+//                //blackgold
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldeco),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldeco),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldeco),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldeco),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldeco),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldeco),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldeco),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldeco),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.blackgoldnormal_color), 20);
+//                break;
+//            case 1022:
+//                //blackgold运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_blackgoldsport),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_blackgoldsport),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_blackgoldsport),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_blackgoldsport),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_blackgoldsport),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_blackgoldsport),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_blackgoldsport),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_blackgoldsport),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.blackgoldsport_color), 20);
+//                break;
+//            case 1031:
+//                //eyeshoteco模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshoteco),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshoteco),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshoteco),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshoteco),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshoteco),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshoteco),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshoteco),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshoteco),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.eyeshotnormal_color), 20);
+//                break;
+//            case 1032:
+//                //eyeshotsport运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_eyeshotsport),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector_eyeshotsport),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector_eyeshotsport),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector_eyeshotsport),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector_eyeshotsport),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector_eyeshotsport),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector_eyeshotsport),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector_eyeshotsport),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.eyeshotsport_color), 20);
+//                break;
+//            case 1041:
+//                //经济模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+////                tvEditNav.setLight(getResources().getColor(R.color.bussinessnormal_color), 22);
+//                break;
+//            case 1042:
+//                //运动模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+////                tvEditNav.setLight(getResources().getColor(R.color.bussinesssport_color), 22);
+//                break;
+//            default:
+//                //经济模式
+//                rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector),
+//                        null, null, null);
+//                rbLockvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_lockvideo_selector),
+//                        null, null, null);
+//                rbCapturephoto.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_images_selector),
+//                        null, null, null);
+//                btnCancel.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_cancel_selector),
+//                        null, null, null);
+//                btnExport.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_export_selector),
+//                        null, null, null);
+//                btnDelete.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_delete_selector),
+//                        null, null, null);
+//                btnShare.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_share_selector),
+//                        null, null, null);
+//                btnSelectall.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_edit_selectall_selector),
+//                        null, null, null);
+//                tvEditNav.setLight(getResources().getColor(R.color.lightone), 22);
+//                break;
+//        }
+//    }
 }
 

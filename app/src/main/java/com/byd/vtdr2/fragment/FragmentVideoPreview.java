@@ -348,7 +348,7 @@ public class FragmentVideoPreview extends Fragment {
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(PLMediaPlayer mp) {
+        public void onPrepared(PLMediaPlayer mp, int preparedTime) {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
             isVideoStop = false;

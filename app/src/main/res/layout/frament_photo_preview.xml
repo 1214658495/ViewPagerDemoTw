@@ -2,9 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg_all_port_cut"
     android:clickable="true"
-    android:focusable="true"
-    android:background="@mipmap/bg_all_port_cut">
+    android:focusable="true">
 
     <com.byd.vtdr2.view.MyViewPager
         android:id="@+id/vp_viewPager"
@@ -18,52 +18,45 @@
 
     </com.byd.vtdr2.view.MyViewPager>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/ll_bar_editPhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@mipmap/bg_text_item"
+        android:orientation="horizontal"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="@id/vp_viewPager">
 
-        <LinearLayout
-            android:id="@+id/ll_bar_editPhoto"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_share_preview"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="@mipmap/bg_text_item"
-            android:gravity="right"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:background="@drawable/btn_preview_share_selector"
+            android:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/btn_share_preview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:background="@drawable/btn_preview_share_selector" />
+        <ImageButton
+            android:id="@+id/btn_export_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_preview_export_selector"
+            android:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/btn_export_preview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:background="@drawable/btn_preview_export_selector" />
+        <ImageButton
+            android:id="@+id/btn_delete_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_preview_delete_selector"
+            android:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/btn_delete_preview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:background="@drawable/btn_preview_delete_selector" />
+        <ImageButton
+            android:id="@+id/btn_zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/btn_preview_zoomout_selector" />
 
-            <ImageButton
-                android:id="@+id/btn_zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_5"
-                android:background="@drawable/btn_preview_zoomout_selector" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_bar_showTitle"
@@ -79,8 +72,8 @@
             android:background="@drawable/btn_preview_back_selector" />
 
         <TextView
-            style="@style/TextRobotoStyle"
             android:id="@+id/tv_title_photo"
+            style="@style/TextRobotoStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -89,8 +82,8 @@
             android:textSize="@dimen/sp_10" />
 
         <TextView
-            style="@style/TextRobotoStyle"
             android:id="@+id/tv_vpIndex"
+            style="@style/TextRobotoStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

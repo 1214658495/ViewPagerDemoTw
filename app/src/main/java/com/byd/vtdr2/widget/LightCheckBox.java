@@ -84,7 +84,7 @@ public class LightCheckBox extends android.support.v7.widget.AppCompatCheckBox {
 				R.styleable.LightTextView);
 
 		int color = typedArray.getColor(R.styleable.LightTextView_lightColor,
-				com.byd.lighttextview.Constants.COLOR_DEFAULT_BLUE);
+				Constants.COLOR_DEFAULT_BLUE);
 		float radius = typedArray.getFloat(R.styleable.LightTextView_radius,
 				Constants.DEFAULT_RADIUS);
 		setLight(color, radius);
