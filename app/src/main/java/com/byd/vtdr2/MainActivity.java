@@ -34,7 +34,6 @@ import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.fragment.FragmentPlaybackList;
 import com.byd.vtdr2.fragment.FragmentRTVideo;
 import com.byd.vtdr2.fragment.FragmentSetting;
-import com.byd.vtdr2.utils.LogcatHelper;
 import com.byd.vtdr2.view.CustomDialog;
 import com.byd.vtdr2.view.MyDialog;
 import com.byd.vtdr2.view.ProgressDialogFragment;
@@ -135,7 +134,7 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        LogcatHelper.getInstance(getApplicationContext()).start();
+       /* LogcatHelper.getInstance(getApplicationContext()).start();*/
         setContentView(R.layout.activity_main);
 //        BydResourceUtil.setWindowBackground(this);
         ButterKnife.bind(this);
@@ -378,12 +377,13 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        LogcatHelper.getInstance(getApplicationContext()).stop();
-        if (customDialog != null) {
+        if (customDialog != null && customDialog.isShowing()) {
             customDialog.dismiss();
             customDialog = null;
         }
+        super.onDestroy();
+        /*LogcatHelper.getInstance(getApplicationContext()).stop();*/
+
        /* if (worker != null) {
             worker.shutdown();
         }*/

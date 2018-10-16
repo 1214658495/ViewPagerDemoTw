@@ -58,8 +58,8 @@
     <string name="confirm_format_memory_card">是否格式化存储卡？</string>
     <string name="connecting">正在重连...</string>
     <string name="time_out">连接超时，记录仪无应答</string>
-    <string name="download_num">文件最大选择数为9</string>
-    <string name="download_num_tv">文件最大选择数为5</string>
+    <string name="download_num">文件最大导出数为9</string>
+    <string name="download_num_tv">文件最大导出数为5</string>
     <string name="download_free_space">系统存储空间不足</string>
     <string name="card_readying">存储卡准备中</string>
     <string name="image_max">图片已存储满</string>
@@ -81,7 +81,6 @@
     <string name="open_voice">打开录音</string>
     <string name="close_voice">关闭录音</string>
     <string name="voice_settingfail">录音开关失败</string>
-    <string name="del_image_sure">确认删除？</string>
     <string name="invalid_token">无法获得会话号</string>
     <string name="select_file">请先选择文件</string>
     <string name="LockVideo_end">锁定视频完成</string>

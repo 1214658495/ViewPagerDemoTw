@@ -308,7 +308,7 @@ public class FragmentRTVideo extends Fragment {
 //                    showToastTips("404 resource not found !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    isNeedReconnect = true;
+//                    isNeedReconnect = true;
 //                    showToastTips("Connection refused !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
@@ -344,7 +344,7 @@ public class FragmentRTVideo extends Fragment {
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     break;
                 default:
-                    isNeedReconnect = true;
+//                    isNeedReconnect = true;
 //                    showToastTips("unknown error !");
                     break;
             }

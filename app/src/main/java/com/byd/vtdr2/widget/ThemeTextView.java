@@ -128,12 +128,12 @@ public class ThemeTextView extends SkinCompatTextView implements ITheme {
 			case Theme.EYESHOT_SPORT:
 				setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
 				break;
-			case Theme.BUSSINESS_NORMAL:
+			/*case Theme.BUSSINESS_NORMAL:
 				setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
 				break;
 			case Theme.BUSSINESS_SPORT:
 				setLight(getResources().getColor(R.color.bussinesssport_color), 8);
-				break;
+				break;*/
 			default:
 				setLight(getResources().getColor(R.color.lightone), 20);
 				colorStateList = getResources().getColorStateList(R.color.check_selector_eco);

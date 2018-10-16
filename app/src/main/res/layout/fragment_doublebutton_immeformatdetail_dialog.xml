@@ -20,6 +20,7 @@
 
     <TextView
         android:id="@+id/tv_dialogContent"
+        style="@style/TextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,9 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.35"
-        android:gravity="center"
         android:text="@string/card_need_format"
-        android:textColor="#fff"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -42,6 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.6"
         android:gravity="center"
+        android:fontFamily="plagiata"
         android:text="@string/card_need_format_detail"
         android:textColor="#7C7C7C"
         android:textSize="@dimen/sp_10" />

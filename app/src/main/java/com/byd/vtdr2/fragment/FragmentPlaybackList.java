@@ -1014,7 +1014,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 view.setBackgroundColor(Color.parseColor("#00ebff"));
                                 break;
                             case 102:
-                                view.setBackgroundColor(Color.parseColor("#ff0000"));
+                                view.setBackgroundColor(Color.parseColor("#e2525d"));
                                 break;
                             case 1011:
                                 view.setBackgroundColor(Color.parseColor("#7cfffa"));
@@ -1077,8 +1077,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 timeView.setTextColor(Color.parseColor("#00ebff"));
                                 break;
                             case 102:
-                                nameView.setTextColor(Color.parseColor("#ff0000"));
-                                timeView.setTextColor(Color.parseColor("#ff0000"));
+                                nameView.setTextColor(Color.parseColor("#e2525d"));
+                                timeView.setTextColor(Color.parseColor("#e2525d"));
                                 break;
                             case 1011:
                                 nameView.setTextColor(Color.parseColor("#7cfffa"));

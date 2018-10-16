@@ -46,7 +46,7 @@
     <string name="share_to">حصة ل</string>
     <string name="video_cannot_share">لا يمكن مشاركة الفيديو الآن</string>
     <string name="select_to_download">يرجى اختيار ملف للتنزيل</string>
-    <string name="confirm_delete">احذف الملفات المحددة</string>
+    <string name="confirm_delete">هل أنت متأكد من حذف</string>
     <string name="Reconnecting">إعادة الاتصال</string>
     <string name="restore_settings">تأكيد استعادة الإعدادات الافتراضية؟</string>
     <string name="confirm_format_memory_card">تنسيق بطاقة التخزين</string>
@@ -74,7 +74,6 @@
     <string name="open_voice">افتح الصوت</string>
     <string name="close_voice">إغلاق الصوت</string>
     <string name="voice_settingfail">فشل الإعداد الصوتي</string>
-    <string name="del_image_sure">هل أنت متأكد من حذف</string>
     <string name="invalid_token">رمز غير صالح</string>
     <string name="select_file">يرجى اختيار أولا</string>
     <string name="LockVideo_end">قفل فيديو النهاية</string>

@@ -86,12 +86,12 @@ public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
             case Theme.EYESHOT_SPORT:
                 setLight(getResources().getColor(R.color.eyeshotsport_color), 1);
                 break;
-            case Theme.BUSSINESS_NORMAL:
-                setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
-                break;
-            case Theme.BUSSINESS_SPORT:
-                setLight(getResources().getColor(R.color.bussinesssport_color), 8);
-                break;
+//            case Theme.BUSSINESS_NORMAL:
+//                setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
+//                break;
+//            case Theme.BUSSINESS_SPORT:
+//                setLight(getResources().getColor(R.color.bussinesssport_color), 8);
+//                break;
             default:
                 setLight(getResources().getColor(R.color.lightone), 30);
                 colorStateList = getResources().getColorStateList(R.color.check_selector_eco);

@@ -369,7 +369,7 @@ public class FragmentPhotoPreview extends Fragment {
         CustomDialog.Builder builder = new CustomDialog.Builder(getActivity());
         customDialog = builder.cancelTouchOut(false).view(R.layout
                 .fragment_doublebutton_dialog).style(R.style.CustomDialog).setTitle
-                (getString(R.string.del_image_sure)).addViewOnclick(R.id.btn_dialogSure, new View.OnClickListener() {
+                (getString(R.string.confirm_delete)).addViewOnclick(R.id.btn_dialogSure, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String fileHead;

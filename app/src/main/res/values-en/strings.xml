@@ -46,7 +46,7 @@
     <string name="share_to">Share To</string>
     <string name="video_cannot_share">Video Can\'t Be Shared Right Now!</string>
     <string name="select_to_download">Please Select The File To Download</string>
-    <string name="confirm_delete">Delete The Selected Files?</string>
+    <string name="confirm_delete">Are You Sure To Delete?</string>
     <string name="Reconnecting">Reconnecting...</string>
     <string name="restore_settings">Confirm Restore The Default Settings?</string>
     <string name="confirm_format_memory_card">Format Storage Card?</string>
@@ -74,7 +74,6 @@
     <string name="open_voice">Open Voice</string>
     <string name="close_voice">Close Voice</string>
     <string name="voice_settingfail">Voice Setting Fail</string>
-    <string name="del_image_sure">Are You Sure Delete?</string>
     <string name="invalid_token">Invalid Token</string>
     <string name="select_file">Please Select First</string>
     <string name="LockVideo_end">LockVideo End</string>

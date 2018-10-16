@@ -95,7 +95,9 @@ public class ProgressDialogFragment extends DialogFragment {
         btnDialogCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonClickListener.cancelButtonClick();
+                if (buttonClickListener != null) {
+                    buttonClickListener.cancelButtonClick();
+                }
                 pReccsstext = "   ";
                 getDialog().cancel();
             }
