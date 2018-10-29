@@ -27,12 +27,29 @@
     <color name="bussinessnormal_select">#ffffff</color>
     <color name="bussinesssport_select">#ffffff</color>
 
-    <color name="eco_color">#67e6f8</color>
-    <!--<color name="sport_color">#e07d7f</color>-->
-    <color name="select_color">#ffffff</color>
-
     <color name="elegantnormal_color">#ffd48e</color>
     <color name="elegantsport_color">#ff851a</color>
+    <color name="eco_color">#67e6f8</color>
+    <!--<color name="sport_color">#e07d7f</color>-->
+    <color name="steco_nocheck_color">#ff13c7ff</color>
+    <color name="steco_check_color">#ffffff</color>
+    <color name="stsport_nocheck_color">#fb8218</color>
+    <color name="stsport_check_color">#ffffff</color>
+
+    <color name="hadeco_nocheck_color">#999999</color>
+    <color name="hadeco_check_color">#ffffff</color>
+    <color name="hadsport_nocheck_color">#999999</color>
+    <color name="hadsport_check_color">#ffffff</color>
+
+    <color name="blackgoldeco_nocheck_color">#ffffff</color>
+    <color name="blackgoldeco_check_color">#ffb86c</color>
+    <color name="blackgoldsport_nocheck_color">#ffffff</color>
+    <color name="blackgoldsport_check_color">#e2525d</color>
+
+    <color name="eyeshoteco_nocheck_color">#ffffff</color>
+    <color name="eyeshoteco_check_color">#70f3ff</color>
+    <color name="eyeshotsport_nocheck_color">#ffffff</color>
+    <color name="eyeshotsport_check_color">#efb76e</color>
 
     <color name="selector_press">#ff13c7ff</color>
     <color name="service_item_confirm_color">#4d4d4d</color>

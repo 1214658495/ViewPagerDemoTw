@@ -20,7 +20,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_recordvideo"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -32,7 +31,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_lockvideo"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -43,7 +41,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_capturephoto"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -82,7 +79,6 @@
         <com.byd.vtdr2.widget.ThemeTextView
             android:id="@+id/tv_editNav"
             style="@style/TextStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -92,7 +88,6 @@
         <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_cancel"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -106,7 +101,6 @@
         <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_share"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -119,7 +113,6 @@
         <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_export"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -132,7 +125,6 @@
         <com.byd.vtdr2.widget.ThemeLightButton
             android:id="@+id/btn_delete"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -145,7 +137,6 @@
         <com.byd.vtdr2.widget.ThemeCheckBox
             android:id="@+id/btn_selectall"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

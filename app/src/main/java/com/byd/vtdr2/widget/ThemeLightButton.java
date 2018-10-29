@@ -54,35 +54,41 @@ public class ThemeLightButton extends LightButton implements ITheme {
 				switch (theme) {
 					case Theme.NORMAL:
 						setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
-						colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_steco);
 						break;
 					case Theme.SPORT:
 						setLight(getResources().getColor(R.color.sport_color), 10);
-						colorStateList = getResources().getColorStateList(R.color.press_selector_text_sport);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_stsport);
 						break;
 					case Theme.HAD_NORMAL:
 						setLight(getResources().getColor(R.color.lightone), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_hadeco);
 						break;
 					case Theme.HAD_SPORT:
 						setLight(getResources().getColor(R.color.hadsport_color), 8);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_hadsport);
 						break;
-					case Theme.STAR_NORMAL:
-						setLight(getResources().getColor(R.color.starnormal_color), 10);
-						break;
-					case Theme.STAR_SPORT:
-						setLight(getResources().getColor(R.color.starsport_color), 8);
-						break;
+//					case Theme.STAR_NORMAL:
+//						setLight(getResources().getColor(R.color.starnormal_color), 10);
+//						break;
+//					case Theme.STAR_SPORT:
+//						setLight(getResources().getColor(R.color.starsport_color), 8);
+//						break;
 					case Theme.BLACKGOLD_NORMAL:
 						setLight(getResources().getColor(R.color.blackgoldnormal_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_blackgoldeco);
 						break;
 					case Theme.BLACKGOLD_SPORT:
 						setLight(getResources().getColor(R.color.blackgoldsport_color), 8);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_blackgoldsport);
 						break;
 					case Theme.EYESHOT_NORMAL:
 						setLight(getResources().getColor(R.color.eyeshotnormal_color), 10);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_eyeshoteco);
 						break;
 					case Theme.EYESHOT_SPORT:
 						setLight(getResources().getColor(R.color.eyeshotsport_color), 8);
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_eyeshotsport);
 						break;
 //					case Theme.BUSSINESS_NORMAL:
 //						setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
@@ -92,12 +98,12 @@ public class ThemeLightButton extends LightButton implements ITheme {
 //						break;
 					default:
 						setLight(getResources().getColor(R.color.normal_color), 10);//设置发光的颜色以及半径
-						colorStateList = getResources().getColorStateList(R.color.press_selector_text);//点击时候与未点击时候的颜色
+						colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_steco);
 
 						break;
 				}
 			}
-//			setTextColor(colorStateList);//设置文本的颜色
+			setTextColor(colorStateList);//设置文本的颜色
 	}
 
 //	@Override

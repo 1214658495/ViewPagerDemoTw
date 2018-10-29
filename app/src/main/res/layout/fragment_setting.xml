@@ -57,7 +57,6 @@
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_memoryCard_format"
         style="@style/ButtonStyle"
-        android:textColor="@color/check_selector_radiobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"

@@ -5,6 +5,8 @@ package com.byd.vtdr2.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.byd.vtdr2.R;
+
 import skin.support.widget.SkinCompatCheckBox;
 
 //此处未继承LightCheckbox
@@ -36,7 +38,7 @@ public class ThemeCheckBox extends SkinCompatCheckBox implements ITheme {
 			DrawableCompat.setTint(drawable, getResources().getColor(res));
 			setButtonDrawable(drawable);
 		}*/
-        /*switch (theme) {
+        switch (theme) {
             case Theme.SPORT:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
                 setTextColor(getResources().getColor(R.color.sport_color));
@@ -50,32 +52,32 @@ public class ThemeCheckBox extends SkinCompatCheckBox implements ITheme {
 //                setTextColor(getResources().getColor(R.color.hadsport_color));
                 setTextColor(getResources().getColor(R.color.grey));
                 break;
-            case Theme.STAR_NORMAL:
-//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
-                setTextColor(getResources().getColor(R.color.grey));
-                break;
-            case Theme.STAR_SPORT:
-//			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
-//                setTextColor(getResources().getColor(R.color.hadsport_color));
-                setTextColor(getResources().getColor(R.color.grey));
-                break;
+//            case Theme.STAR_NORMAL:
+////			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+//                setTextColor(getResources().getColor(R.color.grey));
+//                break;
+//            case Theme.STAR_SPORT:
+////			setButtonDrawable(getResources().getDrawable(R.drawable.selector_file_sort));
+////                setTextColor(getResources().getColor(R.color.hadsport_color));
+//                setTextColor(getResources().getColor(R.color.grey));
+//                break;
             case Theme.BLACKGOLD_NORMAL:
             case Theme.BLACKGOLD_SPORT:
             case Theme.EYESHOT_NORMAL:
             case Theme.EYESHOT_SPORT:
-                setTextColor(getResources().getColor(R.color.grey));
+                setTextColor(getResources().getColor(R.color.white));
                 break;
-            case Theme.BUSSINESS_NORMAL:
-
-                break;
-            case Theme.BUSSINESS_SPORT:
-
-                break;
+//            case Theme.BUSSINESS_NORMAL:
+//
+//                break;
+//            case Theme.BUSSINESS_SPORT:
+//
+//                break;
             default:
 //			setButtonDrawable(getResources().getDrawable(R.drawable.pic_check_box_up));
                 setTextColor(getResources().getColor(R.color.light));
                 break;
-        }*/
+        }
     }
 
 }

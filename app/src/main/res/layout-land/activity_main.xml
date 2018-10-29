@@ -10,7 +10,6 @@
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
         style="@style/ButtonStyle"
-        android:textColor="@color/check_selector_radiobutton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_35"
@@ -45,7 +44,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_realTimeVideo"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -58,7 +56,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_playbackList"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -70,7 +67,6 @@
         <com.byd.vtdr2.widget.ThemeLightRadioButton
             android:id="@+id/rb_setting"
             style="@style/ButtonStyle"
-            android:textColor="@color/check_selector_radiobutton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

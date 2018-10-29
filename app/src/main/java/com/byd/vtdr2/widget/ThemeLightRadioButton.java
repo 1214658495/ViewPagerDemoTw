@@ -56,35 +56,41 @@ public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
         switch (theme) {
             case Theme.NORMAL:
                 setLight(getResources().getColor(R.color.lightone), 30);
-//                colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_steco);
                 break;
             case Theme.SPORT:
                 setLight(getResources().getColor(R.color.sport_color), 12);
-//                colorStateList = getResources().getColorStateList(R.color.check_selector_sport);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_stsport);
                 break;
             case Theme.HAD_NORMAL:
                 setLight(getResources().getColor(R.color.lightone), 30);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_hadeco);
                 break;
             case Theme.HAD_SPORT:
                 setLight(getResources().getColor(R.color.hadsport_color), 8);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_hadsport);
                 break;
-            case Theme.STAR_NORMAL:
-                setLight(getResources().getColor(R.color.starnormal_color), 8);
-                break;
-            case Theme.STAR_SPORT:
-                setLight(getResources().getColor(R.color.starsport_color), 8);
-                break;
+//            case Theme.STAR_NORMAL:
+//                setLight(getResources().getColor(R.color.starnormal_color), 8);
+//                break;
+//            case Theme.STAR_SPORT:
+//                setLight(getResources().getColor(R.color.starsport_color), 8);
+//                break;
             case Theme.BLACKGOLD_NORMAL:
                 setLight(getResources().getColor(R.color.blackgoldnormal_color), 1);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_blackgoldeco);
                 break;
             case Theme.BLACKGOLD_SPORT:
                 setLight(getResources().getColor(R.color.blackgoldsport_color), 1);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_blackgoldsport);
                 break;
             case Theme.EYESHOT_NORMAL:
                 setLight(getResources().getColor(R.color.eyeshotnormal_color), 1);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_eyeshoteco);
                 break;
             case Theme.EYESHOT_SPORT:
                 setLight(getResources().getColor(R.color.eyeshotsport_color), 1);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_eyeshotsport);
                 break;
 //            case Theme.BUSSINESS_NORMAL:
 //                setLight(getResources().getColor(R.color.bussinessnormal_color), 8);
@@ -94,10 +100,10 @@ public class ThemeLightRadioButton extends LightRadioButton implements ITheme {
 //                break;
             default:
                 setLight(getResources().getColor(R.color.lightone), 30);
-                colorStateList = getResources().getColorStateList(R.color.check_selector_eco);
+                colorStateList = getResources().getColorStateList(R.color.check_selector_buttoncolor_steco);
                 break;
         }
-//        setTextColor(colorStateList);
+        setTextColor(colorStateList);
     }
 
   /*  @Override
