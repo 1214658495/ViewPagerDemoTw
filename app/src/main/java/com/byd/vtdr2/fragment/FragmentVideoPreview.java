@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.byd.vtdr2.ActivityRTVideo;
 import com.byd.vtdr2.R;
@@ -89,6 +90,7 @@ public class FragmentVideoPreview extends Fragment {
     private TelephonyManager telephonyManager;
     private MyPhoneListener myPhoneListener;
     private boolean isRinging;
+    private Toast mToast;
 
     private static class MyHandle extends Handler {
         private WeakReference<FragmentVideoPreview> weakReference;
@@ -297,6 +299,7 @@ public class FragmentVideoPreview extends Fragment {
             mMediaPlayer = new PLMediaPlayer(getActivity().getApplicationContext(), mAVOptions);
 
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
+//            mMediaPlayer.setOnErrorListener(mOnErrorListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
@@ -420,6 +423,85 @@ public class FragmentVideoPreview extends Fragment {
             return true;
         }
     };
+
+ /*   private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
+            boolean isNeedReconnect = false;
+            Log.e(TAG, "Error happened, errorCode = " + errorCode);
+            switch (errorCode) {
+                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
+                    showToastTips("Invalid URL !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
+                    showToastTips("404 resource not found !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
+                    showToastTips("Connection refused !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
+                    showToastTips("Connection timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
+                    showToastTips("Empty playlist !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
+                    showToastTips("Stream disconnected !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
+                    showToastTips("Network IO Error !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
+                    showToastTips("Unauthorized Error !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
+                    showToastTips("Prepare timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
+                    showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_HW_DECODE_FAILURE:
+//                    setOptions(AVOptions.MEDIA_CODEC_SW_DECODE);
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                    break;
+                default:
+                    showToastTips("unknown error !");
+                    break;
+            }
+            // Todo pls handle the error status here, reconnect or call finish()
+            if (isNeedReconnect) {
+                sendReconnectMessage();
+            } else {
+                finish();
+            }
+            // Return true means the error has been handled
+            // If return false, then `onCompletion` will be called
+            return true;
+        }
+    };*/
+
+    private void showToastTips(final String tips) {
+//        if (mIsActivityPaused) {
+//            return;
+//        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mToast != null) {
+                    mToast.cancel();
+                }
+                mToast = Toast.makeText(getActivity(), tips, Toast.LENGTH_SHORT);
+                mToast.show();
+            }
+        });
+    }
 
     private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
         @Override

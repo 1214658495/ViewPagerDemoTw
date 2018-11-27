@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VTDR</string>
+    <string name="app_name">مسجل القيادة</string>
     <string name="back"> الى الخلف</string>
     <string name="live_video">الة تصوير</string>
     <string name="playback_list">قائمة الوسائط</string>
@@ -29,7 +29,7 @@
     <string name="LockVideo_fail">قفل الفيديو فاي</string>
     <string name="openVideo_fail">افتح فشل الفيديو</string>
     <string name="closeVideo_fail">إغلاق فيديو فشل</string>
-    <string name="connect_fail">توصيل لسيارة DVR ...</string>
+    <string name="connect_fail">...اتصال الشبكة</string>
     <string name="ok">حسنا</string>
     <string name="close">قفل</string>
     <string name="logo_text">BYD مسجل القيادة</string>

@@ -699,6 +699,19 @@ public class RemoteCam
         });
     }
 
+    //madd;
+    public void setRecordTime() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.setRecordTime("2019-08-08 08:08:08");
+            }
+        });
+    }
+
     public void getMediaInfo() {
         mMediaInfoStep = 0;
         mMediaInfoReply = "";

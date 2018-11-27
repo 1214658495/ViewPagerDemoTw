@@ -404,6 +404,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (myApplication.getisRescod()) {
                 models.remove(0);
             }
+//            当列表视频开始循环覆盖时，去掉最后一个
+            if (models.size() > 12) {
+                models.remove(models.size() - 1);
+            }
         } else if (currentRadioButton == ServerConfig.RB_LOCK_VIDEO && models.size() > 0) {
            /* if (isLockVideo) {
                 models.remove(0);
@@ -681,7 +685,10 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (isMultiChoose) {
 
         } else {
-            btnSelectall.isChecked();
+//            旋转前点击全选后，旋转后长按要取消全选
+            if (btnSelectall.isChecked()) {
+                btnSelectall.setChecked(false);
+            }
             isMultiChoose = true;
             llEditItemBar.setVisibility(View.VISIBLE);
             rgGroupDetail.setVisibility(View.INVISIBLE);
@@ -1544,7 +1551,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
             if (fragmentPlaybackListReference != null) {
                 while (fragmentPlaybackListReference.rueshcontrol) {
                     try {
-                        RefreshListThread.sleep(1000 * 180);
+                        RefreshListThread.sleep(1000 * 120);
                         if (!fragmentPlaybackListReference.rueshcontrol) {
                             break;
                         }

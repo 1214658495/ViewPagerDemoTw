@@ -9,7 +9,7 @@
 
     <com.byd.vtdr2.widget.ThemeLightButton
         android:id="@+id/btn_back"
-        style="@style/ButtonStyle"
+        style="@style/BackButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_35"

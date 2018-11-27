@@ -110,6 +110,7 @@
         app:layout_constraintStart_toEndOf="@id/iv_icRecord"
         android:format24Hour="yyyy/MM/dd HH:mm:ss"
         android:visibility="invisible"
+        android:timeZone="GMT"
         android:textSize="@dimen/sp_8"/>
 
     <TextView

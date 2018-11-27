@@ -366,6 +366,19 @@ public abstract class CmdChannel {
                 + ",\"msg_id\":" + AMBA_GET_SETTING + ",\"type\": \"micphone\" }");
     }
 
+//    //madd
+//    public synchronized boolean setRecordTime1() {
+//        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+//                + ",\"msg_id\":" + AMBA_SET_SETTING + ",\"type\": \"camera_clock\" ",\"param\": \"camera_clock\"}");
+//    }
+
+    public synchronized boolean setRecordTime(String param) {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_SET_SETTING
+                + ",\"type\":\"" + "camera_clock" + "\""
+                + ",\"param\":\"" + param + "\"}");
+    }
+
     public synchronized boolean listDir(String dir) {
         if (!checkSessionID()) {
             return false;
@@ -374,6 +387,7 @@ public abstract class CmdChannel {
         return sendRequest("{\"token\":" + mSessionId
                 + ",\"msg_id\":" + AMBA_LS
                 + ",\"param\":\"" + dir + " -D -S\"}");
+
     }
 
 

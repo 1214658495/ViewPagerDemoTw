@@ -164,7 +164,7 @@ public class FragmentSetting extends Fragment {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 //            return info.versionCode;
-            return "V" + info.versionName;
+            return " V" + info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

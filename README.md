@@ -29,30 +29,6 @@ VTDR是
 
 ![](https://github.com/wangdan/AisenWeibo/raw/master/resource/444.gif) 
 
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/222.gif) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/333.gif) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/555.gif) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/777.gif) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/666.gif) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_2.png)
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_6.png) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_4.png) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_5.png) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_3.png) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_7.png) 
-
-![](https://github.com/wangdan/AisenWeibo/raw/master/resource/git_1.png) 
-
 ## 须知
  * 私信、热门微博、热门话题、微博头条都采用内置官方触屏版实现
  * 多图上传、点赞功能没有权限

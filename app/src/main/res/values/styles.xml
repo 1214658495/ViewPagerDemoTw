@@ -27,9 +27,21 @@
         <!--<item name="android:textColor">@drawable/selector_checkcolor_blue_white</item>-->
         <item name="android:button">@null</item>
         <item name="android:background">@android:color/transparent</item>
+        <!--<item name="android:textDirection">ltr</item>-->
+        <!--<item name="android:textAlignment">textStart</item>-->
+        <item name="android:gravity">center|left</item>
+        <!--<item name="android:layoutDirection">rtl</item>-->
 
     </style>
 
+    <style name="BackButtonStyle">
+        <!-- Customize your theme here. -->
+        <item name="android:fontFamily">plagiata</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+<!--如下未用到-->
     <style name="RadioButtonStyle">
         <!-- Customize your theme here. -->
 

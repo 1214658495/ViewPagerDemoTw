@@ -93,7 +93,6 @@
             android:layout_marginStart="@dimen/dp_10"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_cancel_selector"
-            android:gravity="start|center"
             android:text="@string/cancel"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
@@ -105,7 +104,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_share_selector"
-            android:gravity="start|center"
             android:text="@string/share"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
@@ -117,7 +115,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_export_selector"
-            android:gravity="start|center"
             android:text="@string/export"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
@@ -129,7 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableStart="@drawable/btn_edit_delete_selector"
-            android:gravity="start|center"
             android:text="@string/delete"
             android:textAllCaps="false"
             android:textSize="@dimen/sp_9" />
