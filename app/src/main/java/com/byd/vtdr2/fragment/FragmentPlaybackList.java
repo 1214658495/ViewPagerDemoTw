@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -137,6 +138,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 
     public FragmentVideoPreview fragmentVideoPreview;
     public FragmentPhotoPreview fragmentPhotoPreview;
+    @BindView(R.id.cl_playbackList)
+    ConstraintLayout clPlaybackList;
 
     private ProgressBar listLoadingView;
 
@@ -176,6 +179,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     //    private UpdateListHandler updateListHandler = new UpdateListHandler(this);
     private RefreshListThread refreshListThread;
     private Activity mActivity;
+    private int lastClPlaybackListVisible;
+//    private FragmentTransaction fragmentTransaction;
     /*private static FragmentPlaybackList fragmentPlaybackList;
     public static FragmentPlaybackList newInstance() {
         if (fragmentPlaybackList == null) {
@@ -241,12 +246,17 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
         if (savedInstanceState != null) {
             fragmentVideoPreview = (FragmentVideoPreview) fragmentManager.findFragmentByTag(FragmentVideoPreview.class.getName());
             fragmentPhotoPreview = (FragmentPhotoPreview) fragmentManager.findFragmentByTag(FragmentPhotoPreview.class.getName());
+//            屏幕发生旋转时同步更改列表的显示状态
+            lastClPlaybackListVisible = savedInstanceState.getInt("lastClPlaybackListVisible");
+            clPlaybackList.setVisibility(lastClPlaybackListVisible);
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+//        注：getChildFragmentManager()不能在onActivityCreated中使用，因为此时的Fragment并没有运行，只是Activity启动了，
+//        onStart()中Fragment开始运行，能够在自身中获得自己控件的管理器并对其进行操作
 //        fragmentManager = getChildFragmentManager();
 //        fragmentManager = getActivity().getSupportFragmentManager();
 //        开始3分钟刷新的线程
@@ -615,6 +625,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 String url = "http://" + ServerConfig.VTDRIP + "/SD0/NORMAL/" +
                         model.getName();
 //                fragmentVideoPreview = FragmentVideoPlay.newInstance(urlVideosList,urlVideosList.get(i));
+//                手动隐藏列表
+                clPlaybackList.setVisibility(View.INVISIBLE);
                 fragmentVideoPreview = FragmentVideoPreview.newInstance(url);
 //                if (this.isVisible()) {
 //                    this.setUserVisibleHint(false);
@@ -638,6 +650,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                http://192.169.42.1/SD0/EVENT/
                 String url = "http://" + ServerConfig.VTDRIP + "/SD0/EVENT/" +
                         model.getName();
+//                手动隐藏列表
+                clPlaybackList.setVisibility(View.INVISIBLE);
                 fragmentVideoPreview = FragmentVideoPreview.newInstance(url);
               /*  fragmentTransaction.hide(this);
                 fragmentTransaction.add(R.id.fl_main, fragmentVideoPreview, "fragmentEventVideoPreview").addToBackStack(null).commit();*/
@@ -648,7 +662,8 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
 //                intent.putExtra("mPhotoList", mPlayLists);
 //                intent.putExtra("position", i);
 //                startActivity(intent);
-
+//                手动隐藏列表
+                clPlaybackList.setVisibility(View.INVISIBLE);
                 fragmentPhotoPreview = FragmentPhotoPreview.newInstance();
                 // TODO: 2018/6/22 如下直接赋值为静态还要修改
                 /*fragmentPhotoPreview.setRemoteCam(mRemoteCam);*/
@@ -1589,7 +1604,6 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
     }
 
 
-
     public void disableRadioGroup(RadioGroup testRadioGroup) {
         if (testRadioGroup != null) {
             for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
@@ -1604,6 +1618,20 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                 testRadioGroup.getChildAt(i).setEnabled(true);
             }
         }
+    }
+
+    public ConstraintLayout getConstraintLayout() {
+        return clPlaybackList;
+    }
+
+    /*
+    * 记录列表的显示状态
+    * */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        lastClPlaybackListVisible = clPlaybackList.getVisibility();
+        outState.putInt("lastClPlaybackListVisible", lastClPlaybackListVisible);
+        super.onSaveInstanceState(outState);
     }
 
     private void changeSkin(int bydTheme) {

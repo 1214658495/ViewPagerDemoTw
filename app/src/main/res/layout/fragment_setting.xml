@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_20"
     android:layout_marginStart="@dimen/dp_20"
-    >
+    android:layout_marginEnd="@dimen/dp_20">
 
     <ImageView
         android:id="@+id/iv_line_settingtext"
@@ -78,9 +77,9 @@
         style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_11"
         android:text="@string/version"
         android:textSize="@dimen/sp_10"
-        android:layout_marginTop="@dimen/dp_11"
         app:layout_constraintStart_toStartOf="@id/tv_textSetting"
         app:layout_constraintTop_toBottomOf="@id/btn_memoryCard_format" />
 
@@ -89,10 +88,10 @@
         style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_9"
         android:layout_marginStart="@dimen/dp_5"
-        app:layout_constraintStart_toEndOf="@id/tv_textSetting"
+        android:textSize="@dimen/sp_9"
         app:layout_constraintBottom_toBottomOf="@id/tv_version"
+        app:layout_constraintStart_toEndOf="@id/tv_textSetting"
         app:layout_constraintTop_toTopOf="@id/tv_version" />
 
     <com.byd.vtdr2.widget.ThemeLightButton
@@ -100,10 +99,10 @@
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_5"
         android:gravity="start|center"
         android:text="@string/firmware_version"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginStart="@dimen/dp_28"
         android:textAllCaps="false"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/btn_memoryCard_format"
@@ -124,11 +123,33 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
         android:src="@mipmap/line_settingpartdetail"
         android:visibility="visible"
-        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintTop_toBottomOf="@id/tv_version" />
 
+    <Button
+        android:id="@+id/btn_setResolution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="恢复出厂设置"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/tv_textSetting"
+        app:layout_constraintTop_toBottomOf="@id/btn_appVersion"/>
+
+    <Button
+        android:id="@+id/btn_getResolution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:text="获取分辨率"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/btn_setResolution"
+        app:layout_constraintTop_toBottomOf="@id/btn_appVersion"/>
     <!--<com.byd.lighttextview.LightButton-->
         <!--android:id="@+id/update_test"-->
         <!--style="@style/ButtonStyle"-->

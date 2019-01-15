@@ -636,6 +636,19 @@ public class RemoteCam
         });
     }
 
+    //add
+    public void setVideoResolution() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.setVideoResolution();
+            }
+        });
+    }
+
     public void forceSplit() {
         worker.execute(new Runnable() {
             @Override
@@ -695,6 +708,32 @@ public class RemoteCam
                     return;
                 }
                 mCmdChannel.micStatus();
+            }
+        });
+    }
+
+    //madd;
+    public void getVideoResolution() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.getVideoResolution();
+            }
+        });
+    }
+
+    //madd;
+    public void getAllVideoResolutionOptions() {
+        worker.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!connectToCmdChannel()) {
+                    return;
+                }
+                mCmdChannel.getAllVideoResolutionOptions();
             }
         });
     }

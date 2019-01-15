@@ -2,6 +2,7 @@ package com.byd.vtdr2;
 
 
 import android.Manifest;
+import android.app.BydResourceUtil;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -67,7 +69,7 @@ import skin.support.widget.SkinCompatSupportable;
  */
 
 @Skinable
-public class MainActivity extends BaseActivity implements IChannelListener, IFragmentListener, SkinCompatSupportable {
+public class MainActivity extends AppCompatActivity implements IChannelListener, IFragmentListener, SkinCompatSupportable {
     private static final String TAG = "MainActivity";
     private final static String KEY_CONNECTIVITY_TYPE = "connectivity_type";
     @BindView(R.id.fl_main)
@@ -134,9 +136,10 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-       /* LogcatHelper.getInstance(getApplicationContext()).start();*/
+        /* LogcatHelper.getInstance(getApplicationContext()).start();*/
         setContentView(R.layout.activity_main);
-//        BydResourceUtil.setWindowBackground(this);
+//        调用系统接口设置主背景图，不要自己去切背景图
+        BydResourceUtil.setWindowBackground(this);
         ButterKnife.bind(this);
         initSkinView();
         initView(savedInstanceState);
@@ -260,7 +263,7 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
             myApplication.isRemoteCreate = true;
         }
         isDialogShow = false;
-       /* worker.scheduleAtFixedRate(new ConnectRunnable(this), 0, 500, TimeUnit.MILLISECONDS);*/
+        /* worker.scheduleAtFixedRate(new ConnectRunnable(this), 0, 500, TimeUnit.MILLISECONDS);*/
     }
 
     @Override
@@ -298,6 +301,8 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+//        app运行中切换主题时调用此接口更改背景图
+        BydResourceUtil.setWindowBackground(this);
         int bydTheme = newConfig.byd_theme;
         changeSkin(bydTheme);
     }
@@ -412,11 +417,11 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 //        runOnUiThread(new Runnable() {
 //            @Override
 //            public void run() {
-                if (toast != null) {
-                    toast.cancel();
-                }
-                toast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
-                toast.show();
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, tips, Toast.LENGTH_SHORT);
+        toast.show();
 //            }
 //        });
 
@@ -592,13 +597,21 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
             if (currentFragment == fragmentPlaybackList && fragmentPlaybackList.isMultiChoose) {
                 fragmentPlaybackList.cancelMultiChoose();
             } else if (currentFragment == fragmentPlaybackList && fragmentPlaybackList.fragmentPhotoPreview != null && fragmentPlaybackList.fragmentPhotoPreview.isVisible()) {
-//                按后退键刷新图片列表
-                this.updateCardData();
                 // TODO: 2018/8/13 按后退键逐层退出，在预览旋转的情况下fragmentPhotoPreview为空，不能后退
                 fragmentPlaybackList.getChildFragmentManager().popBackStack();
+//                在视频预览界面按下后退键，让列表显示出来
+                if (fragmentPlaybackList.getConstraintLayout().getVisibility() == View.INVISIBLE) {
+                    fragmentPlaybackList.getConstraintLayout().setVisibility(View.VISIBLE);
+                }
+//                按后退键刷新图片列表
+                this.updateCardData();
             } else if (currentFragment == fragmentPlaybackList && fragmentPlaybackList.fragmentVideoPreview != null && fragmentPlaybackList.fragmentVideoPreview.isVisible()) {
 //                this.updateCardData();
                 fragmentPlaybackList.getChildFragmentManager().popBackStack();
+//                在图片预览界面按下后退键，让列表显示出来
+                if (fragmentPlaybackList.getConstraintLayout().getVisibility() == View.INVISIBLE) {
+                    fragmentPlaybackList.getConstraintLayout().setVisibility(View.VISIBLE);
+                }
             } else {
                 super.onBackPressed();
                 mRemoteCam.stopSession();
@@ -750,12 +763,12 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 //                if (valueRecordInit != valueRecord) {
 //                    valueRecordInit = valueRecord;
 //                    switch (valueRecordInit) {
-                    switch (valueRecord) {
-                        case ServerConfig.REC_CAP_STATE_PREVIEW:
-                            break;
-                        case ServerConfig.REC_CAP_STATE_RECORD:
-                            Log.e(TAG, "handleCmdChannelEvent: record:1");
-                            if (currentFragment == fragmentRTVideo) {
+                switch (valueRecord) {
+                    case ServerConfig.REC_CAP_STATE_PREVIEW:
+                        break;
+                    case ServerConfig.REC_CAP_STATE_RECORD:
+                        Log.e(TAG, "handleCmdChannelEvent: record:1");
+                        if (currentFragment == fragmentRTVideo) {
                                 /*if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }*/
@@ -768,11 +781,11 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 //                                currentFragment = fragmentRTVideo;
 //                                getSupportFragmentManager().beginTransaction().replace(flMain.getId(), currentFragment,fragmentRTVideo.getClass().getName()).commitAllowingStateLoss();
 
-                                fragmentRTVideo.release();
-                                fragmentRTVideo.prepare();
-                                /* mRemoteCam.getSystemState();*/
-                                fragmentRTVideo.setRecordState(true);
-                            } else if (currentFragment == fragmentPlaybackList) {
+                            fragmentRTVideo.release();
+                            fragmentRTVideo.prepare();
+                            /* mRemoteCam.getSystemState();*/
+                            fragmentRTVideo.setRecordState(true);
+                        } else if (currentFragment == fragmentPlaybackList) {
                                /* if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }
@@ -785,27 +798,27 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
                                     fragmentPlaybackList.showCapturePhotoList();
                                 }
                                 mRemoteCam.getSystemState();*/
-                            } else {
+                        } else {
                               /*  if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }
                                 mRemoteCam.getSystemState();
 //                                    防止格式化时，收到录像状态弹窗被隐藏*/
-                            }
+                        }
 //                        }
-                            myApplication.setisRescod(true);
-                            // TODO: 2018/4/13 先屏蔽
+                        myApplication.setisRescod(true);
+                        // TODO: 2018/4/13 先屏蔽
 //                        mRemoteCam.appStatus();
-                            break;
-                        case ServerConfig.REC_CAP_STATE_PRE_RECORD:
-                            break;
-                        case ServerConfig.REC_CAP_STATE_FOCUS:
-                            break;
-                        case ServerConfig.REC_CAP_STATE_CAPTURE:
-                            break;
-                        case ServerConfig.REC_CAP_STATE_VF:
-                            Log.e(TAG, "handleCmdChannelEvent: VF:5");
-                            if (currentFragment == fragmentRTVideo) {
+                        break;
+                    case ServerConfig.REC_CAP_STATE_PRE_RECORD:
+                        break;
+                    case ServerConfig.REC_CAP_STATE_FOCUS:
+                        break;
+                    case ServerConfig.REC_CAP_STATE_CAPTURE:
+                        break;
+                    case ServerConfig.REC_CAP_STATE_VF:
+                        Log.e(TAG, "handleCmdChannelEvent: VF:5");
+                        if (currentFragment == fragmentRTVideo) {
                                 /*if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }*/
@@ -818,10 +831,10 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
 //                                currentFragment = fragmentRTVideo;
 //                                getSupportFragmentManager().beginTransaction().replace(flMain.getId(), currentFragment,fragmentRTVideo.getClass().getName()).commitAllowingStateLoss();
 
-                                fragmentRTVideo.release();
-                                fragmentRTVideo.prepare();
-                                fragmentRTVideo.setRecordState(false);
-                            } else if (currentFragment == fragmentPlaybackList) {
+                            fragmentRTVideo.release();
+                            fragmentRTVideo.prepare();
+                            fragmentRTVideo.setRecordState(false);
+                        } else if (currentFragment == fragmentPlaybackList) {
                                 /*if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }
@@ -834,24 +847,24 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
                                     fragmentPlaybackList.showCapturePhotoList();
                                 }
                                 mRemoteCam.getSystemState();*/
-                            } else {
+                        } else {
                    /*             if (customDialog != null && !isFinishing()) {
                                     customDialog.dismiss();
                                 }
                                 mRemoteCam.getSystemState();
 //                                    防止格式化时，收到录像状态弹窗被隐藏*/
-                            }
-                            myApplication.setisRescod(false);
+                        }
+                        myApplication.setisRescod(false);
 //
-                            break;
-                        case ServerConfig.REC_CAP_STATE_TRANSIT_TO_VF:
+                        break;
+                    case ServerConfig.REC_CAP_STATE_TRANSIT_TO_VF:
 
-                            break;
-                        case ServerConfig.REC_CAP_STATE_RESET:
-                            break;
-                        default:
-                            break;
-                    }
+                        break;
+                    case ServerConfig.REC_CAP_STATE_RESET:
+                        break;
+                    default:
+                        break;
+                }
 //                }
 
                 break;
@@ -1291,6 +1304,17 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
                         break;
                 }
                 break;
+            case IChannelListener.CMD_CHANNEL_EVENT_GET_VIDEO_RESOLUTION_STATE:
+                String strResolutoin = (String) param;
+                if ("null".equals(strResolutoin)) {
+                    showToastTips("获取视频分辨率失败");
+                } else {
+                    showConfirmDialog("视频分辨率：" + " " + strResolutoin);
+                }
+                break;
+            case IChannelListener.CMD_CHANNEL_EVENT_SET_VIDEO_RESOLUTION_STATE:
+                showToastTips("恢复出厂设置成功！");
+                break;
             default:
                 break;
         }
@@ -1491,6 +1515,14 @@ public class MainActivity extends BaseActivity implements IChannelListener, IFra
                 break;
             case IFragmentListener.ACTION_FS_DELETE_WAITING_TIP:
                 showWaitingDialog(getString(R.string.deleting));
+                break;
+            case IFragmentListener.ACTION_SET_RESOLUTION:
+//                设置视频分辨率，单用此方法无效，需改变录像状态先
+                mRemoteCam.setVideoResolution();
+                break;
+            case IFragmentListener.ACTION_GET_RESOLUTION:
+//                获取视频分辨率
+                mRemoteCam.getVideoResolution();
                 break;
             default:
                 break;

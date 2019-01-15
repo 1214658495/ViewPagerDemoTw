@@ -541,6 +541,9 @@ public class FragmentVideoPreview extends Fragment {
                 reload = false;
 //                getActivity().getSupportFragmentManager().popBackStack();
                 getParentFragment().getChildFragmentManager().popBackStack();
+                if (((FragmentPlaybackList)(FragmentVideoPreview.this.getParentFragment())).getConstraintLayout().getVisibility() == View.INVISIBLE) {
+                    ((FragmentPlaybackList)(FragmentVideoPreview.this.getParentFragment())).getConstraintLayout().setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.btn_stop:
                 mMediaPlayer.pause();

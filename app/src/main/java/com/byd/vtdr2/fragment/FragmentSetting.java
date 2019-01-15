@@ -11,10 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-//import com.byd.lighttextview.LightButton;
 import com.byd.vtdr2.R;
 import com.byd.vtdr2.connectivity.IFragmentListener;
 import com.byd.vtdr2.view.MyDialog;
@@ -26,6 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+//import com.byd.lighttextview.LightButton;
 
 /**
  * Created by byd_tw on 2017/11/1.
@@ -44,15 +46,19 @@ public class FragmentSetting extends Fragment {
     ThemeLightButton btnFirmwareVersion;
     @BindView(R.id.btn_appVersion)
     ThemeLightButton btnAppVersion;
-//    @BindView(R.id.btn_default_setting)
+    //    @BindView(R.id.btn_default_setting)
 //    LightButton btnDefaultSetting;
     Unbinder unbinder;
-//    @BindView(R.id.update_test)
+    //    @BindView(R.id.update_test)
 //    LightButton btnUpdateTest;
     @BindView(R.id.tv_appVersionDetail)
     TextView tvAppVersionDetail;
     @BindView(R.id.tv_textSetting)
     TextView tvTextSetting;
+    @BindView(R.id.btn_setResolution)
+    Button btnSetResolution;
+    @BindView(R.id.btn_getResolution)
+    Button btnGetResolution;
 
     private IFragmentListener mListener;
     private MyDialog myDialog;
@@ -115,7 +121,7 @@ public class FragmentSetting extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({ R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.tv_textSetting})
+    @OnClick({R.id.btn_memoryCard_format, R.id.btn_firmwareVersion, R.id.btn_appVersion, R.id.tv_textSetting, R.id.btn_setResolution, R.id.btn_getResolution})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 //            case R.id.btn_default_setting:
@@ -154,6 +160,16 @@ public class FragmentSetting extends Fragment {
                     }
                     clickNum = 0;
                 }
+                break;
+            case R.id.btn_setResolution:
+//                恢复出厂设置，此处借用了别的按钮
+                mListener.onFragmentAction(IFragmentListener.ACTION_DEFAULT_SETTING, null);
+
+//                mListener.onFragmentAction(IFragmentListener.ACTION_SET_RESOLUTION, null);
+                break;
+            case R.id.btn_getResolution:
+//                获取视频分辨率
+                mListener.onFragmentAction(IFragmentListener.ACTION_GET_RESOLUTION, null);
                 break;
             default:
                 break;

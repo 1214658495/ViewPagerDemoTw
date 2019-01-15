@@ -66,6 +66,8 @@ public interface IChannelListener {
     final static int CMD_CHANNEL_EVENT_BYDPHOTO_ALERT = 0x44;
     final static int CMD_CHANNEL_EVENT_BYDEVENTRECORD_ALERT = 0x45;
     final static int CMD_CHANNEL_EVENT_EVENTRECORD_STATE_INIT = 0x46;
+    final static int CMD_CHANNEL_EVENT_GET_VIDEO_RESOLUTION_STATE = 0x47;
+    final static int CMD_CHANNEL_EVENT_SET_VIDEO_RESOLUTION_STATE = 0x48;
 
     final static int CMD_CHANNEL_ERROR_TIMEOUT = 0x80;
     final static int CMD_CHANNEL_ERROR_INVALID_TOKEN = 0x81;

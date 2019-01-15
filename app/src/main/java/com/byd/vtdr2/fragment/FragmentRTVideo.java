@@ -141,6 +141,9 @@ public class FragmentRTVideo extends Fragment {
 //        if (savedInstanceState == null) {
             mRemoteCam.micStatus();
             mRemoteCam.getSystemState();
+//            mRemoteCam.getAllSettings();
+//            mRemoteCam.getVideoResolution();
+//            mRemoteCam.getAllVideoResolutionOptions();
 //        }
     }
 

@@ -366,6 +366,18 @@ public abstract class CmdChannel {
                 + ",\"msg_id\":" + AMBA_GET_SETTING + ",\"type\": \"micphone\" }");
     }
 
+    //madd
+    public synchronized boolean getVideoResolution() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_GET_SETTING + ",\"type\": \"video_resolution\" }");
+    }
+
+    //madd
+    public synchronized boolean getAllVideoResolutionOptions() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
+                + ",\"msg_id\":" + AMBA_GET_OPTIONS + ",\"param\": \"video_resolution\" }");
+    }
+
 //    //madd
 //    public synchronized boolean setRecordTime1() {
 //        return checkSessionID() && sendRequest("{\"token\":" + mSessionId
@@ -509,6 +521,12 @@ public abstract class CmdChannel {
     public synchronized boolean stopMic() {
         return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
                 AMBA_SET_SETTING + ",\"type\":\"" + "micphone" + "\",\"param\":" + "\"off\"" + "}");
+    }
+
+    //    madd设置分辨率
+    public synchronized boolean setVideoResolution() {
+        return checkSessionID() && sendRequest("{\"token\":" + mSessionId + ",\"msg_id\":" +
+                AMBA_SET_SETTING + ",\"type\":\"" + "video_resolution" + "\",\"param\":" + "\"1920x1080 30P 16:9\"" + "}");
     }
 
     public synchronized boolean getRecordTime() {
@@ -716,6 +734,8 @@ public abstract class CmdChannel {
                                 boolean isMicOn = "on".equalsIgnoreCase(str);
                                 mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE, isMicOn);
                                 break;
+                            case "video_resolution":
+                                mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_GET_VIDEO_RESOLUTION_STATE, str);
                             default:
                                 break;
                         }
@@ -723,11 +743,16 @@ public abstract class CmdChannel {
                     case AMBA_SET_SETTING:
                         if (rval == 0) {
                             String typeSetting = parser.getString("type");
-                            str = parser.getString("param");
+
                             switch (typeSetting) {
                                 case "micphone":
+                                    str = parser.getString("param");
                                     boolean isMicOn = "on".equalsIgnoreCase(str);
                                     mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_MIC_STATE, isMicOn);
+                                    break;
+                                case "default_setting":
+                                    mListener.onChannelEvent(IChannelListener.CMD_CHANNEL_EVENT_SET_VIDEO_RESOLUTION_STATE, null);
+
                                     break;
                                 default:
                                     break;

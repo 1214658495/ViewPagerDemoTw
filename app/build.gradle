@@ -12,12 +12,12 @@ android {
         applicationId "com.byd.vtdr2"
         minSdkVersion 22
         targetSdkVersion 27
-        versionCode 27
-        versionName "1.0.27"
+        versionCode 29
+        versionName "1.0.29"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         archivesBaseName = "vtdr" + versionName
         ndk {
-            // 设置支持的SO库架构
+            // 设置支持的SO库架构arm64设备上，jniLibs/arm64-v8a/目录中如果存在.so文件的话，就会被安装
             abiFilters 'arm64-v8a'//, 'armeabi-v7a','armeabi' , 'x86','x86_64',
         }
     }
@@ -46,7 +46,7 @@ android {
 dependencies {
 //    provided files('framework/framework.jar')
 //    provided fileTree(include: ['*.jar'], dir: 'framework')
-    //    compileOnly files('libs/platform/framework/classes.jar')
+        compileOnly files('libs/platform/framework/classes.jar')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 //        compile(name: 'bydwidget-release', ext: 'aar')
     implementation 'com.android.support:appcompat-v7:27.1.0'

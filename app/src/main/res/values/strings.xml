@@ -88,4 +88,7 @@
     <string name="export_address">文件将被导出到本地-行车记录仪文件夹</string>
     <string name="deleting">删除中</string>
     <string name="get_firmware_version_fail">固件版本获取失败</string>
+
+    <string name="app_testName">记录仪临时版</string>
+
 </resources>

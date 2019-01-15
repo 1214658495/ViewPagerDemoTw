@@ -208,6 +208,10 @@ public class FragmentPhotoPreview extends Fragment {
                 /* getActivity().getSupportFragmentManager().popBackStack();*/
 //                getFragmentManager().beginTransaction().remove(this).commit();
                 getParentFragment().getChildFragmentManager().popBackStack();
+//                退出视频预览时，显示列表
+                if (((FragmentPlaybackList)(FragmentPhotoPreview.this.getParentFragment())).getConstraintLayout().getVisibility() == View.INVISIBLE) {
+                    ((FragmentPlaybackList)(FragmentPhotoPreview.this.getParentFragment())).getConstraintLayout().setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.btn_share_preview:
                 sharePhoto();

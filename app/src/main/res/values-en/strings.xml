@@ -82,4 +82,5 @@
     <string name="deleting">deleting</string>
     <string name="get_firmware_version_fail">Get Firmware Version Fail</string>
 
+    <string name="app_testName">记录仪临时版</string>
 </resources>

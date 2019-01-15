@@ -115,5 +115,7 @@ public interface IFragmentListener {
     final static int ACTION_WIFI_STOP = 0x53;
     final static int ACTION_WIFI_START = 0x54;
     final static int ACTION_WIFI_RESTART = 0x55;
+    final static int ACTION_SET_RESOLUTION = 0x56;
+    final static int ACTION_GET_RESOLUTION = 0x57;
 
 }

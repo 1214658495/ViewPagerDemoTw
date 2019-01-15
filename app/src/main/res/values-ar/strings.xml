@@ -82,4 +82,5 @@
     <string name="deleting">حذف</string>
     <string name="get_firmware_version_fail">الحصول على إصدار البرامج الثابتة فشل</string>
 
+    <string name="app_testName">记录仪临时版</string>
 </resources>
