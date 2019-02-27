@@ -668,6 +668,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
         }
 
         switch (type) {
+//            socket连接异常
             case IChannelListener.CMD_CHANNEL_EVENT_SHOW_ALERT:
                 String str = (String) param;
                 if ("CONNECT_FAIL".equals(str)) {
@@ -677,6 +678,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                         isDialogShow = true;
                     }
                 } else {
+                    // TODO: 2019/2/13 当是其他message时显示出来
 //                    showAddSingleButtonDialog(str);
                 }
                 break;
