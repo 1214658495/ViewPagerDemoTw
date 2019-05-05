@@ -242,6 +242,9 @@
 
         <attr name="elegantnormal" format="reference" />
         <attr name="elegantsport" format="reference" />
+
+        <attr name="sanormal" format="reference" />
+        <attr name="sasport" format="reference" />
     </declare-styleable>
 
 </resources>

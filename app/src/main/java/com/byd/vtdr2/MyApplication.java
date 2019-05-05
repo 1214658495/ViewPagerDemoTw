@@ -1,6 +1,5 @@
 package com.byd.vtdr2;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Environment;
@@ -26,7 +25,7 @@ import skin.support.constraint.app.SkinConstraintViewInflater;
  * Created by ximsfei on 2017/1/10.
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends android.app.ThemeApplication {
     private static final String TAG = "MyApplication";
     private ThemeManager themeManager;
     public boolean isRescod;
@@ -165,12 +164,14 @@ public class MyApplication extends Application {
 //                SkinCompatManager.getInstance().loadSkin("stsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 101:
+            case 201:
                 //经济模式
                 themeManager.updateTheme(Theme.HAD_NORMAL);
                 SkinCompatManager.getInstance().loadSkin("hadeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
 //                SkinCompatManager.getInstance().loadSkin("hadeco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 102:
+            case 202:
                 //运动模式
                 themeManager.updateTheme(Theme.HAD_SPORT);
                 SkinCompatManager.getInstance().loadSkin("hadsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);

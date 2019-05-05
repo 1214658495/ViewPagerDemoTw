@@ -1033,9 +1033,11 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 view.setBackgroundColor(Color.parseColor("#fb8218"));
                                 break;
                             case 101:
+                            case 201:
                                 view.setBackgroundColor(Color.parseColor("#00ebff"));
                                 break;
                             case 102:
+                            case 202:
                                 view.setBackgroundColor(Color.parseColor("#e2525d"));
                                 break;
 //                            case 1011:
@@ -1089,10 +1091,12 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                                 timeView.setTextColor(Color.parseColor("#fb8218"));
                                 break;
                             case 101:
+                            case 201:
                                 nameView.setTextColor(Color.parseColor("#00ebff"));
                                 timeView.setTextColor(Color.parseColor("#00ebff"));
                                 break;
                             case 102:
+                            case 202:
                                 nameView.setTextColor(Color.parseColor("#e2525d"));
                                 timeView.setTextColor(Color.parseColor("#e2525d"));
                                 break;
@@ -1675,6 +1679,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         null, null, null);
                 break;
             case 101:
+            case 201:
                 //hadeco模式
                 rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadeco),
                         null, null, null);
@@ -1694,6 +1699,7 @@ public class FragmentPlaybackList extends Fragment implements AdapterView.OnItem
                         null, null, null);
                 break;
             case 102:
+            case 202:
                 //had运动模式
                 rbRecordvideo.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_pl_recordvideo_selector_hadsport),
                         null, null, null);

@@ -11,7 +11,8 @@
     <color name="normal_color">#ff13c7ff</color>
     <color name="sport_color">#fb8218</color>
 
-    <color name="hadnormal_color">#00ebff</color>
+    <!--<color name="hadnormal_color">#00ebff</color>-->
+    <color name="hadnormal_color">#00A0FF</color>
     <color name="hadsport_color">#e2525d</color>
     <color name="grey">#999999</color>
 
