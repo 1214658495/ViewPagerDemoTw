@@ -51,8 +51,8 @@
     <string name="restore_settings">تأكيد استعادة الإعدادات الافتراضية؟</string>
     <string name="confirm_format_memory_card">تنسيق بطاقة التخزين</string>
     <string name="time_out">الوقت خارج متصلة</string>
-    <string name="download_num">تصدير العدد الأقصى من تسعة</string>
-    <string name="download_num_tv">تصدير عدد الحد الأقصى خمسة</string>
+    <string name="download_num">الحد الأقصى لعدد الملفات المحددة هو تسعة</string>
+    <string name="download_num_tv">الحد الأقصى لعدد الملفات المحددة هو خمسة</string>
     <string name="download_free_space">عدم وجود مساحة تخزين النظام</string>
     <string name="card_readying">بطاقة الاستعداد</string>
     <string name="image_max">صورة المتجر الكامل</string>

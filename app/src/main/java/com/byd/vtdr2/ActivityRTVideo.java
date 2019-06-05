@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,7 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ActivityRTVideo extends BaseActivity {
+public class ActivityRTVideo extends AppCompatActivity {
     private static final String TAG = "ActivityRTVideo";
     //类名若要更改，需提交给5部，不然无法实现全屏
     Unbinder unbinder;

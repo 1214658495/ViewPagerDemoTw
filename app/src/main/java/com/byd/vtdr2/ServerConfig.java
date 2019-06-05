@@ -32,9 +32,9 @@ public class ServerConfig {
     public static final int REC_CAP_STATE_TRANSIT_TO_VF = 6;
     public static final int REC_CAP_STATE_RESET = 255;
 
-    public static final String BORADCAST_ACTION_EXIT = "com.byd.vtdr.exit";//关闭活动的广播action名称
-    public static final String BORADCAST_ACTION_TAKEPHOTO = "com.byd.vtdr.takephoto";//拍照的广播action名称
-    public static final String BORADCAST_ACTION_LOCKVIDEO = "com.byd.vtdr.lockvideo";//锁定视频的广播action名称
-    public static final String BORADCAST_ACTION_OPENVOICE = "com.byd.vtdr.openvoice";//打开录音的广播action名称
-    public static final String BORADCAST_ACTION_CLOSEVOICE = "com.byd.vtdr.closevoice";//关闭录音的广播action名称
+    public static final String BORADCAST_ACTION_EXIT = "com.byd.vtdr2.exit";//关闭活动的广播action名称
+    public static final String BORADCAST_ACTION_TAKEPHOTO = "com.byd.vtdr2.takephoto";//拍照的广播action名称
+    public static final String BORADCAST_ACTION_LOCKVIDEO = "com.byd.vtdr2.lockvideo";//锁定视频的广播action名称
+    public static final String BORADCAST_ACTION_OPENVOICE = "com.byd.vtdr2.openvoice";//打开录音的广播action名称
+    public static final String BORADCAST_ACTION_CLOSEVOICE = "com.byd.vtdr2.closevoice";//关闭录音的广播action名称
 }

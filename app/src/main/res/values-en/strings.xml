@@ -51,8 +51,8 @@
     <string name="restore_settings">Confirm Restore The Default Settings?</string>
     <string name="confirm_format_memory_card">Format Storage Card?</string>
     <string name="time_out">Time Out Connected</string>
-    <string name="download_num">Export Num Maximum Of Nine</string>
-    <string name="download_num_tv">Export Num Maximum Of Five</string>
+    <string name="download_num">The maximum number of files selected is 9</string>
+    <string name="download_num_tv">The maximum number of files selected is 5</string>
     <string name="download_free_space">Lack Of System Storage Space</string>
     <string name="card_readying">Card Readying</string>
     <string name="image_max">Picture Store Full</string>

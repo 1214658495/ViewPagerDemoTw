@@ -28,12 +28,10 @@ allprojects {
 //        maven { url "https://jitpack.io" }
     }
 
-  /*  gradle.projectsEvaluated {
+   /* gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            // 注意修改 jar 包的路径，替换 app/libs/hidden_api_23.jar，其他部分不要改
-            // Xbootclasspath/p:是 Java 编译的寻址优先设置，先找缺省路径还是全路径
-            options.compilerArgs.add('-Xbootclasspath/p:app\\framework\\framework.jar')
-//            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\platform\\framework\\classes.jar')
+//            options.compilerArgs << '-Xbootclasspath/p:app\\libs\\platform\\framework\\classes.jar'
+            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\platform\\framework\\classes.jar')
         }
     }*/
 }

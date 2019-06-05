@@ -164,14 +164,14 @@ public class MyApplication extends android.app.ThemeApplication {
 //                SkinCompatManager.getInstance().loadSkin("stsport.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 101:
-            case 201:
+            case 1061:
                 //经济模式
                 themeManager.updateTheme(Theme.HAD_NORMAL);
                 SkinCompatManager.getInstance().loadSkin("hadeco", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
 //                SkinCompatManager.getInstance().loadSkin("hadeco.skin", SkinCompatManager.SKIN_LOADER_STRATEGY_ASSETS);
                 break;
             case 102:
-            case 202:
+            case 1062:
                 //运动模式
                 themeManager.updateTheme(Theme.HAD_SPORT);
                 SkinCompatManager.getInstance().loadSkin("hadsport", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);

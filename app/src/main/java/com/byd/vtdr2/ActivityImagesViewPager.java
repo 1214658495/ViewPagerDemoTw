@@ -36,7 +36,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * @date 2017/11/28
  */
 
-public class ActivityImagesViewPager extends BaseActivity {
+public class ActivityImagesViewPager extends AppCompatActivity {
     //类名若要更改，需提交给5部，不然无法实现全屏
     private static final String TAG = "ActivityImagesViewPager";
     @BindView(R.id.vp_viewPager)

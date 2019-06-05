@@ -1986,7 +1986,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case 101:
-            case 201:
+            case 1061:
                 //hadeco模式
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
@@ -2009,7 +2009,7 @@ public class MainActivity extends AppCompatActivity implements IChannelListener,
                 }
                 break;
             case 102:
-            case 202:
+            case 1062:
                 //had运动模式
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     btnBack.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
