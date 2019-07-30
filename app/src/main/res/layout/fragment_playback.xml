@@ -171,6 +171,7 @@
             android:id="@+id/gv_dataList"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_20"
             android:fastScrollAlwaysVisible="true"
